@@ -46,7 +46,7 @@ const Home = () => {
     try {
       // maintain conversation history properly
       const response = await axios({
-        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${VITE_GEMINI_API_KEY}`,
+        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApi}`,
         method: "post",
         data: {
           contents: [
