@@ -146,7 +146,7 @@ const SavedVideos = () => {
                         }
                       >
                         <h4 className="sv-title">{each.title}</h4>
-                        <h4 className="sv-title">{each.avgVote.toFixed(1)}</h4>
+                        {/* <h4 className="sv-title">{each.avgVote.toFixed(1)}</h4> */}
                         <h4 className="sv-title">
                           {new Date(each.releaseDate).getFullYear()}
                         </h4>
