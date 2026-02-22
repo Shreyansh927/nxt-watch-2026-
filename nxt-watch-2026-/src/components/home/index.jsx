@@ -19,7 +19,7 @@ const Home = () => {
   const [carouselTvArray, setCarouselTvArray] = useState([]);
   const [randomPage, setRandomPage] = useState(10);
   const [userGenre, setUserGenre] = useState(
-    JSON.parse(localStorage.getItem("genre-list")) || []
+    JSON.parse(localStorage.getItem("genre-list")) || [],
   );
   const [sug, setSug] = useState([]);
   const geminiApi = import.meta.env.VITE_GEMINI_API_KEY;
@@ -54,7 +54,7 @@ const Home = () => {
               parts: [
                 {
                   text: `List 10 movies similar to "${JSON.stringify(
-                    userGenre
+                    userGenre,
                   )}" in a JSON array of objects with keys: originalTitle, overview, id, posterPath, releaseDate, averageVotes, backdropPath, title, Poster.`,
                 },
               ],
@@ -74,15 +74,12 @@ const Home = () => {
     try {
       const response = await fetch(url);
       const jsonData = await response.json();
-      const formattedData = jsonData.results
-        .filter((each) => each.backdrop_path)
-        .map((each) => ({
-          id: each.id,
-          title: each.title,
-          backdropPath: each.backdrop_path,
-          posterPath: each.poster_path,
-          originalName: each.original_title,
-        }));
+      const formattedData = jsonData.movies.map((each) => ({
+        id: each.id,
+        title: each.title,
+        overview: each.overview,
+        originalName: each.title,
+      }));
       setData(formattedData);
     } catch (error) {
       console.log("Error fetching data", error);
@@ -90,30 +87,30 @@ const Home = () => {
   };
 
   const getTrendingMoviesData = () => {
-    const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}`;
+    const apiUrl = `http://localhost:5000/api/movies`;
     fetchData(apiUrl, setCarouselMoviesArray);
   };
 
-  const getTrendingDocumentaryData = () => {
-    const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}&with_genres=99`;
-    fetchData(apiUrl, setCarouselDocumentaryArray);
-  };
+  // const getTrendingDocumentaryData = () => {
+  //   const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}&with_genres=99`;
+  //   fetchData(apiUrl, setCarouselDocumentaryArray);
+  // };
 
-  const getTrendingAnimeData = () => {
-    const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}&with_genres=16`;
-    fetchData(apiUrl, setCarouselAnimeArray);
-  };
+  // const getTrendingAnimeData = () => {
+  //   const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}&with_genres=16`;
+  //   fetchData(apiUrl, setCarouselAnimeArray);
+  // };
 
-  const getTrendingTvData = () => {
-    const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}&with_genres=10770`;
-    fetchData(apiUrl, setCarouselTvArray);
-  };
+  // const getTrendingTvData = () => {
+  //   const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}&with_genres=10770`;
+  //   fetchData(apiUrl, setCarouselTvArray);
+  // };
 
   useEffect(() => {
     getTrendingMoviesData();
-    getTrendingAnimeData();
-    getTrendingDocumentaryData();
-    getTrendingTvData();
+    // getTrendingAnimeData();
+    // getTrendingDocumentaryData();
+    // getTrendingTvData();
 
     if (userGenre.length > 0) {
       geminiResponse();
@@ -173,7 +170,7 @@ const Home = () => {
     <Slider {...sliderSettings} className="slider-wrapper">
       {array.map((movie) => (
         <Link
-          to={`/trending/${movie.title}/${movie.id}`}
+          to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
           style={{ textDecoration: "none" }}
           key={movie.id}
         >
@@ -183,11 +180,11 @@ const Home = () => {
             tabIndex={0}
             onClick={() => addToUserGenre(movie)}
           >
-            <img
+            {/* <img
               src={`https://image.tmdb.org/t/p/w500/${movie.posterPath}`}
               alt={movie.title}
               className="poster-img"
-            />
+            /> */}
             <div className="poster-card-content">
               <p
                 className="poster-title"
@@ -230,11 +227,11 @@ const Home = () => {
             tabIndex={0}
             onClick={() => addToUserGenre(movie)}
           >
-            <img
+            {/* <img
               src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
               alt={movie.title}
               className="poster-img"
-            />
+            /> */}
             <div className="poster-card-content">
               <p
                 className="poster-title"

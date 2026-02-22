@@ -1,0 +1,5 @@
+POST http://localhost:5000/api/movies/sync-tmdb
+ Content-type : application/json
+{
+    "tmdbApiKey": "04c35731a5ee918f014970082a0088b1"
+}
