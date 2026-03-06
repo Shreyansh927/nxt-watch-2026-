@@ -9,6 +9,12 @@
   position: sticky;
   z-index: 100;
 }
+.green {
+  color: greenyellow;
+}
+.red {
+  color: rgb(255, 82, 82);
+}
 .cool-button {
   background: linear-gradient(135deg, #6e8efb, #a777e3);
   color: white;
@@ -27,7 +33,7 @@
 }
 
 .cool-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
@@ -58,7 +64,7 @@
   justify-content: center;
   align-items: center;
   box-shadow: inset 0 4px 24px rgba(63, 63, 63, 0.4);
-  font-family: 'Poppins';
+  font-family: "Poppins";
   border-radius: 12px;
 }
 
@@ -75,7 +81,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   column-gap: 10px;
-  font-family: 'Poppins';
+  font-family: "Poppins";
 }
 
 .sm-p {
@@ -98,7 +104,7 @@
   width: 100%;
   border-radius: 10px;
 
-  opacity: 0;
+  opacity: 1;
   transition: all 0.4s ease;
 }
 
@@ -198,7 +204,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 5px;
-  font-family: 'Poppins';
+  font-family: "Poppins";
   transition: all 0.4s ease;
   cursor: pointer;
   background-color: #f9f9f9;
@@ -215,7 +221,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 5px;
-  font-family: 'Poppins';
+  font-family: "Poppins";
   transition: all 0.4s ease;
   cursor: pointer;
   background-color: black;
@@ -239,11 +245,15 @@
   padding-bottom: 20px;
 }
 
+.watch-later-folders {
+  display: flex;
+}
+
 /* Medium devices: Tablets */
 @media screen and (min-width: 577px) and (max-width: 768px) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
-    font-family: 'Poppins';
+    font-family: "Poppins";
   }
 
   .indivisual-movie-container {
@@ -261,7 +271,7 @@
 @media screen and (min-width: 769px) and (max-width: 990px) {
   .grid-container {
     grid-template-columns: repeat(3, 1fr);
-    font-family: 'Poppins';
+    font-family: "Poppins";
   }
 
   .indivisual-movie-container {
@@ -275,7 +285,7 @@
     grid-template-columns: 1fr;
 
     place-content: start;
-    font-family: 'Poppins';
+    font-family: "Poppins";
   }
 
   .trending-movie-img {
@@ -415,7 +425,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 5px;
-    font-family: 'Poppins';
+    font-family: "Poppins";
     transition: all 0.4s ease;
     cursor: pointer;
     background-color: #f9f9f9;
@@ -433,4 +443,142 @@
   .main-movie-content {
     margin-top: 10vh;
   }
+}
+
+/* ================================
+   Watch Later Overlay
+================================ */
+
+.watch-later-folders {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+
+  z-index: 999;
+
+  animation: overlayFadeIn 0.25s ease forwards;
+}
+
+/* Folder Cards */
+.watch-later-folders > div {
+  background: white;
+  padding: 10px 40px;
+  border-radius: 14px;
+  min-width: 300px;
+
+  display: flex;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.25),
+    0 5px 15px rgba(0, 0, 0, 0.15);
+
+  transform: scale(0.9);
+  opacity: 0;
+
+  animation: folderPop 0.25s ease forwards;
+}
+
+/* Overlay fade */
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Folder animation */
+@keyframes folderPop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Radio styling */
+.watch-later-folders input[type="radio"] {
+  accent-color: #6e8efb;
+  width: 18px;
+  height: 18px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .watch-later-folders > div {
+    min-width: 85%;
+  }
+}
+
+.folder-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: white;
+}
+
+.icon-save {
+  color: rgb(31, 205, 4);
+  transition: all 0.4s;
+  cursor: pointer;
+}
+
+.icon-save:hover {
+  filter: drop-shadow(0 3px 2px rgb(132, 128, 128));
+}
+
+.h3 {
+  color: white;
+  font-family:;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  text-align: left;
+}
+
+.status {
+  color: rgb(246, 84, 105);
+  font-size: 13px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-style: italic;
+}
+
+.ff {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  max-height: 200px;
+  margin-top: 20px;
+  overflow-y: scroll;
+}
+
+.search-playlist {
+  padding: 10px 20px;
+  padding-top: 11px;
+  padding-left: 10px;
+  border: solid 0.1px rgb(123, 120, 120);
+  border-radius: 5px;
+  outline: none;
+}
+
+.search-playlist::placeholder {
+  font-size: 15px;
+}
+
+.close-overlay {
+  padding: 10px 10px;
+  font-size: 17px;
+  width: 20%;
+  border: solid 0px;
+  border-radius: 10px;
+  color: white;
+  background-image: linear-gradient(135deg, rgb(168, 16, 16), rgb(241, 77, 102));
+  cursor: pointer;
 }

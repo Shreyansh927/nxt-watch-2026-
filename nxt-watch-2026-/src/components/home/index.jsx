@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaPlayCircle, FaArrowCircleRight } from "react-icons/fa";
-import Loader from "react-loader-spinner"; // ❌ wrong (for v5+)
-
-import Slider from "react-slick";
+import { Loader } from "react-loader-spinner";
 import axios from "axios";
+import Slider from "react-slick";
 
 import Header from "../header/index";
 
@@ -22,6 +21,9 @@ const Home = () => {
     JSON.parse(localStorage.getItem("genre-list")) || [],
   );
   const [sug, setSug] = useState([]);
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null,
+  );
   const geminiApi = import.meta.env.VITE_GEMINI_API_KEY;
 
   useEffect(() => {
@@ -67,50 +69,53 @@ const Home = () => {
       extractArrayFromText(ans2);
     } catch (err) {
       console.error("Error fetching Gemini response:", err);
-      alert("Error fetching your genre movies , refresh the page...");
     }
   };
-  const fetchData = async (url, setData) => {
+  const fetchData = async (apiUrl, setStateFunction) => {
     try {
-      const response = await fetch(url);
-      const jsonData = await response.json();
-      const formattedData = jsonData.movies.map((each) => ({
-        id: each.id,
-        title: each.title,
-        overview: each.overview,
-        originalName: each.title,
+      const response = await axios.get(apiUrl);
+      const formattedMovies = response.data.movies.map((movie) => ({
+        id: movie.id,
+        title: movie.title,
+        releaseYear: movie.release_year,
+        description: movie.description,
+        genre: movie.genre,
+        posterpath: movie.posterpath,
+        backdroppath: movie.backdroppath,
+        originalTitle: movie.title,
       }));
-      setData(formattedData);
-    } catch (error) {
-      console.log("Error fetching data", error);
+      setStateFunction(formattedMovies);
+      console.log(response.data.movies);
+    } catch (err) {
+      console.error("Error fetching data:", err);
     }
   };
 
   const getTrendingMoviesData = () => {
-    const apiUrl = `http://localhost:5000/api/movies`;
+    const apiUrl = `http://localhost:5000/api/discover-movies?page=${randomPage}`;
     fetchData(apiUrl, setCarouselMoviesArray);
   };
 
-  // const getTrendingDocumentaryData = () => {
-  //   const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}&with_genres=99`;
-  //   fetchData(apiUrl, setCarouselDocumentaryArray);
-  // };
+  const getTrendingDocumentaryData = () => {
+    const apiUrl = `http://localhost:5000/api/discover-documetries`;
+    fetchData(apiUrl, setCarouselDocumentaryArray);
+  };
 
-  // const getTrendingAnimeData = () => {
-  //   const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}&with_genres=16`;
-  //   fetchData(apiUrl, setCarouselAnimeArray);
-  // };
+  const getTrendingAnimeData = () => {
+    const apiUrl = `http://localhost:5000/api/discover-animes?page=${randomPage}`;
+    fetchData(apiUrl, setCarouselAnimeArray);
+  };
 
-  // const getTrendingTvData = () => {
-  //   const apiUrl = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${randomPage}&with_genres=10770`;
-  //   fetchData(apiUrl, setCarouselTvArray);
-  // };
+  const getTrendingTvData = () => {
+    const apiUrl = `http://localhost:5000/api/discover-tv?page=${randomPage}`;
+    fetchData(apiUrl, setCarouselTvArray);
+  };
 
   useEffect(() => {
     getTrendingMoviesData();
-    // getTrendingAnimeData();
-    // getTrendingDocumentaryData();
-    // getTrendingTvData();
+    getTrendingAnimeData();
+    getTrendingDocumentaryData();
+    getTrendingTvData();
 
     if (userGenre.length > 0) {
       geminiResponse();
@@ -180,16 +185,18 @@ const Home = () => {
             tabIndex={0}
             onClick={() => addToUserGenre(movie)}
           >
-            {/* <img
-              src={`https://image.tmdb.org/t/p/w500/${movie.posterPath}`}
+            <img
+              src={
+                movie.posterpath
+                  ? movie.posterpath
+                  : "https://via.placeholder.com/500x750?text=No+Image"
+              }
               alt={movie.title}
               className="poster-img"
-            /> */}
+              loading="lazy"
+            />
             <div className="poster-card-content">
-              <p
-                className="poster-title"
-                style={{ marginBottom: "20px", fontSize: "19px" }}
-              >
+              <p style={{ marginBottom: "20px", fontSize: "19px" }}>
                 {movie.title}
               </p>
               <button
@@ -213,58 +220,63 @@ const Home = () => {
     </Slider>
   );
 
-  const yourGenreCarousel = () => (
-    <Slider {...sliderSettings} className="slider-wrapper">
-      {sug.map((movie) => (
-        <Link
-          to={`/trending/${movie.title}/${movie.id}`}
-          style={{ textDecoration: "none" }}
-          key={movie.id}
-        >
-          <div
-            className="poster-card"
-            role="button"
-            tabIndex={0}
-            onClick={() => addToUserGenre(movie)}
-          >
-            {/* <img
-              src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-              alt={movie.title}
-              className="poster-img"
-            /> */}
-            <div className="poster-card-content">
-              <p
-                className="poster-title"
-                style={{ marginBottom: "20px", fontSize: "19px" }}
-              >
-                {movie.title}
-              </p>
-              <button
-                style={{ cursor: "pointer" }}
-                type="button"
-                className="colorful-reddish-button"
-              >
-                <FaPlayCircle
-                  style={{
-                    marginRight: "10px",
-                    fontSize: "13px",
-                    transform: "scale(1.2)",
-                  }}
-                />
-                Watch Now
-              </button>
-            </div>
-          </div>
-        </Link>
-      ))}
-    </Slider>
-  );
+  // const yourGenreCarousel = () => (
+  //   <Slider {...sliderSettings} className="slider-wrapper">
+  //     {sug.map((movie) => (
+  //       <Link
+  //         to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
+  //         style={{ textDecoration: "none" }}
+  //         key={movie.id}
+  //       >
+  //         <div
+  //           className="poster-card"
+  //           role="button"
+  //           tabIndex={0}
+  //           onClick={() => addToUserGenre(movie)}
+  //         >
+  //           {/* <img
+  //             src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+  //             alt={movie.title}
+  //             className="poster-img"
+  //           /> */}
+  //           <div className="poster-card-content">
+  //             <p
+  //               className="poster-title"
+  //               style={{ marginBottom: "20px", fontSize: "19px" }}
+  //             >
+  //               {movie.title}
+  //             </p>
+  //             <button
+  //               style={{ cursor: "pointer" }}
+  //               type="button"
+  //               className="colorful-reddish-button"
+  //             >
+  //               <FaPlayCircle
+  //                 style={{
+  //                   marginRight: "10px",
+  //                   fontSize: "13px",
+  //                   transform: "scale(1.2)",
+  //                 }}
+  //               />
+  //               Watch Now
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </Link>
+  //     ))}
+  //   </Slider>
+  // );
 
   return (
     <>
-      <Header />
+      
+      {currentUser && (
+        <div className="welcome-message">
+          <h2>Welcome back, {currentUser.name}!</h2>
+        </div>
+      )}
       <div className="home-page">
-        {sug.length === 0 ? (
+        {/* {sug.length === 0 ? (
           <div className="loader-container">
             <Loader
               height="80"
@@ -280,7 +292,8 @@ const Home = () => {
 
             <div>{yourGenreCarousel()}</div>
           </>
-        )}
+        )} */}
+
         <div className="carousel-section" style={{ marginBottom: "50px" }}>
           <div className="trending-text">
             <h1 className="trending-content-text">Trending Movies</h1>

@@ -1,0 +1,199 @@
+.main{
+     
+}
+
+.watch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0px;
+}
+
+.watch-layout{
+    padding-right: 20px;
+    margin-top: 20px;
+}
+
+
+.watch {
+  border: solid 0.1px rgb(233, 229, 229);
+  border-radius: 10px;
+  padding: 10px 20px;
+    background-color: white;
+  font-family: 'popins', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  box-shadow: 0 2px 2px rgb(198, 197, 197);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.hr-div{
+    display: flex;
+    flex-direction: column;
+}
+
+
+hr{
+    border: solid 0.1px rgb(206, 201, 201);
+    margin: 20px 200px;
+}
+
+.search-title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: solid 0.1px rgb(233, 225, 225);
+    margin:0%  20%;
+    box-shadow: 0 2px 2px rgb(217, 216, 216);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.search-result-title-container{
+    
+
+}
+
+.s{
+    border: solid 0.1px rgb(243, 198, 215);
+}
+
+/* Page Light Background */
+body {
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  font-family: "Inter", sans-serif;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d1d5db, transparent);
+  margin: 30px 0;
+}
+
+/* Wrapper Center */
+.search-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Search Container */
+.search-container {
+  display: flex;
+  width: 100%;
+  max-width: 700px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.search-container:focus-within {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Input */
+.search-input {
+  flex: 1;
+  padding: 16px 20px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #1f2937;
+  background: transparent;
+}
+
+.search-input::focus {
+  color: #9ca3af;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+}
+
+/* Button */
+.search-btn {
+  padding: 0 28px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  color: white;
+  background: linear-gradient(135deg, #0004ff, #ff0000);
+  transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+/* ---------- Loading Skeleton Cards ---------- */
+
+.loading-card {
+  height: 220px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+  margin-bottom: 20px;
+}
+
+/* Shimmer Effect */
+.loading-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(400px);
+  }
+}
+
+/* ---------- Responsive Grid ---------- */
+
+.watch-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .watch-layout {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .watch-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .loading-card {
+    height: 180px;
+  }
+}
+
+.b{
+    display: flex;
+    align-items: center;
+}
+
+.add-icon{
+    font-size: 20px;
+}

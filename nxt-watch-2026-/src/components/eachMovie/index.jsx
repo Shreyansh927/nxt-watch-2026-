@@ -6,8 +6,10 @@ import { Link, useParams } from "react-router-dom";
 import { FaPlay, FaPause } from "react-icons/fa";
 // import { useSpeechSynthesis } from "react-speech-kit";
 import SavedVideosContext from "../../createContext";
+import { BiDislike } from "react-icons/bi";
 import Header from "../header";
-
+import { useQuery } from "@tanstack/react-query";
+import { AiOutlineLike } from "react-icons/ai";
 import "./index.css";
 
 const languageArray = [
@@ -44,56 +46,143 @@ const languageArray = [
 const EachMovie = () => {
   const { title, id } = useParams();
   const { addVideo, removeVideo } = useContext(SavedVideosContext);
-  const { speak, cancel } = useSpeechSynthesis();
+  // const { speak, cancel } = useSpeechSynthesis();
   const [currentLanguage, setCurrentLanguage] = useState(languageArray[2].id);
-  const [movieInfo, setMovieInfo] = useState({});
   const [movieTrailer, setMovieTrailer] = useState({});
   const [tmdbMovieInfo, setTmdbMovieInfo] = useState({});
   const [suggestedMovies, setSuggestedMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+
   const [error, setError] = useState(false);
   const [isVideoAdded, setIsVideoAdded] = useState(false);
   const [summary, setSummary] = useState("");
   const [selectedVoice, setSelectedVoice] = useState("");
   const [paused, setPaused] = useState(false);
+  const [likes, setLikes] = useState("");
+  const [dislikes, setDislikes] = useState("");
   const [fetchSummary, setFetchSummary] = useState(false);
   const [similarMovies, setSimilarMovies] = useState([]);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisliked, setIsDisliked] = useState(false);
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null,
+  );
   const geminiApi = import.meta.env.VITE_GEMINI_API_KEY;
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [toggleAiMode, setToggleAiMode] = useState(false);
 
-  // Fetch OMDB info
-  const getFullMovieInfo = async () => {
+  useEffect(() => {
+    fetchLikesCount();
+    fetchdislikeCount();
+    fetchAllComments();
+  }, []);
+  const timeAgo = (date) => {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+    };
+
+    for (const key in intervals) {
+      const value = Math.floor(seconds / intervals[key]);
+      if (value > 0) {
+        return `${value} ${key}${value > 1 ? "s" : ""} ago`;
+      }
+    }
+
+    return "Just now";
+  };
+  const fetchAllComments = async () => {
     try {
-      const movieApi = `https://www.omdbapi.com/?t=${title}&apikey=14dc6453`;
-      const response = await fetch(movieApi);
-      if (!response.ok) throw new Error("Failed to fetch movie info");
+      const res = await axios.get(
+        `http://localhost:5000/api/get-movie-comments/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
 
-      const jsonData = await response.json();
-      const formattedMovieData = {
-        title: jsonData.Title,
-        poster: jsonData.Poster,
-        year: jsonData.Year,
-        genre: jsonData.Genre,
-        plot: jsonData.Plot,
-        imdbID: jsonData.imdbID,
-        released: jsonData.Released,
-        runtime: jsonData.Runtime,
-        imdbRating: jsonData.imdbRating,
-        boxOffice: jsonData.BoxOffice,
-        country: jsonData.Country,
-        language: jsonData.Language,
-        director: jsonData.Director,
-        actors: jsonData.Actors,
-        rated: jsonData.Rated,
-        writer: jsonData.Writer,
-      };
-      setMovieInfo(formattedMovieData);
-      setIsLoading(false);
+      const f = res.data.result.map((c) => ({
+        id: c.id,
+        public_id: c.public_id,
+        content: c.content,
+        posted_at: c.posted_at,
+        name: c.name,
+      }));
+
+      setComments(f);
     } catch (err) {
-      console.error("Error fetching movie info:", err);
-      setError(true);
-      setIsLoading(false);
+      console.log(err);
     }
   };
+
+  const fetchLikesCount = async () => {
+    const movieId = id;
+    const res = await axios.get(
+      `http://localhost:5000/api/get-movie-likes-count/${movieId}`,
+      {
+        withCredentials: true,
+      },
+    );
+
+    setLikes(res.data.result);
+    if (res.data.isPresent) {
+      setIsLiked(true);
+    } else {
+      setIsLiked(false);
+    }
+  };
+
+  const fetchdislikeCount = async () => {
+    const movieId = id;
+    const res = await axios.get(
+      `http://localhost:5000/api/get-movie-dislikes-count/${movieId}`,
+      {
+        withCredentials: true,
+      },
+    );
+
+    setDislikes(res.data.result);
+    if (res.data.isPresent) {
+      setIsDisliked(true);
+    } else {
+      setIsDisliked(false);
+    }
+  };
+
+  const getFullMovieInfo = async ({ queryKey }) => {
+    const [_key, id] = queryKey;
+    const api = `http://localhost:5000/api/get-movie/${id}`;
+    const response = await axios.get(api);
+    const formatted = {
+      id: response.data.movie.id,
+      title: response.data.movie.title,
+      release_year: response.data.movie.release_year,
+      genre: response.data.movie.genre,
+      runtime: response.data.movie.runtime,
+      imdbId: response.data.movie.imdb_id,
+      imdbRating: response.data.movie.imdb_rating,
+      boxOffice: response.data.movie.box_office,
+      country: response.data.movie.country,
+      description: response.data.movie.description,
+      movielink: response.data.movie.movielink,
+    };
+    return formatted;
+  };
+
+  const {
+    data: movieInfo,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["full-movie-info", id],
+    queryFn: getFullMovieInfo,
+    keepPreviousData: true,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   // Fetch trailer
   const getMovieTrailer = async () => {
@@ -101,6 +190,7 @@ const EachMovie = () => {
       const trailerApi = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=04c35731a5ee918f014970082a0088b1`;
       const response = await fetch(trailerApi);
       const jsonData = await response.json();
+
       setMovieTrailer({ key: jsonData.results?.[0]?.key });
     } catch {
       console.log("error fetching trailer");
@@ -113,16 +203,8 @@ const EachMovie = () => {
       const tmdbApi = `https://api.themoviedb.org/3/search/movie?api_key=04c35731a5ee918f014970082a0088b1&page=1&query=${title}`;
       const response = await fetch(tmdbApi);
       const jsonData = await response.json();
-      const formatted = {
-        id: jsonData.results[0].id,
-        originalTitle: jsonData.results[0].original_title,
-        posterPath: jsonData.results[0].poster_path,
-        backdropPath: jsonData.results[0].backdrop_path,
-        avgVote: jsonData.results[0].vote_average,
-        releaseDate: jsonData.results[0].release_date,
-        title: jsonData.results[0].title,
-      };
-      setTmdbMovieInfo(formatted);
+
+      setTmdbMovieInfo(jsonData.results?.[0] || {});
     } catch {
       console.log("error fetching tmdb info");
     }
@@ -226,7 +308,7 @@ const EachMovie = () => {
       });
       const ans = response.data.candidates[0].content.parts[0].text.replaceAll(
         "**",
-        ""
+        "",
       );
 
       setSummary(ans);
@@ -237,7 +319,6 @@ const EachMovie = () => {
 
   // Effects
   useEffect(() => {
-    getFullMovieInfo();
     getMovieTrailer();
     getTmdbMovieInfo();
     getSuggestedMovies();
@@ -300,12 +381,60 @@ const EachMovie = () => {
     getMovieHighlights();
   };
 
+  const likeMovie = async (movieId) => {
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/api/like/${movieId}`,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+
+      fetchLikesCount();
+    } catch (err) {
+      console.log(err);
+      alert(err);
+    }
+  };
+
+  const dislikeMovie = async (movieId) => {
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/api/dislike/${movieId}`,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+
+      fetchdislikeCount();
+    } catch (err) {
+      console.log(err);
+      alert(err);
+    }
+  };
+
+  const postComment = async (movieId) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/comment",
+        {
+          movieId,
+          content: comment,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      fetchAllComments();
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   return (
     <div className="nav-div">
-      <div className="sticky-navbar">
-        <Header />
-      </div>
-
       <div>
         {isLoading && (
           <div className="loading-container">
@@ -320,16 +449,16 @@ const EachMovie = () => {
           </div>
         )}
 
-        {error && <p>Something went wrong. Please try again.</p>}
+        {isError && <p>Something went wrong. Please try again.</p>}
 
-        {!isLoading && !error && (
+        {!isLoading && !isError && (
           <>
             <div className="bg-container">
               <div className="video-container">
-                {movieInfo.imdbID ? (
+                {movieInfo.imdbId ? (
                   <>
                     <iframe
-                      src={`https://2embed.cc/embed/${movieInfo.imdbID}`}
+                      src={movieInfo.movielink}
                       allowFullScreen
                       frameBorder="0"
                       title="Movie Video"
@@ -353,211 +482,243 @@ const EachMovie = () => {
 
               <div className="movie-info-container">
                 {/* Movie details */}
-
-                <div className="movie-info-1">
-                  <div className="heading-zone">
-                    <h1 className="title" style={{ fontWeight: "bold" }}>
-                      {movieInfo.title}
-                    </h1>
-                  </div>
-
-                  <div className="date-zone">
-                    <h1 className="released" style={{ fontWeight: "bold" }}>
-                      {movieInfo.released}
-                    </h1>
-                  </div>
+                <div className="cl">
+                  <h4 className="ai" onClick={() => setToggleAiMode(false)}>
+                    Movie Info
+                  </h4>
+                  <h4 className="ai" onClick={() => setToggleAiMode(true)}>
+                    AI Mode
+                  </h4>
                 </div>
+                {toggleAiMode ? (
+                  <h1>hello ai</h1>
+                ) : (
+                  <>
+                    <div className="movie-info-1">
+                      <div className="heading-zone">
+                        <p className="released">{movieInfo.title}</p>
+                      </div>
 
-                <div className="movie-info-1">
-                  <div className="heading-zone">
-                    <h1 className="title" style={{ fontWeight: "bold" }}>
-                      Highlights Language
-                    </h1>
-                  </div>
+                      <div className="date-zone">
+                        <p className="released">{movieInfo.release_year}</p>
+                      </div>
+                    </div>
 
-                  {fetchSummary ? (
-                    <>
-                      {summary ? (
-                        <div className="movie-info-1">
-                          <div className="heading-zone">
-                            <h1
-                              className="title"
-                              style={{ fontWeight: "bold" }}
-                            >
-                              Highlights
-                            </h1>
-                          </div>
-                          {paused && (
-                            <div className="loader-container">
-                              <Loader
-                                type="oval"
-                                color="black"
-                                height="20"
-                                width="90"
-                              />
-                            </div>
-                          )}
-                          <div
-                            className="date-zone"
-                            role="button"
-                            tabIndex={0}
-                            onClick={pause}
-                          >
-                            {paused ? (
-                              <>
-                                <div className="play-cancel">
-                                  <FaPause
-                                    onClick={() =>
-                                      window.speechSynthesis.pause()
-                                    }
-                                  />
-                                  <MdCancel onClick={stopSpeaker} />
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <FaPlay onClick={func} />
-                              </>
-                            )}
+                    <div className="movie-info-1">
+                      <div className="heading-zone">
+                        <div className="heading-zone">
+                          <div className="like">
+                            <AiOutlineLike
+                              onClick={() => {
+                                likeMovie(movieInfo.id);
+                                fetchLikesCount();
+                                fetchdislikeCount();
+                              }}
+                              className={isLiked ? "blue" : "white"}
+                            />
+                            <p className="l">{likes}</p>
                           </div>
                         </div>
-                      ) : (
-                        <div className="loader-container">
-                          <Loader
-                            type="ThreeDots"
-                            color="black"
-                            height="50"
-                            width="50"
+                      </div>
+
+                      <div className="date-zone">
+                        <div className="like">
+                          <BiDislike
+                            onClick={() => {
+                              dislikeMovie(movieInfo.id);
+                              fetchdislikeCount();
+                              fetchLikesCount();
+                            }}
+                            className={isDisliked ? "blue" : "white"}
                           />
+                          <p className="l">{dislikes}</p>
                         </div>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      {" "}
-                      <button type="button" onClick={fetching}>
-                        Set
-                      </button>
-                    </>
-                  )}
+                      </div>
+                    </div>
 
-                  <div className="date-zone">
-                    <select
-                      value={currentLanguage}
-                      onChange={(e) => {
-                        const selected = languageArray.find(
-                          (l) => l.id === e.target.value
-                        );
-                        changeLanguage(selected);
-                      }}
-                    >
-                      {languageArray.map((each) => (
-                        <option
-                          onClick={() => changeLanguage(each)}
-                          key={each.id}
-                          value={each.id}
+                    <div className="hr-line-zone">
+                      <hr className="hr" />
+                    </div>
+
+                    <div className="movie-info-2">
+                      <div className="movie-info-2-sec1">
+                        <h1 className="duration">{movieInfo.runtime}</h1>
+                        <h3 className="h3-1">Duration</h3>
+                      </div>
+                      <div className="movie-info-2-sec1">
+                        <h1 className="imdbRating">{movieInfo.imdbRating}</h1>
+                        <h3 className="h3-1">IMDB Rating</h3>
+                      </div>
+                      <div className="movie-info-2-sec1">
+                        <h1 className="runtime">{movieInfo.boxOffice}</h1>
+                        <h3 className="h3-1">Box Office</h3>
+                      </div>
+                    </div>
+
+                    <div className="hr-line-zone">
+                      <hr className="hr" />
+                    </div>
+
+                    <div className="movie-info-2">
+                      <div className="movie-info-2-sec1">
+                        <h1 className="duration" style={{ textAlign: "start" }}>
+                          {movieInfo.country}
+                        </h1>
+                        <h3 className="h3-1">Country</h3>
+                      </div>
+                      <div className="movie-info-2-sec1">
+                        <h1 className="imdbRating">{movieInfo.language}</h1>
+                        <h3 className="h3-1">Language</h3>
+                      </div>
+                    </div>
+
+                    <div className="hr-line-zone">
+                      <hr className="hr" />
+                    </div>
+
+                    <div className="movie-info-2">
+                      <div className="movie-info-2-sec1">
+                        <h1 className="imdbRating">{movieInfo.genre}</h1>
+                        <h3 className="h3-1">Genre</h3>
+                      </div>
+                      <div className="movie-info-2-sec1">
+                        <h1 className="duration">{movieInfo.rated}</h1>
+                        <h3 className="h3-1">Rated</h3>
+                      </div>
+                    </div>
+
+                    <div className="hr-line-zone">
+                      <hr className="hr" />
+                    </div>
+
+                    <div className="movie-info-2">
+                      <div className="movie-info-2-sec1">
+                        <h1 className="imdbRating">{movieInfo.director}</h1>
+                        <h3 className="h3-1">Director</h3>
+                      </div>
+                    </div>
+
+                    <div className="hr-line-zone">
+                      <hr className="hr" />
+                    </div>
+
+                    <div className="movie-info-2">
+                      <div className="movie-info-2-sec1">
+                        <h1 className="duration actors">{movieInfo.actors}</h1>
+                        <h3 className="h3-1">Actors</h3>
+                      </div>
+                    </div>
+
+                    <div className="hr-line-zone">
+                      <hr className="hr" />
+                    </div>
+
+                    <div className="movie-info-2">
+                      <div className="movie-info-2-sec1">
+                        <h1 className="duration actors">{movieInfo.writer}</h1>
+                        <h3 className="h3-1">Writer</h3>
+                      </div>
+                    </div>
+
+                    <div className="hr-line-zone">
+                      <hr className="hr" />
+                    </div>
+
+                    <div className="movie-info-2">
+                      <div className="movie-info-2-sec1">
+                        <h3 className="h3-1">Plot</h3>
+                      </div>
+                    </div>
+
+                    <div className="hr-line-zone">
+                      <hr className="hr" />
+                    </div>
+
+                    <div className="heading-zone">
+                      <h3 className="h3-1">Comment...</h3>
+                      <div className="user-comment">
+                        <p
+                          className={
+                            comment.trim().length ? "cu-animate" : "cu"
+                          }
                         >
-                          {each.lan}
-                        </option>
+                          {currentUser.name.split("")[0]}
+                        </p>
+                        <textarea
+                          name="text-area"
+                          id=""
+                          className="comment-box"
+                          placeholder="comment..."
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        ></textarea>
+                      </div>
+                      <div className="bu">
+                        <button
+                          className="post"
+                          onClick={() => postComment(movieInfo.id)}
+                        >
+                          Post
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="hr-line-zone">
+                      <hr className="hr" />
+                    </div>
+
+                    <div className="movie-info-2">
+                      <div className="movie-info-2-sec1">
+                        <h3 className="h3-1">Others commments</h3>
+                      </div>
+                    </div>
+
+                    <div className="comments-container">
+                      {comments.map((c) => (
+                        <>
+                          <div
+                            key={c.id}
+                            className="comment-card"
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div style={{ display: "flex" }}>
+                              <div className="comment-avatar">
+                                {c.name[0].toUpperCase()}
+                              </div>
+
+                              <div className="comment-body">
+                                <div className="comment-header">
+                                  <span className="comment-user">
+                                    {c.public_id}
+                                  </span>
+                                </div>
+
+                                <p className="comment-text">{c.content}</p>
+                              </div>
+                            </div>
+
+                            <div style={{ marginRight: "20px" }}>
+                              <span className="comment-time">
+                                {new Date(c.posted_at).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  },
+                                )}
+                              </span>
+                            </div>
+                          </div>
+                        </>
                       ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="hr-line-zone">
-                  <hr className="hr" />
-                </div>
-
-                <div className="movie-info-2">
-                  <div className="movie-info-2-sec1">
-                    <h1 className="duration">{movieInfo.runtime}</h1>
-                    <h3 className="h3-1">Duration</h3>
-                  </div>
-                  <div className="movie-info-2-sec1">
-                    <h1 className="imdbRating">{movieInfo.imdbRating}</h1>
-                    <h3 className="h3-1">IMDB Rating</h3>
-                  </div>
-                  <div className="movie-info-2-sec1">
-                    <h1 className="runtime">{movieInfo.boxOffice}</h1>
-                    <h3 className="h3-1">Box Office</h3>
-                  </div>
-                </div>
-
-                <div className="hr-line-zone">
-                  <hr className="hr" />
-                </div>
-
-                <div className="movie-info-2">
-                  <div className="movie-info-2-sec1">
-                    <h1 className="duration" style={{ textAlign: "start" }}>
-                      {movieInfo.country}
-                    </h1>
-                    <h3 className="h3-1">Country</h3>
-                  </div>
-                  <div className="movie-info-2-sec1">
-                    <h1 className="imdbRating">{movieInfo.language}</h1>
-                    <h3 className="h3-1">Language</h3>
-                  </div>
-                </div>
-
-                <div className="hr-line-zone">
-                  <hr className="hr" />
-                </div>
-
-                <div className="movie-info-2">
-                  <div className="movie-info-2-sec1">
-                    <h1 className="imdbRating">{movieInfo.genre}</h1>
-                    <h3 className="h3-1">Genre</h3>
-                  </div>
-                  <div className="movie-info-2-sec1">
-                    <h1 className="duration">{movieInfo.rated}</h1>
-                    <h3 className="h3-1">Rated</h3>
-                  </div>
-                </div>
-
-                <div className="hr-line-zone">
-                  <hr className="hr" />
-                </div>
-
-                <div className="movie-info-2">
-                  <div className="movie-info-2-sec1">
-                    <h1 className="imdbRating">{movieInfo.director}</h1>
-                    <h3 className="h3-1">Director</h3>
-                  </div>
-                </div>
-
-                <div className="hr-line-zone">
-                  <hr className="hr" />
-                </div>
-
-                <div className="movie-info-2">
-                  <div className="movie-info-2-sec1">
-                    <h1 className="duration actors">{movieInfo.actors}</h1>
-                    <h3 className="h3-1">Actors</h3>
-                  </div>
-                </div>
-
-                <div className="hr-line-zone">
-                  <hr className="hr" />
-                </div>
-
-                <div className="movie-info-2">
-                  <div className="movie-info-2-sec1">
-                    <h1 className="duration actors">{movieInfo.writer}</h1>
-                    <h3 className="h3-1">Writer</h3>
-                  </div>
-                </div>
-
-                <div className="hr-line-zone">
-                  <hr className="hr" />
-                </div>
-
-                <div className="movie-info-2">
-                  <div className="movie-info-2-sec1">
-                    <h1 className="duration actors">{movieInfo.plot}</h1>
-                    <h3 className="h3-1">Plot</h3>
-                  </div>
-                </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -593,7 +754,7 @@ const EachMovie = () => {
                 {similarMovies.map((movie) => (
                   <Link
                     key={movie.id}
-                    to={`/trending/${movie.title}/${movie.id}`}
+                    to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
                     style={{ textDecoration: "none", listStyle: "none" }}
                   >
                     <li

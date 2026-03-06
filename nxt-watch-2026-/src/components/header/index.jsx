@@ -1,194 +1,123 @@
-import {withRouter, Link} from 'react-router-dom'
-import {useState, useContext} from 'react'
-import Cookies from 'js-cookie'
-
-import {FaMoon, FaHome, FaSave} from 'react-icons/fa'
-import {IoMdTrendingUp} from 'react-icons/io'
-import {IoMenu} from 'react-icons/io5'
-
-import Popup from 'reactjs-popup'
-import SavedVideosContext from '../../createContext'
-
-import 'reactjs-popup/dist/index.css'
-import './index.css'
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { FaMoon } from "react-icons/fa";
+import { IoMenu } from "react-icons/io5";
+import axios from "axios";
+import SavedVideosContext from "../../createContext";
+import { FaUser } from "react-icons/fa";
+import { MdOutlineVideoLibrary } from "react-icons/md";
+import "./index.css";
 
 const navigationList = [
-  {
-    link: '/home',
-    navText: 'Home',
-  },
-  {
-    link: '/trending',
-    navText: 'Movies',
-  },
-  {
-    link: '/anime',
-    navText: 'Anime',
-  },
-  {
-    link: '/documentary',
-    navText: 'Documentary',
-  },
-  {
-    link: '/tv',
-    navText: 'TV',
-  },
-  {
-    link: '/saved-videos',
-    navText: 'Saved',
-  },
-]
+  { link: "/home", navText: "Home" },
+  { link: "/trending", navText: "Movies" },
+  { link: "/anime", navText: "Anime" },
+  { link: "/documentary", navText: "Documentary" },
+  { link: "/tv", navText: "TV" },
+];
 
-const Header = props => {
-  const [activeNav, setActiveNav] = useState('')
-  const {savedVideosList, darkMode, toggleDarkMode} = useContext(
-    SavedVideosContext,
-  )
+const Header = () => {
+  const { darkMode, toggleDarkMode } = useContext(SavedVideosContext);
+  const [t, setT] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const changeNavLink = newLink => {
-    setActiveNav(newLink)
-  }
-  const logout = () => {
-    const {history} = props
-    Cookies.remove('jwt_token')
-    history.replace('/')
-  }
+  const isLoggedIn = localStorage.getItem("user") !== null;
 
-  const overlayStyles = {
-    backgroundColor: '#ffff',
-  }
+  const logout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:5000/api/logout",
+        {},
+        { withCredentials: true },
+      );
+      localStorage.removeItem("user");
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const toggleLogout = (prev) => {
+    setT((prev) => !prev);
+  };
 
   return (
-    <>
-      <nav className="sm-navbar">
-        <ol>
-          <img
-            src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
-            alt="home-logo"
-            className="home-logo"
-          />
-        </ol>
+    <header className={`navbar ${darkMode ? "dark" : ""}`}>
+      {/* Logo */}
+      <Link to="/home" className="logo">
+        NxtWatch
+      </Link>
 
-        <ol>
-          <Popup
-            modal
-            trigger={
-              <li>
-                <IoMenu className="m" />
-              </li>
-            }
-            overlayStyle={overlayStyles}
+      {/* Desktop Navigation */}
+      <nav className="nav-links">
+        {navigationList.map((nav) => (
+          <Link
+            key={nav.link}
+            to={nav.link}
+            className={`nav-item ${
+              location.pathname === nav.link ? "active" : ""
+            }`}
           >
-            <div className="popup-container">
-              <ol>
-                <Link to="/home" className="no-underline">
-                  <li className="home">
-                    <FaHome className=" m" />
-                    <span className="pop-content">Home</span>
-                  </li>
-                </Link>
-                <Link to="/trending" className="no-underline">
-                  <li className="trending">
-                    <IoMdTrendingUp className=" m" />
-                    <span className="pop-content">Trending</span>
-                  </li>
-                </Link>
-
-                <Link to="/anime" className="no-underline">
-                  <li className="trending">
-                    <IoMdTrendingUp className=" m" />
-                    <span className="pop-content">Anime</span>
-                  </li>
-                </Link>
-                <Link to="/documentary" className="no-underline">
-                  <li className="trending">
-                    <IoMdTrendingUp className=" m" />
-                    <span className="pop-content">Documentry</span>
-                  </li>
-                </Link>
-                <Link to="/tv" className="no-underline">
-                  <li className="trending">
-                    <IoMdTrendingUp className=" m" />
-                    <span className="pop-content">TV</span>
-                  </li>
-                </Link>
-                <Link to="/saved-videos">
-                  <li className="saved-videos">
-                    <FaSave className="m" />
-                    <span className="pop-content">Saved </span>
-                    <p style={{color: 'red'}}>{savedVideosList.length}</p>
-                  </li>
-                </Link>
-              </ol>
-
-              <ol className="nav-sec2">
-                <li>
-                  <FaMoon className="moon" />
-                </li>
-
-                <li>
-                  <button
-                    type="button"
-                    onClick={logout}
-                    className="logout-button"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ol>
-            </div>
-          </Popup>
-        </ol>
+            {nav.navText}
+          </Link>
+        ))}
       </nav>
 
-      <nav className={darkMode ? 'lg-navbar-dark' : 'lg-navbar'}>
-        <ol>
-          <img
-            src={
-              darkMode
-                ? 'https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-dark-theme-img.png'
-                : 'https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png'
-            }
-            alt="home-logo"
-            className="home-logo"
-          />
-        </ol>
-        <ol className="nav-sec2">
-          {navigationList.map(eachNav => (
+      <div className="nav-search">
+        <input
+          type="text"
+          placeholder="Search movies, anime..."
+          className="search-input"
+          onClick={() => navigate("/search-engine")}
+        />
+      </div>
+
+      {/* Right Side */}
+      <div className="nav-right">
+        <FaMoon className="icon-btn" onClick={toggleDarkMode} />
+        <FaUser className="icon-btn" onClick={toggleLogout} />
+        {t && (
+          <>
+            {isLoggedIn ? (
+              <button className="btn-primary" onClick={logout}>
+                Logout
+              </button>
+            ) : (
+              <Link to="/login">
+                <button className="btn-primary">Login</button>
+              </Link>
+            )}
+            {isLoggedIn && (
+              <MdOutlineVideoLibrary
+                onClick={() => navigate("/library")}
+                className="icon-btn"
+              />
+            )}
+          </>
+        )}
+
+        <IoMenu className="menu-icon" onClick={() => setMenuOpen(!menuOpen)} />
+      </div>
+
+      {/* Mobile Drawer */}
+      {menuOpen && (
+        <div className="mobile-menu">
+          {navigationList.map((nav) => (
             <Link
-              key={eachNav.navText}
-              to={eachNav.link}
-              className="no-underline"
+              key={nav.link}
+              to={nav.link}
+              onClick={() => setMenuOpen(false)}
+              className="mobile-item"
             >
-              <li
-                className={
-                  eachNav.link === activeNav ? 'newNavCss' : 'lg-nav-routes'
-                }
-                onClick={() => changeNavLink(eachNav.link)}
-              >
-                {eachNav.navText}
-              </li>
+              {nav.navText}
             </Link>
           ))}
-        </ol>
-        <ol className="nav-sec2">
-          <li>
-            <FaMoon
-              className="moon"
-              style={{fontSize: '27px'}}
-              onClick={() => toggleDarkMode()}
-            />
-          </li>
+        </div>
+      )}
+    </header>
+  );
+};
 
-          <li>
-            <button type="button" onClick={logout} className="logout-button">
-              Logout
-            </button>
-          </li>
-        </ol>
-      </nav>
-    </>
-  )
-}
-
-export default withRouter(Header)
+export default Header;

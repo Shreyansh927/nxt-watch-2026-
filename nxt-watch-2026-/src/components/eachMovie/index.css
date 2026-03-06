@@ -5,8 +5,138 @@
   background-color: white;
 }
 
+.d{
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 20px;
+  margin-top: 20px;
+}
+
+.like{
+  display: flex;
+  align-items: center;
+}
+
+.l{
+  font-size: 25px;
+  font-weight: bold;
+  color: rgb(50, 47, 47);
+  margin-left: 10px;
+}
+
+.user-comment {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cl{
+  display: flex;
+  justify-content: space-around;
+  align-items: center
+}
+
+.ai{
+  background-color: white;
+  height: 40px;
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 4px rgb(195, 192, 192, 0.3);
+}
+
+.ai{
+  background-color: white;
+  height: 40px;
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow:inset 0 1px 8px rgb(195, 192, 192, 0.5);
+  background-image: linear-gradient(45deg, red, blue);
+  color: white;
+}
+
+.cu {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  border-radius: 50%;
+  align-items: center;
+  background-color: #f6b6cd;
+  transition: all 2s;
+}
+
+.cu-animate {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  border-radius: 10%;
+  align-items: center;
+  background-color: #f6b6cd;
+  transition: all 2s;
+  animation: 4s infinite anime;
+  box-shadow: 0 3px 4px rgb(180, 178, 178);
+}
+
+@keyframes anime {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.comment-box {
+  width: 85%;
+  margin: 10px 0;
+  margin-right: 10px;
+  border: 1px solid rgb(205, 203, 203);
+  border-radius: 10px;
+  padding: 10px;
+  outline: none;
+  font-size: 15px;
+}
+
+.bu {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px 10px;
+  border-radius: 10px;
+}
+
+.post {
+  border: 1px solid rgb(213, 210, 210);
+  border-radius: 10px;
+  background-image: linear-gradient(45deg, blue, red);
+  padding: 10px 20px;
+  font-size: 15px;
+  color: white;
+}
+
 .nav-div {
   height: 120vh;
+}
+
+.blue {
+  color: blue;
+  font-size: 20px;
+}
+
+.released{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  color: rgb(50, 49, 49);
+}
+
+.white {
+  background-color: white;
+  font-size: 20px;
 }
 
 .video-container {
@@ -16,8 +146,8 @@
   padding: 60px 60px;
 
   background-size: cover;
-
-  width: 45vw;
+height: ;
+  width: 60vw;
   box-sizing: border-box;
 }
 
@@ -38,7 +168,7 @@ option {
 .video-container iframe {
   width: 100%;
   display: flex;
-
+  
   align-items: center;
   height: 400px;
   border: none;
@@ -47,16 +177,16 @@ option {
 }
 
 .bg-container {
-  height: 75vh;
+  
 
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  font-family: 'Poppins';
+  font-family: "Poppins";
 }
 
 .movie-info-container {
-  width: 50vw;
+  width: 30vw;
   box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.3);
   overflow-y: scroll;
 
@@ -195,7 +325,7 @@ option {
   justify-content: flex-end;
   position: relative;
   transition: all 0.4s ease;
-  font-family: 'Poppins';
+  font-family: "Poppins";
 }
 
 .movie-info-image-overlay {
@@ -303,7 +433,7 @@ option {
   background-size: 300%;
   color: white;
   font-weight: bold;
-  font-family: 'Poppins';
+  font-family: "Poppins";
   animation: flowing-gradient 4s ease infinite;
 }
 
@@ -445,4 +575,54 @@ option {
     height: 20vh;
     padding: 10px 20px;
   }
+}
+.comments-container{
+  margin-top:20px;
+}
+
+.comment-card{
+  display:flex;
+  padding-left:20px;
+  margin-bottom:18px;
+}
+
+.comment-avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#3ea6ff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:white;
+  font-size:18px;
+}
+
+.comment-body{
+  display:flex;
+  flex-direction:column;
+  padding-left:20px;
+}
+
+.comment-header{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.comment-user{
+  font-weight:600;
+  color:#0f0f0f;
+}
+
+.comment-time{
+  color:#606060;
+  font-size:13px;
+}
+
+.comment-text{
+  margin-top:4px;
+  font-size:15px;
+  color:#0f0f0f;
 }

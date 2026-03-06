@@ -1,435 +1,231 @@
-import { Component } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { FaSearchengin } from "react-icons/fa";
 import Loader from "react-loader-spinner";
-import "./index.css";
-
-import Header from "../header/index";
 import axios from "axios";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import "./index.css";
+import Header from "../header/index";
+import addToWatchHistory from "../../../add-to-watch-history";
+import { HiDotsVertical } from "react-icons/hi";
+import fetchWatchLaterFolders from "../../../fetch-all-watch-later-folders";
+import { MdPlaylistAddCircle } from "react-icons/md";
 
-class Anime extends Component {
-  state = {
-    allTrendingMovies: [],
-    fullAnimeSeries: [],
-    animeSearchInput: "",
-    currentPage: 1,
-    toggleSearchBar: false,
-    geminiSearch: "",
-    similarMovies: [],
-    geminiMode: false,
-    geminiApi: import.meta.env.VITE_GEMINI_API_KEY,
+const Tv = () => {
+  const loaderRef = useRef(null);
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [latestWatchLaters, setLatestWatchLaters] = useState([]);
+  const [watchLaterMode, setWatchLaterMode] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState("");
+  const [searchPlaylist, setSearchPlaylist] = useState("");
+
+  const renderWatchLaters = async () => {
+    setWatchLaterMode(true);
+    const res = await fetchWatchLaterFolders();
+    setLatestWatchLaters(res);
   };
 
-  componentDidMount() {
-    this.getAllTrendingMovies();
-  }
+  /* ---------------- Fetch Anime ---------------- */
 
-  extractArrayFromText = (text) => {
-    const match = text.match(/\[([\s\S]*?)\]/);
-    if (match) {
-      try {
-        const parsedArray = JSON.parse(match[0]);
-        this.setState({ similarMovies: parsedArray });
-      } catch (err) {
-        console.error("JSON parse failed", err);
-      }
-    }
+  const fetchAnime = async ({ pageParam = 1 }) => {
+    const res = await axios.get("http://localhost:5000/api/discover-tv", {
+      params: {
+        with_genres: 35,
+        page: pageParam,
+      },
+      withCredentials: true,
+    });
+
+    const formattedMovies = res.data.movies.map((movie) => ({
+      id: movie.id,
+      title: movie.title,
+      releaseYear: movie.release_year,
+      description: movie.description,
+      genre: movie.genre,
+      posterPath: movie.posterpath,
+      backdropPath: movie.backdroppath,
+      originalTitle: movie.title,
+      embedding: movie.vector_embedding,
+    }));
+
+    return formattedMovies;
   };
 
-  // get simlar movies
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ["movies"],
+    queryFn: fetchAnime,
+    getNextPageParam: (lastPage, pages) => {
+      return lastPage.length === 20 ? pages.length + 1 : undefined;
+    },
+  });
 
-  geminiResponse = async () => {
-    const { geminiSearch, geminiApi } = this.state;
-    try {
-      // maintain conversation history properly
-      const response = await axios({
-        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApi}`,
-        method: "post",
-        data: {
-          contents: [
-            {
-              parts: [
-                {
-                  text: `List 10 movies similar to "${geminiSearch}" in a JSON array of objects with keys: originalTitle, overview, id, posterPath, releaseDate, averageVotes, backdropPath, title, Poster.`,
-                },
-              ],
-            },
-          ],
-        },
-      });
-      const ans2 = response.data.candidates[0].content.parts[0].text;
-      console.log(ans2);
-      this.extractArrayFromText(ans2);
-    } catch (err) {
-      console.error("Error fetching Gemini response:", err);
-    }
-  };
+  const animes = data?.pages?.flat() || [];
 
-  getAnimeSeriesData = async () => {
-    const { animeSearchInput, currentPage } = this.state;
-
-    const animeSeriesApi = `https://omdbapi.com/?s=${animeSearchInput}&apikey=14dc6453&page=${currentPage}`;
-    const options = {
-      method: "GET",
-    };
-    try {
-      const response = await fetch(animeSeriesApi, options);
-      const jsonData = await response.json();
-      const formattedSeriesData = jsonData.Search.map((eachSeries) => ({
-        title: eachSeries.Title,
-        year: eachSeries.Year,
-        imdbID: eachSeries.imdbID,
-        poster: eachSeries.Poster,
-      }));
-      this.setState({ fullAnimeSeries: formattedSeriesData });
-    } catch {
-      console.log("error");
-    }
-  };
-
-  renderAnimeSeriesData = () => {
-    const { fullAnimeSeries } = this.state;
-
-    return (
-      <ul className="grid-container">
-        {fullAnimeSeries.map((movie) => (
-          <Link
-            key={movie.imdbID}
-            to={`/trending/${movie.title}/${movie.imdbID}`}
-            style={{ textDecoration: "none", listStyle: "none" }}
-          >
-            <li
-              className="indivisual-movie-container"
-              style={{
-                marginBottom: "20px",
-                listStyle: "none",
-                backgroundImage: `url(${movie.poster})`,
-                backgroundSize: "cover",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
-                backgroundPosition: "center",
-                padding: "30px 0px",
-                borderRadius: "10px",
-                color: "white",
-              }}
-            >
-              <div className="sm-p">
-                <div className="sm-div">
-                  <h4 className="movie-title">{movie.title}</h4>
-                </div>
-
-                <div className="sm-div">
-                  <h4>{movie.imdbID}</h4>
-                </div>
-                <div className="sm-div">
-                  <h4>{movie.year}</h4>
-                </div>
-              </div>
-            </li>
-          </Link>
-        ))}
-      </ul>
+  const filteredPlaylist = useMemo(() => {
+    return latestWatchLaters.filter((f) =>
+      f.folderName.toLowerCase().includes(searchPlaylist.toLowerCase()),
     );
-  };
+  }, [latestWatchLaters, searchPlaylist]);
 
-  getAllTrendingMovies = async () => {
-    const { currentPage } = this.state;
-    try {
-      const url = `https://thingproxy-760k.onrender.com/fetch/https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1&page=${currentPage}&with_genres=10770`;
-      const options = {
-        method: "GET",
-      };
-      const response = await fetch(url, options);
-      const jsonData = await response.json();
-      const formatttedAllTrendingMovies = jsonData.results.map((eachMovie) => ({
-        originalTitle: eachMovie.original_title,
-        overview: eachMovie.overview,
-        id: eachMovie.id,
-        posterPath: eachMovie.poster_path,
-        releaseDate: eachMovie.release_date,
-        averageVotes: eachMovie.vote_average,
-        backdropPath: eachMovie.backdrop_path,
-        title: eachMovie.title,
-      }));
-      this.setState({ allTrendingMovies: formatttedAllTrendingMovies });
-    } catch {
-      this.setState({ allTrendingMovies: ["error"] });
+  /* ---------------- Infinite Scroll ---------------- */
+
+  useEffect(() => {
+    if (!hasNextPage) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        fetchNextPage();
+      }
+    });
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
     }
-  };
 
-  renderAllTrendingMovies = () => {
-    const { allTrendingMovies } = this.state;
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage]);
 
-    if (allTrendingMovies.length === 0) {
+  const renderAnime = () => {
+    if (isLoading) {
       return (
-        <div className="loading-container">
-          <div className="loader-container" data-testid="loader">
-            <Loader
-              type="BallTriangle"
-              color="black"
-              height="100"
-              width="100"
-            />
-          </div>
-        </div>
+        <ul className="grid-container watch-layout">
+          {[...Array(10)].map((_, index) => (
+            <li key={index} className="loading-card" />
+          ))}
+        </ul>
       );
     }
 
-    if (allTrendingMovies[0] === "error") {
+    if (isError) {
       return <p>Error fetching movies</p>;
     }
 
     return (
-      <ul className="grid-container">
-        {allTrendingMovies.map((movie) => (
-          <Link
-            key={movie.id}
-            to={`/trending/${movie.title}/${movie.id}`}
-            style={{ textDecoration: "none", listStyle: "none" }}
-          >
-            <li
-              className="indivisual-movie-container"
-              style={{
-                marginBottom: "20px",
-                listStyle: "none",
-                backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdropPath})`,
-                backgroundSize: "cover",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
-                backgroundPosition: "center",
-                padding: "30px 0px",
-                borderRadius: "10px",
-                color: "white",
-              }}
-            >
-              <div className="sm-p">
-                <div className="sm-div">
-                  <h4 className="movie-title">{movie.originalTitle}</h4>
-                </div>
-
-                <div className="sm-div">
-                  <h4>{movie.averageVotes.toFixed(1)}</h4>
-                </div>
-                <div className="sm-div">
-                  <h4>{movie.releaseDate}</h4>
-                </div>
-              </div>
-            </li>
-          </Link>
-        ))}
-      </ul>
-    );
-  };
-
-  nextPage = () => {
-    this.setState(
-      (prev) => ({ currentPage: prev.currentPage + 1 }),
-      this.getAnimeSeriesData
-    );
-  };
-
-  prevPage = () => {
-    const { currentPage } = this.state;
-    if (currentPage > 1) {
-      this.setState(
-        (prev) => ({ currentPage: prev.currentPage - 1 }),
-        this.getAnimeSeriesData
-      );
-    }
-  };
-
-  updateInput = (event) => {
-    this.setState(
-      { animeSearchInput: event.target.value },
-      this.getAnimeSeriesData
-    );
-  };
-
-  updateGeminiSearch = (event) => {
-    this.setState({ geminiSearch: event.target.value });
-  };
-
-  toggleSearchbar = () => {
-    this.setState((prev) => ({ toggleSearchBar: !prev.toggleSearchBar }));
-  };
-
-  switchGeminiMode = () => {
-    this.setState((prev) => ({ geminiMode: !prev.geminiMode }));
-  };
-
-  render() {
-    const {
-      currentPage,
-      animeSearchInput,
-      toggleSearchBar,
-      geminiSearch,
-      similarMovies,
-      geminiMode,
-    } = this.state;
-    return (
       <>
-        <div>
-          <div>
-            <Header />
-          </div>
-
-          <button onClick={this.switchGeminiMode}>Gemini mode</button>
-
-          {!geminiMode ? (
-            <div className="pages-section">
-              <div className="searchBox-container">
-                <FaSearchengin
-                  className="searchIcon"
-                  style={{ fontSize: "20px" }}
-                />
-                <input
-                  type="text"
-                  placeholder="Search any series of your choice..."
-                  value={animeSearchInput}
-                  onChange={this.updateInput}
-                  className="searchBox"
-                />
-              </div>
+        {watchLaterMode && (
+          <ul className="watch-later-folders">
+            <h3 className="h3">Save too...</h3>
+            <input
+              type="search"
+              value={searchPlaylist}
+              onChange={(e) => setSearchPlaylist(e.target.value)}
+              placeholder="search playlist..."
+              className="search-playlist"
+            />
+            <div className="ff">
+              {filteredPlaylist.map((m) => (
+                <div className="folder-card" key={m.folderId}>
+                  <div>
+                    <h3>{m.folderName}</h3>
+                    <p className="status">{m.folderStatus}</p>
+                  </div>
+                  <MdPlaylistAddCircle
+                    className="icon-save"
+                    style={{ fontSize: "30px" }}
+                  />
+                </div>
+              ))}
             </div>
-          ) : (
-            <div className="pages-section">
-              <div className="searchBox-container">
-                <FaSearchengin
-                  className="searchIcon"
-                  style={{ fontSize: "20px" }}
-                />
-                <input
-                  type="text"
-                  placeholder="Search any series of your choice..."
-                  value={geminiSearch}
-                  onChange={this.updateGeminiSearch}
-                  className="searchBox"
-                />
-                <button onClick={this.geminiResponse}>find</button>
-              </div>
-            </div>
-          )}
+          </ul>
+        )}
 
-          <div
-            className="pages-section-sm"
-            style={{ textAlign: "center", margin: "20px" }}
-          >
-            {toggleSearchBar && (
-              <div
+        <ul
+          className="grid-container"
+          onClick={() => setWatchLaterMode(false)}
+          style={{ paddingRight: "30px" }}
+        >
+          {animes.map((movie) => (
+            <Link
+              key={movie.id}
+              to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
+              style={{ textDecoration: "none", listStyle: "none" }}
+              onClick={() => addToWatchHistory(movie.id, movie.embedding)}
+            >
+              <li
+                className="indivisual-movie-container"
                 style={{
+                  marginBottom: "20px",
+                  listStyle: "none",
+                  backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdropPath})`,
+                  backgroundSize: "cover",
                   display: "flex",
-                  justifyContent: "center",
-                  margin: "20px",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  backgroundPosition: "center",
+                  padding: "30px 0px",
+                  borderRadius: "10px",
+                  color: "white",
                 }}
               >
-                <div className="searchBox-container">
-                  <FaSearchengin
-                    className="searchIcon"
-                    style={{ fontSize: "20px" }}
+                <div
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    height: "100%",
+                  }}
+                >
+                  <HiDotsVertical
+                    onClick={() => {
+                      setActiveMenu((prev) =>
+                        prev === movie.id ? null : movie.id,
+                      );
+                    }}
+                    className="dots"
                   />
-                  <input
-                    type="text"
-                    placeHolder="Search series..."
-                    value={animeSearchInput}
-                    onChange={this.updateInput}
-                    className="searchBox"
-                  />
-                  <button type="button" onClick={this.geminiResponse}>
-                    find
-                  </button>
                 </div>
-              </div>
-            )}
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <button
-                onClick={this.toggleSearchbar}
-                className="toggle-button"
-                type="button"
-              >
-                Search
-              </button>
-            </div>
-          </div>
-
-          {animeSearchInput.trim() || geminiMode !== "" ? (
-            <div>{this.renderAnimeSeriesData()}</div>
-          ) : (
-            <div>{this.renderAllTrendingMovies()}</div>
-          )}
-
-          {geminiMode ? (
-            <div className="search-suggestion-container">
-              <ul className="suggested-movies-container">
-                {similarMovies.map((movie) => (
-                  <Link
-                    key={movie.id}
-                    to={`/trending/${movie.title}/${movie.id}`}
-                    style={{ textDecoration: "none", listStyle: "none" }}
+                {activeMenu === movie.id && (
+                  <div
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
                   >
-                    <li
-                      className="indivisual-movie-container"
-                      style={{
-                        marginBottom: "20px",
-                        listStyle: "none",
-                        backgroundImage: `url(
-                          'https://m.media-amazon.com/images/M/MV5BMmFiZGZjMmEtMTA0Ni00MzA2LTljMTYtZGI2MGJmZWYzZTQ2XkEyXkFqcGc@._V1_SX300.jpg',
-                        )`,
-                        backgroundSize: "cover",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                        backgroundPosition: "center",
-                        padding: "10px 0px",
-                        borderRadius: "10px",
-                        color: "white",
-                      }}
-                    >
-                      <div className="sm-p">
-                        <div className="sm-div">
-                          <h4 className="movie-title">{movie.originalTitle}</h4>
-                        </div>
+                    {!watchLaterMode && (
+                      <button onClick={renderWatchLaters}>Watch Later</button>
+                    )}
+                  </div>
+                )}
+                <div className="sm-p">
+                  <div className="sm-div">
+                    <h4 className="movie-title">{movie.title}</h4>
+                  </div>
+                  <div className="sm-div">
+                    <h4>{movie.releaseYear}</h4>
+                  </div>
+                </div>
+              </li>
+            </Link>
+          ))}
+        </ul>
 
-                        <div className="sm-div">
-                          <h4>{movie.averageVotes.toFixed(1)}</h4>
-                        </div>
-                        <div className="sm-div">
-                          <h4>{movie.releaseDate}</h4>
-                        </div>
-                      </div>
-                    </li>
-                  </Link>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            this.renderAllTrendingMovies()
-          )}
+        <div ref={loaderRef} style={{ height: "40px" }} />
 
-          <div className="pages-section3">
-            <button
-              className="cool-button"
-              type="button"
-              onClick={this.prevPage}
-            >
-              Prev
-            </button>
-            <div className="page-num">
-              <h1 className="currentPage-num">{currentPage}</h1>
-            </div>
-            <button
-              className="cool-button"
-              type="button"
-              onClick={this.nextPage}
-            >
-              Next
-            </button>
+        {isFetchingNextPage && (
+          <div className="loading-container">
+            <Loader type="ThreeDots" color="black" height="50" width="50" />
           </div>
-        </div>
+        )}
       </>
     );
-  }
-}
+  };
 
-export default Anime;
+  return (
+    <>
+      <div>{renderAnime()}</div>
+    </>
+  );
+};
+
+export default Tv;

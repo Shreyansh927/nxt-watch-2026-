@@ -1,0 +1,192 @@
+.search-title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: solid 0.1px rgb(233, 225, 225);
+    margin:0%  20%;
+    box-shadow: 0 2px 2px rgb(217, 216, 216);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.search-result-title-container{
+    
+
+}
+
+.s{
+    border: solid 0.1px rgb(243, 198, 215);
+}
+
+/* Page Light Background */
+body {
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  font-family: "Inter", sans-serif;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d1d5db, transparent);
+  margin: 30px 0;
+}
+
+/* Wrapper Center */
+.search-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Search Container */
+.search-container {
+  display: flex;
+  width: 100%;
+  max-width: 700px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  justify-content: center;
+}
+
+.search-container:focus-within {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Input */
+.search-input {
+  flex: 1;
+  padding: 16px 20px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #1f2937;
+  background: transparent;
+}
+
+.search-input::focus {
+  color: #9ca3af;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+}
+
+/* Button */
+.search-btn {
+  padding: 0 28px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  color: white;
+  background: linear-gradient(135deg, #0004ff, #ff0000);
+  transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+/* ---------- Loading Skeleton Cards ---------- */
+
+.loading-card {
+  height: 220px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+  margin-bottom: 20px;
+}
+
+/* Shimmer Effect */
+.loading-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(400px);
+  }
+}
+
+/* ---------- Responsive Grid ---------- */
+
+.watch-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .watch-layout {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .watch-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .loading-card {
+    height: 180px;
+  }
+}
+
+.suggestions-container{
+  width: 750px;
+  border-radius: 20px;
+  box-shadow: 0 5px 5px black;
+  max-height: 300px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+position: absolute;
+transform: translate(-50%, 0%);
+  background-color: white;
+  padding: 10px;
+  z-index: 100;
+  cursor: pointer;
+ 
+}
+
+.each-suggestion{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* transition: all 0.5s; */
+  border-radius: 10px;
+  padding: 0 10px;
+}
+
+.each-suggestion:hover{
+  background-color: #eceef5;
+}
+.s{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+ 
+ justify-content: center;
+}

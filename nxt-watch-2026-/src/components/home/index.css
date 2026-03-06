@@ -1,8 +1,7 @@
 .home-page {
   padding: 20px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
-
 .loader-container {
   display: flex;
   justify-content: center;
