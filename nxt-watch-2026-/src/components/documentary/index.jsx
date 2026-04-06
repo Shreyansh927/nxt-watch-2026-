@@ -95,137 +95,261 @@ const Documentary = () => {
   const renderAnime = () => {
     if (isLoading) {
       return (
-        <ul className="grid-container watch-layout">
-          {[...Array(10)].map((_, index) => (
-            <li key={index} className="loading-card" />
-          ))}
-        </ul>
+        <div className="documentary-page">
+          <section className="documentary-hero">
+            <div className="hero-content">
+              <h1 className="hero-title">Documentary Collection</h1>
+              <p className="hero-subtitle">
+                Explore fascinating documentaries and educational films
+              </p>
+            </div>
+          </section>
+
+          <section className="movies-section">
+            <div className="section-header">
+              <h2 className="section-title">
+                Loading amazing documentaries...
+              </h2>
+            </div>
+            <ul className="grid-container">
+              {[...Array(12)].map((_, index) => (
+                <li key={index} className="loading-card">
+                  <div className="loading-skeleton"></div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
       );
     }
 
     if (isError) {
-      return <p>Error fetching movies</p>;
+      return (
+        <div className="documentary-page">
+          <section className="documentary-hero">
+            <div className="hero-content">
+              <h1 className="hero-title">Documentary Collection</h1>
+              <p className="hero-subtitle">
+                Explore fascinating documentaries and educational films
+              </p>
+            </div>
+          </section>
+
+          <section className="error-section">
+            <div className="error-content">
+              <div className="error-icon">
+                <svg
+                  width="80"
+                  height="80"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
+                </svg>
+              </div>
+              <h2 className="error-title">Oops! Something went wrong</h2>
+              <p className="error-description">
+                We couldn't load the documentaries. Please try again later.
+              </p>
+            </div>
+          </section>
+        </div>
+      );
     }
 
     return (
-      <>
-        {watchLaterMode && (
-          <ul className="watch-later-folders">
-            <h3 className="h3">Save too...</h3>
-            <input
-              type="search"
-              value={searchPlaylist}
-              onChange={(e) => setSearchPlaylist(e.target.value)}
-              placeholder="search playlist..."
-              className="search-playlist"
-            />
-            <div className="ff">
-              {filteredPlaylist.map((m) => (
-                <div className="folder-card" key={m.folderId}>
-                  <div>
-                    <h3>{m.folderName}</h3>
-                    <p className="status">{m.folderStatus}</p>
-                  </div>
-                  <MdPlaylistAddCircle
-                    className="icon-save"
-                    style={{ fontSize: "30px" }}
-                  />
-                </div>
-              ))}
+      <div className="documentary-page">
+        {/* Hero Section */}
+        <section className="documentary-hero">
+          <div className="hero-content">
+            <h1 className="hero-title">Documentary Collection</h1>
+            <p className="hero-subtitle">
+              Explore fascinating documentaries and educational films
+            </p>
+            <div className="hero-stats">
+              <span className="stat-item">
+                <strong>{animes.length}</strong> documentaries loaded
+              </span>
             </div>
-          </ul>
-        )}
-
-        <ul
-          className="grid-container"
-          onClick={() => setWatchLaterMode(false)}
-          style={{ paddingRight: "30px" }}
-        >
-          {animes.map((movie) => (
-            <Link
-              key={movie.id}
-              to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
-              style={{ textDecoration: "none", listStyle: "none" }}
-              onClick={() => addToWatchHistory(movie.id, movie.embedding)}
-            >
-              <li
-                className="indivisual-movie-container"
-                style={{
-                  marginBottom: "20px",
-                  listStyle: "none",
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdropPath})`,
-                  backgroundSize: "cover",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                  backgroundPosition: "center",
-                  padding: "30px 0px",
-                  borderRadius: "10px",
-                  color: "white",
-                }}
+          </div>
+          <div className="hero-visual">
+            <div className="hero-icon">
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <div
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    height: "100%",
-                  }}
-                >
-                  <HiDotsVertical
-                    onClick={() => {
-                      setActiveMenu((prev) =>
-                        prev === movie.id ? null : movie.id,
-                      );
-                    }}
-                    className="dots"
-                  />
+                <path
+                  d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M12 6L12.72 8.28L15 9L12.72 9.72L12 12L11.28 9.72L9 9L11.28 8.28L12 6Z"
+                  fill="currentColor"
+                  opacity="0.6"
+                />
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        {/* Watch Later Overlay */}
+        {watchLaterMode && (
+          <div className="watch-later-overlay">
+            <div className="overlay-content">
+              <div className="overlay-header">
+                <h3 className="overlay-title">Save to Watch Later</h3>
+                <p className="overlay-subtitle">
+                  Choose a folder for this documentary
+                </p>
+              </div>
+
+              <div className="search-container">
+                <input
+                  type="search"
+                  value={searchPlaylist}
+                  onChange={(e) => setSearchPlaylist(e.target.value)}
+                  placeholder="Search playlists..."
+                  className="search-input"
+                />
+                <div className="search-icon">
+                  <FaSearchengin />
                 </div>
-                {activeMenu === movie.id && (
-                  <div
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                  >
-                    {!watchLaterMode && (
-                      <button onClick={renderWatchLaters}>Watch Later</button>
-                    )}
+              </div>
+
+              <div className="folders-list">
+                {filteredPlaylist.length === 0 ? (
+                  <div className="empty-folders">
+                    <p>No folders found</p>
                   </div>
+                ) : (
+                  filteredPlaylist.map((folder) => (
+                    <div className="folder-item" key={folder.folderId}>
+                      <div className="folder-info">
+                        <h4 className="folder-name">{folder.folderName}</h4>
+                        <span className="folder-status">
+                          {folder.folderStatus}
+                        </span>
+                      </div>
+                      <button
+                        className="add-to-folder-btn"
+                        onClick={() =>
+                          addToWatchHistory(folder.id, folder.embedding)
+                        }
+                      >
+                        <MdPlaylistAddCircle />
+                        <span>Add</span>
+                      </button>
+                    </div>
+                  ))
                 )}
-                <div className="sm-p">
-                  <div className="sm-div">
-                    <h4 className="movie-title">{movie.title}</h4>
-                  </div>
-                  <div className="sm-div">
-                    <h4>{movie.releaseYear}</h4>
-                  </div>
-                </div>
-              </li>
-            </Link>
-          ))}
-        </ul>
+              </div>
 
-        <div ref={loaderRef} style={{ height: "40px" }} />
-
-        {isFetchingNextPage && (
-          <div className="loading-container">
-            <Loader type="ThreeDots" color="black" height="50" width="50" />
+              <button
+                className="close-overlay-btn"
+                onClick={() => setWatchLaterMode(false)}
+              >
+                <span>Close</span>
+              </button>
+            </div>
           </div>
         )}
-      </>
+
+        {/* Movies Section */}
+        <section className="movies-section">
+          <div className="section-header">
+            <h2 className="section-title">Popular Documentaries</h2>
+            <p className="section-description">
+              Click on any documentary to start watching
+            </p>
+          </div>
+
+          <ul className="grid-container">
+            {animes.map((movie) => (
+              <li
+                key={movie.id}
+                className="movie-card"
+                style={{
+                  backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdropPath})`,
+                }}
+                onClick={() => {
+                  setWatchLaterMode(false);
+                  addToWatchHistory(movie.id, movie.embedding);
+                }}
+              >
+                <Link
+                  to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
+                  className="movie-link"
+                >
+                  <div className="movie-overlay">
+                    <button
+                      className="menu-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setActiveMenu((prev) =>
+                          prev === movie.id ? null : movie.id,
+                        );
+                      }}
+                      aria-label="More options"
+                    >
+                      <HiDotsVertical />
+                    </button>
+
+                    {activeMenu === movie.id && (
+                      <div className="menu-dropdown">
+                        <button
+                          className="menu-item"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            renderWatchLaters();
+                          }}
+                        >
+                          <MdPlaylistAddCircle />
+                          <span>Watch Later</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="movie-info">
+                    <div className="movie-details">
+                      <h3 className="movie-title">{movie.title}</h3>
+                      <div className="movie-meta">
+                        <span className="release-year">
+                          {movie.releaseYear}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {/* Infinite Scroll Loader */}
+          <div ref={loaderRef} className="scroll-trigger" />
+
+          {isFetchingNextPage && (
+            <div className="loading-more">
+              <Loader type="ThreeDots" color="#10b981" height="40" width="40" />
+              <p>Loading more documentaries...</p>
+            </div>
+          )}
+        </section>
+      </div>
     );
   };
 
-  return (
-    <>
-      <div>{renderAnime()}</div>
-    </>
-  );
+  return <div className="documentary-container">{renderAnime()}</div>;
 };
 
 export default Documentary;

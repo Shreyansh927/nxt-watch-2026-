@@ -10,6 +10,8 @@ export const movieDb = new Pool({
 });
 
 export const initMovieDB = async () => {
+  await movieDb.query(`CREATE EXTENSION IF NOT EXISTS vector;`); //pgvector extension for AI search
+
   await movieDb.query(`CREATE TABLE IF NOT EXISTS movies (
   id SERIAL PRIMARY KEY,
   user_id INTEGER,
@@ -38,6 +40,7 @@ export const initMovieDB = async () => {
   name TEXT,
   email TEXT,
   password_hash TEXT,
+  profile_image TEXT,
   created_at TIMESTAMP DEFAULT NOW() );`);
 
   await movieDb.query(`CREATE TABLE IF NOT EXISTS watch_history(
@@ -105,4 +108,34 @@ export const initMovieDB = async () => {
     FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
     content TEXT
     )`);
+
+  await movieDb.query(`CREATE TABLE IF NOT EXISTS chat_sessions (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    movie_id INTEGER,
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT NOW()
+    )`);
+
+  await movieDb.query(`CREATE TABLE IF NOT EXISTS messages (
+    id SERIAL PRIMARY KEY,
+    session_id INTEGER,
+    FOREIGN KEY (session_id) REFERENCES chat_sessions(id) ON DELETE CASCADE,
+    query TEXT NOT NULL,
+    response TEXT,
+    query_embedding vector(3072),
+    created_at TIMESTAMP DEFAULT NOW()
+    )`);
+
+  await movieDb.query(`
+    CREATE TABLE IF NOT EXISTS nxtwatch_refresh_tokens (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      token TEXT UNIQUE NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      expires_at TIMESTAMP DEFAULT NOW() + INTERVAL '7 days',
+      revoked BOOLEAN DEFAULT FALSE
+    );
+  `);
 };

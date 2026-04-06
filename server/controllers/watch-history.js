@@ -2,26 +2,40 @@ import { movieDb } from "../config/movieDB.js";
 
 export const addToWatchHistory = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
     const { movieId, movieEmbedding } = req.body;
     if (!movieId) {
       return res.status(400).json({ error: "Missing movieId" });
     }
+
+    const movie = await movieDb.query(
+      `SELECT vector_embedding FROM movies WHERE id=$1`,
+      [movieId],
+    );
+
+    const movieEmbeddingFromDB = movie.rows[0]?.vector_embedding;
+
+    if (!movieEmbeddingFromDB) {
+      return res.status(404).json({ error: "Movie embedding not found" });
+    }
+
     const result = await movieDb.query(
       `SELECT * FROM watch_history WHERE user_id =$1 AND movie_id = $2`,
       [userId, movieId],
     );
-    if (result) {
+    if (result.rows.length > 0) {
       await movieDb.query(
         `UPDATE watch_history SET watched_at=  NOW() WHERE movie_id = $1 AND user_id = $2`,
         [movieId, userId],
       );
-    } 
+    }
 
     await movieDb.query(
-      `INSERT INTO watch_history (user_id, movie_id, vector_embedding) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
-      [userId, movieId, movieEmbedding],
+      `INSERT INTO watch_history (user_id, movie_id, vector_embedding) VALUES ($1, $2, $3::vector) ON CONFLICT DO NOTHING`,
+      [userId, movieId, movieEmbeddingFromDB],
     );
+
+    console.log("Incoming embedding:", movieEmbeddingFromDB);
 
     return res
       .status(200)

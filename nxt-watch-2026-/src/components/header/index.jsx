@@ -7,6 +7,7 @@ import SavedVideosContext from "../../createContext";
 import { FaUser } from "react-icons/fa";
 import { MdOutlineVideoLibrary } from "react-icons/md";
 import "./index.css";
+import api from "../../api-request-interceptor.jsx";
 
 const navigationList = [
   { link: "/home", navText: "Home" },
@@ -77,8 +78,8 @@ const Header = () => {
       {/* Right Side */}
       <div className="nav-right">
         <FaMoon className="icon-btn" onClick={toggleDarkMode} />
-        <FaUser className="icon-btn" onClick={toggleLogout} />
-        {t && (
+        <FaUser className="icon-btn"  onClick={toggleLogout} />
+        {api && (
           <>
             {isLoggedIn ? (
               <button className="btn-primary" onClick={logout}>

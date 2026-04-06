@@ -1,14 +1,20 @@
+import { useEffect, useState } from "react";
+import api from "../../api-request-interceptor.jsx";
 import { Navigate } from "react-router-dom";
-import Cookie from "js-cookie";
 
 const ProtectedRoute = ({ children }) => {
-  const token = Cookie.get("token");
+  const [isAuth, setIsAuth] = useState(null);
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+  useEffect(() => {
+    api
+      .get("/protected") 
+      .then(() => setIsAuth(true))
+      .catch(() => setIsAuth(false));
+  }, []);
 
-  return children;
+  if (isAuth === null) return <p>Loading...</p>;
+
+  return isAuth ? children : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;

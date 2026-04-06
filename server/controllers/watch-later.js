@@ -73,7 +73,7 @@ export const getAllWatchLaterFolderFiles = async (req, res) => {
     const userId = req.user.id;
     const { folderId } = req.params;
     const { rows } = await movieDb.query(
-      `SELECT movies.title as title ,movies.id as id, movies.release_year as releaseYear, movies.backdropPath as backdropPath, watch_later_files.added_at as addedAt  FROM watch_later_files INNER JOIN movies ON watch_later_files.movie_id = movies.id WHERE watch_later_files.user_id = $1 AND watch_later_files.folder_id = $2`,
+      `SELECT movies.title as "title" ,movies.id as id, movies.release_year as "releaseYear", movies.backdroppath as "backdropPath", watch_later_files.added_at as "addedAt"  FROM watch_later_files INNER JOIN movies ON watch_later_files.movie_id = movies.id WHERE watch_later_files.user_id = $1 AND watch_later_files.folder_id = $2`,
       [userId, folderId],
     );
 

@@ -19,8 +19,26 @@ export const signUp = async (req, res) => {
     );
 
     const user = existingUser.rows[0];
-    if (user) {
-      return res.status(400).json({ error: "user already exists" });
+
+    const emailCheck = await movieDb.query(
+      `SELECT * FROM users WHERE email = $1`,
+      [email],
+    );
+    if (emailCheck.rows.length > 0) {
+      return res
+        .status(400)
+        .json({ error: "User with this email already exists" });
+    }
+
+    const publicIdCheck = await movieDb.query(
+      `SELECT * FROM users WHERE public_id = $1`,
+      [public_id],
+    );
+
+    if (publicIdCheck.rows.length > 0) {
+      return res
+        .status(400)
+        .json({ error: "User with this public ID already exists" });
     }
 
     if (password.length < 6) {
@@ -67,6 +85,12 @@ export const login = async (req, res) => {
       return res.status(400).json({ error: "Invalid password" });
     }
 
+    const randomRefreshToken = Math.random().toString(36).substring(2);
+    console.log(randomRefreshToken);
+
+    const randomAccessToken = Math.random().toString(36).substring(2);
+    console.log(randomAccessToken);
+
     const payload = {
       id: user.id,
       name: user.name,
@@ -78,16 +102,28 @@ export const login = async (req, res) => {
       expiresIn: "5h",
     });
 
-    res.cookie("token", jwtToken, {
+    res.cookie("access-token", jwtToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 60 * 15 * 1000,
+      path: "/",
+    });
+
+    res.cookie("refresh-token", randomRefreshToken, {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
       maxAge: 360000000,
+      path: "/",
     });
 
-    return res
-      .status(200)
-      .json({ message: "Login successful", token: jwtToken, user: payload });
+    await movieDb.query(
+      `INSERT INTO nxtwatch_refresh_tokens (user_id, token) VALUES ($1, $2)`,
+      [user.id, randomRefreshToken],
+    );
+
+    return res.status(200).json({ message: "Login successful", user: payload });
   } catch (err) {
     console.log(err);
   }
@@ -95,11 +131,22 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("token", {
+    res.clearCookie("access-token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     });
+
+    res.clearCookie("refresh-token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    await movieDb.query(
+      `DELETE FROM nxtwatch_refresh_tokens WHERE token = $1 `,
+      [req.cookies["refresh-token"]],
+    );
 
     return res.status(200).json({ message: "Logout successful" });
   } catch (err) {
@@ -109,16 +156,10 @@ export const logout = async (req, res) => {
 
 export const getCurrentUser = async (req, res) => {
   try {
-    const token = req.cookies.token;
+    const userId = req.user.id;
 
-    if (!token) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.id;
     const userResult = await movieDb.query(
-      `SELECT id, name, email, public_id FROM users WHERE id = $1`,
+      `SELECT id, name, email, public_id, profile_image FROM users WHERE id = $1`,
       [userId],
     );
 
