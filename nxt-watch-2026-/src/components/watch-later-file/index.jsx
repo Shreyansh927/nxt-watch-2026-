@@ -18,7 +18,7 @@ const WatchLaterFiles = () => {
   const fetchAllFolderFiles = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/get-watch-later-folder-files/${folderId}`,
+        `${process.env.SERVER_URL}/api/get-watch-later-folder-files/${folderId}`,
         {
           withCredentials: true,
         },

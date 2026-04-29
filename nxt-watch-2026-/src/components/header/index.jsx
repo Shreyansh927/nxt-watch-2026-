@@ -29,7 +29,7 @@ const Header = () => {
   const logout = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/logout",
+        `${process.env.SERVER_URL}/api/logout`,
         {},
         { withCredentials: true },
       );

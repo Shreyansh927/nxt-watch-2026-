@@ -106,7 +106,7 @@ const EachMovie = () => {
     const movieId = id;
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/fetch-ai-movie-chats/${movieId}`,
+        `${process.env.SERVER_URL}/api/fetch-ai-movie-chats/${movieId}`,
         { withCredentials: true },
       );
       console.log(res.data.result);
@@ -124,7 +124,7 @@ const EachMovie = () => {
   const fetchAllComments = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/get-movie-comments/${id}`,
+        `${process.env.SERVER_URL}/api/get-movie-comments/${id}`,
         {
           withCredentials: true,
         },
@@ -147,7 +147,7 @@ const EachMovie = () => {
   const fetchLikesCount = async () => {
     const movieId = id;
     const res = await axios.get(
-      `http://localhost:5000/api/get-movie-likes-count/${movieId}`,
+      `${process.env.SERVER_URL}/api/get-movie-likes-count/${movieId}`,
       {
         withCredentials: true,
       },
@@ -164,7 +164,7 @@ const EachMovie = () => {
   const fetchdislikeCount = async () => {
     const movieId = id;
     const res = await axios.get(
-      `http://localhost:5000/api/get-movie-dislikes-count/${movieId}`,
+      `${process.env.SERVER_URL}/api/get-movie-dislikes-count/${movieId}`,
       {
         withCredentials: true,
       },
@@ -180,7 +180,7 @@ const EachMovie = () => {
 
   const getFullMovieInfo = async ({ queryKey }) => {
     const [_key, id] = queryKey;
-    const api = `http://localhost:5000/api/get-movie/${id}`;
+    const api = `${process.env.SERVER_URL}/api/get-movie/${id}`;
     const response = await axios.get(api);
     const formatted = {
       id: response.data.movie.id,
@@ -409,7 +409,7 @@ const EachMovie = () => {
   const likeMovie = async (movieId) => {
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/like/${movieId}`,
+        `${process.env.SERVER_URL}/api/like/${movieId}`,
         {},
         {
           withCredentials: true,
@@ -426,7 +426,7 @@ const EachMovie = () => {
   const dislikeMovie = async (movieId) => {
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/dislike/${movieId}`,
+        `${process.env.SERVER_URL}/api/dislike/${movieId}`,
         {},
         {
           withCredentials: true,
@@ -443,7 +443,7 @@ const EachMovie = () => {
   const postComment = async (movieId) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/comment",
+        `${process.env.SERVER_URL}/api/comment`,
         {
           movieId,
           content: comment,
@@ -462,7 +462,7 @@ const EachMovie = () => {
     setAiLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/ai-movie-query",
+        `${process.env.SERVER_URL}/api/ai-movie-query`,
         {
           question,
           movieId: movieInfo.id,

@@ -39,7 +39,7 @@ const AnalyticsDashboard = () => {
 
   const renderPlaylistAnalytics = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/analytics", {
+      const res = await axios.get(`${process.env.SERVER_URL}/api/analytics`, {
         withCredentials: true,
       });
 

@@ -33,7 +33,7 @@ const Trending = () => {
   /* ---------------- Fetch Anime ---------------- */
 
   const fetchAnime = async ({ pageParam = 1 }) => {
-    const res = await axios.get("http://localhost:5000/api/discover-movies", {
+    const res = await axios.get(`${process.env.SERVER_URL}/api/discover-movies`, {
       params: {
         with_genres: 35,
         page: pageParam,
@@ -82,7 +82,7 @@ const Trending = () => {
   const addToWatchLaterFolder = async (folderId, FolderName) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/add-to-watch-later-folder",
+        `${process.env.SERVER_URL}/api/add-to-watch-later-folder`,
         {
           folderId,
           movieId,

@@ -47,7 +47,7 @@ const WatchLater = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/add-to-watch-later",
+        `${process.env.SERVER_URL}/api/add-to-watch-later`,
         { folderName, folderStatus },
         { withCredentials: true }
       );
@@ -65,7 +65,7 @@ const WatchLater = () => {
 
     try {
       await axios.put(
-        "http://localhost:5000/api/update-watch-later-folder",
+        `${process.env.SERVER_URL}/api/update-watch-later-folder`,
         {
           folderId: folderToUpdate.folderId,
           folderName: folderToUpdate.folderName,

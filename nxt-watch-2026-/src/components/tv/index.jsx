@@ -29,7 +29,7 @@ const Tv = () => {
   /* ---------------- Fetch Anime ---------------- */
 
   const fetchAnime = async ({ pageParam = 1 }) => {
-    const res = await axios.get("http://localhost:5000/api/discover-tv", {
+    const res = await axios.get(`${process.env.SERVER_URL}/api/discover-tv`, {
       params: {
         with_genres: 35,
         page: pageParam,

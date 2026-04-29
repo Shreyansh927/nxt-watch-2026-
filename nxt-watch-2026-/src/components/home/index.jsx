@@ -101,22 +101,22 @@ const Home = () => {
   };
 
   const getTrendingMoviesData = () => {
-    const apiUrl = `http://localhost:5000/api/discover-movies?page=${randomPage}`;
+    const apiUrl = `${process.env.SERVER_URL}/api/discover-movies?page=${randomPage}`;
     fetchData(apiUrl, setCarouselMoviesArray);
   };
 
   const getTrendingDocumentaryData = () => {
-    const apiUrl = `http://localhost:5000/api/discover-documetries`;
+    const apiUrl = `${process.env.SERVER_URL}/api/discover-documetries`;
     fetchData(apiUrl, setCarouselDocumentaryArray);
   };
 
   const getTrendingAnimeData = () => {
-    const apiUrl = `http://localhost:5000/api/discover-animes?page=${randomPage}`;
+    const apiUrl = `${process.env.SERVER_URL}/api/discover-animes?page=${randomPage}`;
     fetchData(apiUrl, setCarouselAnimeArray);
   };
 
   const getTrendingTvData = () => {
-    const apiUrl = `http://localhost:5000/api/discover-tv?page=${randomPage}`;
+    const apiUrl = `${process.env.SERVER_URL}/api/discover-tv?page=${randomPage}`;
     fetchData(apiUrl, setCarouselTvArray);
   };
 
@@ -142,7 +142,7 @@ const Home = () => {
   const getRecommendedMovies = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/recommendations", {
+      const res = await axios.get(`${process.env.SERVER_URL}/api/recommendations`, {
         withCredentials: true,
       });
       const formatted = res.data.results.map((movie) => ({

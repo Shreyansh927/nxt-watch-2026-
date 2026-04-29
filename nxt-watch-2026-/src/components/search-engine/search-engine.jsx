@@ -81,7 +81,7 @@ const SearchEngine = () => {
       return;
     }
     try {
-      const res = await axios.get("http://localhost:5000/api/vector-search", {
+      const res = await axios.get(`${process.env.SERVER_URL}/api/vector-search`, {
         params: {
           query: input,
         },

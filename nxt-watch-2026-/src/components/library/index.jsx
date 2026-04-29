@@ -25,7 +25,7 @@ const Library = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/me", {
+      const res = await axios.get(`${process.env.SERVER_URL}/api/me`, {
         withCredentials: true,
       });
       console.log(res.data.user);
@@ -42,7 +42,7 @@ const Library = () => {
   const fetchContinue = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/continue-watching",
+        `${process.env.SERVER_URL}/api/continue-watching`,
         {
           withCredentials: true,
         },
@@ -66,7 +66,7 @@ const Library = () => {
       }
 
       const res = await axios.put(
-        "http://localhost:5000/api/update-profile",
+        `${process.env.SERVER_URL}/api/update-profile`,
         formData,
         {
           withCredentials: true,
