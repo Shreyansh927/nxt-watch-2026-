@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../header";
 import "./watch-history.css";
 import { HiDotsVertical } from "react-icons/hi";
+import AiAssistant from "../natural-language-command-system-ai";
 
 const WatchHistory = () => {
   const [watchHistory, setWatchHistory] = useState([]);
@@ -84,6 +85,7 @@ const WatchHistory = () => {
 
   return (
     <div>
+      <AiAssistant />
       <div className="delete-section">
         <input
           type="search"

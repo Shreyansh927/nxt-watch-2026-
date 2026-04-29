@@ -138,4 +138,16 @@ export const initMovieDB = async () => {
       revoked BOOLEAN DEFAULT FALSE
     );
   `);
+
+  await movieDb.query(`
+    CREATE TABLE IF NOT EXISTS user_ai_assistant_memory(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    query TEXT NOT NULL,
+    response TEXT,
+    embedding vector(3072),
+    created_at TIMESTAMP DEFAULT NOW()
+    );
+    `);
 };

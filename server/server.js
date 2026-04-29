@@ -20,6 +20,8 @@ import aiMovieRouter from "./routes/ai-movie-chat-session-routes.js";
 import helmet from "helmet";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
 import profileRouter from "./routes/profile-router.js";
+import aiAssistantRouter from "./routes/ai-assistant-route.js";
+import graphRouter from "./routes/graph-routes.js";
 
 const app = express();
 app.use(helmet());
@@ -52,7 +54,11 @@ app.use("/api", authMiddleware, commentRouter);
 
 app.use("/api", authMiddleware, aiMovieRouter);
 
-app.use('/api',authMiddleware, profileRouter)
+app.use("/api", authMiddleware, profileRouter);
+
+app.use("/api", aiAssistantRouter);
+
+app.use("/api",authMiddleware, graphRouter);
 
 app.use(errorHandler);
 

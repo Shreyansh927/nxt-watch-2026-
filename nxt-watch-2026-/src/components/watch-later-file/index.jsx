@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./index.css";
+import Recharts from "../recharts/index.jsx";
 
 const WatchLaterFiles = () => {
   const { folderId } = useParams();
@@ -67,6 +68,11 @@ const WatchLaterFiles = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Recharts Analytics Section */}
+      <section className="recharts-wrapper">
+        <Recharts />
       </section>
 
       {/* Movies Grid Section */}

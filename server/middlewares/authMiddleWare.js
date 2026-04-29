@@ -81,7 +81,7 @@ export const accessTokenGeneration = async (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      maxAge: 1 * 60 * 1000,
+      maxAge: 45 * 60 * 1000,
       path: "/",
     });
 

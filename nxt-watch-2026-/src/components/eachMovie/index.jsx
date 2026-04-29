@@ -11,6 +11,7 @@ import Header from "../header";
 import { useQuery } from "@tanstack/react-query";
 import { AiOutlineLike } from "react-icons/ai";
 import "./index.css";
+import AiAssistant from "../natural-language-command-system-ai";
 
 const languageArray = [
   {
@@ -117,7 +118,7 @@ const EachMovie = () => {
 
       fetchPreviousAiChats();
     } catch (err) {
-      alert(err);
+      // alert(err);
     }
   };
   const fetchAllComments = async () => {
@@ -418,7 +419,7 @@ const EachMovie = () => {
       fetchLikesCount();
     } catch (err) {
       console.log(err);
-      alert(err);
+      // alert(err);
     }
   };
 
@@ -435,7 +436,7 @@ const EachMovie = () => {
       fetchdislikeCount();
     } catch (err) {
       console.log(err);
-      alert(err);
+      // alert(err);
     }
   };
 
@@ -453,7 +454,7 @@ const EachMovie = () => {
       );
       fetchAllComments();
     } catch (err) {
-      alert(err);
+      // alert(err);
     }
   };
 
@@ -470,16 +471,21 @@ const EachMovie = () => {
           withCredentials: true,
         },
       );
-      alert(res.data.response);
     } catch (err) {
-      alert(err);
+      // alert(err);
     } finally {
       setAiLoading(false);
     }
   };
 
+  const copyLink = (link) => {
+    navigator.clipboard.writeText(link);
+    alert("Movie link copied to clipboard!");
+  };
+
   return (
     <div className="each-movie-page">
+      <AiAssistant />
       {isLoading && (
         <div className="loader-shell">
           <Loader
@@ -515,7 +521,19 @@ const EachMovie = () => {
               <span>{movieInfo.country}</span>
             </div>
           </header>
+          {!window.location.pathname.includes("/share/") && (
+            <button
+              onClick={() => {
+                copyLink(`${window.location.origin}/share/${movieInfo.id}`);
+              }}
+            >
+              🔗 Copy Link
+            </button>
+          )}
 
+          {/* <a href={`${window.location.origin}/search/${movieInfo.title}/${movieInfo.id}`}>
+            Share Movie Link
+          </a> */}
           <main className="movie-layout">
             <section className="movie-player-panel">
               <div className="movie-player-card">
@@ -718,7 +736,6 @@ const EachMovie = () => {
               )}
             </aside>
           </main>
-
           <section className="comments-section">
             <div className="comments-header">
               <h2>Recent Comments</h2>

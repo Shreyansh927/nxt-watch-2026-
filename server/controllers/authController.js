@@ -1,4 +1,4 @@
-import { use } from "react";
+
 import { movieDb } from "../config/movieDB.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -104,16 +104,16 @@ export const login = async (req, res) => {
 
     res.cookie("access-token", jwtToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 60 * 15 * 1000,
       path: "/",
     });
 
     res.cookie("refresh-token", randomRefreshToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 360000000,
       path: "/",
     });
@@ -133,14 +133,14 @@ export const logout = async (req, res) => {
   try {
     res.clearCookie("access-token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: "true",
+      sameSite: "none",
     });
 
     res.clearCookie("refresh-token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: "true",
+      sameSite: "none",
     });
 
     await movieDb.query(

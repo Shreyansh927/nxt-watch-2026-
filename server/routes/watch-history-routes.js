@@ -6,6 +6,7 @@ import {
   getWatchHistory,
 } from "../controllers/watch-history.js";
 import { authMiddleware } from "../middlewares/authMiddleWare.js";
+import { continueWatching } from "../controllers/graphs.js";
 
 const watchHistoryRouter = express.Router();
 
@@ -22,5 +23,6 @@ watchHistoryRouter.delete(
   authMiddleware,
   deleteFullWatchHistory,
 );
+watchHistoryRouter.get("/continue-watching", continueWatching);
 
 export default watchHistoryRouter;

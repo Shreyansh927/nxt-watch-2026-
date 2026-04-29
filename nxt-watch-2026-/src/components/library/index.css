@@ -365,3 +365,68 @@ x, 1fr));
 .add-icon{
     font-size: 20px;
 }
+
+.analytics-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  width: 280px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.analytics-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.analytics-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.view-more {
+  font-size: 14px;
+  color: #666;
+}
+
+.analytics-stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #888;
+}
+
+.analytics-graph {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 60px;
+}
+
+.bar {
+  width: 8px;
+  background: linear-gradient(180deg, #6366f1, #8b5cf6);
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.analytics-card:hover .bar {
+  opacity: 0.8;
+}

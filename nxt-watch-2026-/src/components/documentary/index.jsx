@@ -10,6 +10,7 @@ import addToWatchHistory from "../../../add-to-watch-history";
 import { HiDotsVertical } from "react-icons/hi";
 import fetchWatchLaterFolders from "../../../fetch-all-watch-later-folders";
 import { MdPlaylistAddCircle } from "react-icons/md";
+import AiAssistant from "../natural-language-command-system-ai";
 
 const Documentary = () => {
   const loaderRef = useRef(null);
@@ -96,6 +97,7 @@ const Documentary = () => {
     if (isLoading) {
       return (
         <div className="documentary-page">
+          
           <section className="documentary-hero">
             <div className="hero-content">
               <h1 className="hero-title">Documentary Collection</h1>
@@ -134,7 +136,7 @@ const Documentary = () => {
               </p>
             </div>
           </section>
-
+          
           <section className="error-section">
             <div className="error-content">
               <div className="error-icon">
@@ -164,6 +166,7 @@ const Documentary = () => {
 
     return (
       <div className="documentary-page">
+        <AiAssistant />
         {/* Hero Section */}
         <section className="documentary-hero">
           <div className="hero-content">

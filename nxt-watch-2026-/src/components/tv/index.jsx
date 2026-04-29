@@ -10,6 +10,7 @@ import addToWatchHistory from "../../../add-to-watch-history";
 import { HiDotsVertical } from "react-icons/hi";
 import fetchWatchLaterFolders from "../../../fetch-all-watch-later-folders";
 import { MdPlaylistAddCircle } from "react-icons/md";
+import AiAssistant from "../natural-language-command-system-ai";
 
 const Tv = () => {
   const loaderRef = useRef(null);
@@ -163,6 +164,7 @@ const Tv = () => {
     return (
       <div className="tv-page">
         {/* Hero Section */}
+        <AiAssistant />
         <section className="tv-hero">
           <div className="hero-content">
             <h1 className="hero-title">TV Shows</h1>

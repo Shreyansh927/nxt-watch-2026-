@@ -13,6 +13,19 @@
     sans-serif;
 }
 
+.recharts-wrapper {
+  margin: 2rem auto;
+  max-width: 100%;
+  padding: 0;
+  width: 100%;
+}
+
+.recharts-wrapper .recharts-container {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 /* Hero Section */
 .wl-hero {
   padding: 4rem 2rem 3rem;

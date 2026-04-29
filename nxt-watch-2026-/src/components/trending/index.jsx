@@ -10,6 +10,7 @@ import addToWatchHistory from "../../../add-to-watch-history";
 import { HiDotsVertical } from "react-icons/hi";
 import fetchWatchLaterFolders from "../../../fetch-all-watch-later-folders";
 import { MdPlaylistAddCircle } from "react-icons/md";
+import AiAssistant from "../natural-language-command-system-ai";
 
 const Trending = () => {
   const loaderRef = useRef(null);
@@ -148,6 +149,7 @@ const Trending = () => {
     if (isError) {
       return (
         <div className="trending-page">
+          <AiAssistant />
           <section className="trending-hero">
             <div className="hero-content">
               <h1 className="hero-title">Trending Movies</h1>

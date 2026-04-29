@@ -13,9 +13,10 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <QueryClientProvider client={queryClient}>
+    
     <BrowserRouter>
       <ToastContainer position="top-right" autoClose={3000} />
-      <Header />
+      
       <App />
     </BrowserRouter>
   </QueryClientProvider>,

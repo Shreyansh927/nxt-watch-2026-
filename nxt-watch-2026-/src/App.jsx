@@ -20,110 +20,133 @@ import SearchEngine from "./components/search-engine/search-engine";
 import WatchLater from "./components/watch-later";
 import WatchLaterFile from "./components/watch-later-file";
 import WatchLaterFiles from "./components/watch-later-file";
+import Recharts from "./components/recharts/index.jsx";
+import AnalyticsDashboard from "./components/recharts/index.jsx";
+import Header from "./components/header/index.jsx";
 
 class App extends Component {
   render() {
     return (
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+      <>
+        <Header />
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/trending"
-          element={
-            <ProtectedRoute>
-              <Trending />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/trending"
+            element={
+              <ProtectedRoute>
+                <Trending />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/anime"
-          element={
-            <ProtectedRoute>
-              <Anime />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <AnalyticsDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/documentary"
-          element={
-            <ProtectedRoute>
-              <Documentry />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/anime"
+            element={
+              <ProtectedRoute>
+                <Anime />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/tv"
-          element={
-            <ProtectedRoute>
-              <Tv />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/documentary"
+            element={
+              <ProtectedRoute>
+                <Documentry />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/trending/:title/:id"
-          element={
-            <ProtectedRoute>
+          <Route
+            path="/tv"
+            element={
+              <ProtectedRoute>
+                <Tv />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/trending/:title/:id"
+            element={
+              <ProtectedRoute>
+                <EachMovie />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/share/:id"
+            element={
+              // <ProtectedRoute>
               <EachMovie />
-            </ProtectedRoute>
-          }
-        />
+              // </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/search-engine"
-          element={
-            <ProtectedRoute>
-              <SearchEngine />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/library"
-          element={
-            <ProtectedRoute>
-              <Library />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/search-engine"
+            element={
+              <ProtectedRoute>
+                <SearchEngine />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/library"
+            element={
+              <ProtectedRoute>
+                <Library />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/library/watch-history"
-          element={
-            <ProtectedRoute>
-              <WatchHistory />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/library/watch-later"
-          element={
-            <ProtectedRoute>
-              <WatchLater />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/folders/:folderId"
-          element={
-            <ProtectedRoute>
-              <WatchLaterFiles />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+          <Route
+            path="/library/watch-history"
+            element={
+              <ProtectedRoute>
+                <WatchHistory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/library/watch-later"
+            element={
+              <ProtectedRoute>
+                <WatchLater />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/folders/:folderId"
+            element={
+              <ProtectedRoute>
+                <WatchLaterFiles />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </>
     );
   }
 }

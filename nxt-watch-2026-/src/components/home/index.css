@@ -154,8 +154,10 @@
   border-radius: 34px;
   overflow: hidden;
   min-height: 540px;
-  background: linear-gradient(180deg, #2563eb 0%, #3b82f6 100%);
-  box-shadow: 0 35px 90px rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 35px 90px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(18px);
 }
 
 .hero-feature-image {
@@ -165,6 +167,25 @@
   background-position: center;
   display: flex;
   align-items: flex-end;
+  position: relative;
+}
+
+.hero-feature-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255, 255, 255, 0.22),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(59, 130, 246, 0.18),
+      transparent 24%
+    );
+  pointer-events: none;
 }
 
 .hero-feature-copy {
@@ -172,10 +193,12 @@
   padding: 40px;
   background: linear-gradient(
     180deg,
-    rgba(15, 23, 42, 0) 0%,
-    rgba(15, 23, 42, 0.94) 100%
+    rgba(15, 23, 42, 0.04) 0%,
+    rgba(15, 23, 42, 0.55) 90%
   );
-  color: white;
+  color: #f8fafc;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-feature-copy span {
@@ -184,7 +207,7 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: #c7d2fe;
+  color: #a5b4fc;
 }
 
 .hero-feature-copy h2 {
@@ -193,11 +216,30 @@
   line-height: 1.05;
 }
 
+.editor-choice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 18px 0;
+  gap: 20px;
+}
+
+.editor-choice-header h2 {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
+}
+
+.editor-choice-play-button span {
+  display: inline-flex;
+  align-items: center;
+}
+
 .hero-feature-copy p {
   margin: 18px 0 0;
   max-width: 520px;
-  color: #dbeafe;
-  line-height: 1.75;
+  color: rgba(248, 250, 252, 0.92);
+  line-height: 1.9;
 }
 
 .hero-feature-meta {
@@ -213,6 +255,119 @@
   border-radius: 999px;
   font-size: 0.95rem;
   color: #f8fafc;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.editor-choice-play-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.18);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(14px);
+}
+
+.editor-choice-play-button::before {
+  content: "";
+  position: absolute;
+  top: -18%;
+  left: -38%;
+  width: 176%;
+  height: 176%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.45),
+    transparent 30%
+  );
+  opacity: 0.32;
+  transform: scale(0.7);
+  transition:
+    transform 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.editor-choice-play-button:hover::before {
+  transform: scale(1);
+  opacity: 0.55;
+}
+
+.editor-choice-play-button:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.24);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.play-icon {
+  font-size: 1.55rem;
+  animation:
+    pulse-play 1.8s infinite ease-in-out,
+    float-play 3.4s infinite ease-in-out;
+  filter: drop-shadow(0 2px 12px rgba(255, 255, 255, 0.35));
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes pulse-play {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 0.92;
+  }
+}
+
+@keyframes float-play {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .home-intro-cards {

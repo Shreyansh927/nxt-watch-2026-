@@ -10,6 +10,7 @@ import addToWatchHistory from "../../../add-to-watch-history";
 import { HiDotsVertical } from "react-icons/hi";
 import fetchWatchLaterFolders from "../../../fetch-all-watch-later-folders";
 import { MdPlaylistAddCircle } from "react-icons/md";
+import AiAssistant from "../natural-language-command-system-ai";
 
 const Anime = () => {
   const loaderRef = useRef(null);
@@ -104,7 +105,7 @@ const Anime = () => {
               </p>
             </div>
           </section>
-
+          
           <section className="movies-section">
             <div className="section-header">
               <h2 className="section-title">Loading amazing anime...</h2>
@@ -124,6 +125,7 @@ const Anime = () => {
     if (isError) {
       return (
         <div className="anime-page">
+          
           <section className="anime-hero">
             <div className="hero-content">
               <h1 className="hero-title">Anime Collection</h1>
@@ -162,6 +164,7 @@ const Anime = () => {
 
     return (
       <div className="anime-page">
+        <AiAssistant />
         {/* Hero Section */}
         <section className="anime-hero">
           <div className="hero-content">

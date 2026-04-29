@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { MdArrowOutward } from "react-icons/md";
 import { MdOutlineSearch } from "react-icons/md";
 import Loader from "react-loader-spinner";
+import AiAssistant from "../natural-language-command-system-ai";
 
 const SearchEngine = () => {
   const [input, setInput] = useState("");
@@ -189,6 +190,7 @@ const SearchEngine = () => {
 
     return (
       <>
+        <AiAssistant />
         <div className="results-header">
           <h2 className="results-title">Search Results</h2>
           <p className="results-count">

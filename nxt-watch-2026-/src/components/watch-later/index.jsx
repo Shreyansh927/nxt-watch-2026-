@@ -5,6 +5,7 @@ import { MdOutlineFolder } from "react-icons/md";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import fetchWatchLaterFolders from "../../../fetch-all-watch-later-folders";
+import AiAssistant from "../natural-language-command-system-ai";
 
 const allFolderStatus = [
   { id: 1, status: "PUBLIC" },
@@ -81,6 +82,7 @@ const WatchLater = () => {
 
   return (
     <div className="wl-container">
+      <AiAssistant />
       <div className="wl-hero">
         <div className="wl-hero__content">
           <h2>My Watch Later Collections</h2>

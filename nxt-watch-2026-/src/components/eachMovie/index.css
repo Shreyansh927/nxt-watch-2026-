@@ -43,8 +43,9 @@
 
 .hero-title {
   font-size: clamp(2rem, 3vw, 3rem);
+  margin-top: 40px;
   line-height: 1.05;
-  margin: 16px 0 12px;
+  
   max-width: 720px;
 }
 

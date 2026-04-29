@@ -14,6 +14,7 @@ import { FaFireAlt } from "react-icons/fa";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./index.css";
+import AiAssistant from "../natural-language-command-system-ai";
 
 const Home = () => {
   const [carouselMoviesArray, setCarouselMoviesArray] = useState([]);
@@ -179,7 +180,7 @@ const Home = () => {
     dots: true,
 
     speed: 800,
-    slidesToShow: 6,
+    slidesToShow: 5,
     slidesToScroll: 2,
     infinite: true,
     autoplaySpeed: 3500,
@@ -312,6 +313,7 @@ const Home = () => {
         </div>
       ) : (
         <div className="home-page">
+          <AiAssistant />
           <section className="home-hero-section">
             <div className="hero-copy">
               <span className="eyebrow-badge">Featured for you</span>
@@ -354,7 +356,16 @@ const Home = () => {
               >
                 <div className="hero-feature-copy">
                   <span>Editor's Choice</span>
-                  <h2>{recommendedMovies[2]?.title || "Current Premiere"}</h2>
+                  <div className="editor-choice-header">
+                    <h2>{recommendedMovies[2]?.title || "Current Premiere"}</h2>
+                    <Link
+                      to={`/trending/${encodeURIComponent(recommendedMovies[2]?.title || "")}/${recommendedMovies[2]?.id || ""}`}
+                      className="editor-choice-play-button"
+                    >
+                      <FaPlayCircle className="play-icon" />
+                      
+                    </Link>
+                  </div>
                   <p>
                     {recommendedMovies[2]?.description ||
                       "Experience the top-rated release handpicked for you."}
