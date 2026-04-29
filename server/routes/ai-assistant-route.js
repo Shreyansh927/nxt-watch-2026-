@@ -1,5 +1,5 @@
 import { getAiHelp } from "../controllers/ai-assistant.js";
-import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { authMiddleware } from "../middlewares/authMiddleWare.js";
 
 import express from "express";
 
