@@ -1,13 +1,13 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: `${process.env.SERVER_URL}/api`,
+  baseURL: `${import.meta.env.VITE_SERVER_URL}/api`,
   withCredentials: true,
 });
 
 // NEW INSTANCE (NO INTERCEPTOR)
 const refreshApi = axios.create({
-  baseURL: `${process.env.SERVER_URL}/api`,
+  baseURL: `${import.meta.env.VITE_SERVER_URL}/api`,
   withCredentials: true,
 });
 

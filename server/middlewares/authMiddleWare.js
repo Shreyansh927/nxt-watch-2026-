@@ -79,8 +79,8 @@ export const accessTokenGeneration = async (req, res) => {
 
     res.cookie("access-token", newAccessToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 45 * 60 * 1000,
       path: "/",
     });

@@ -29,7 +29,7 @@ const Header = () => {
   const logout = async () => {
     try {
       await axios.post(
-        `${process.env.SERVER_URL}/api/logout`,
+        `${import.meta.env.VITE_SERVER_URL}/api/logout`,
         {},
         { withCredentials: true },
       );

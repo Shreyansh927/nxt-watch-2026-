@@ -53,7 +53,7 @@ const Signup = () => {
     setIsLoading(true);
     try {
       const res = await axios.post(
-        `${process.env.SERVER_URL}/api/signup`,
+        `${import.meta.env.VITE_SERVER_URL}/api/signup`,
         {
           name,
           email,

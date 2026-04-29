@@ -20,7 +20,7 @@ const WatchHistory = () => {
   const fetchWatchHistory = async () => {
     try {
       const res = await axios.get(
-        `${process.env.SERVER_URL}/api/get-watch-history`,
+        `${import.meta.env.VITE_SERVER_URL}/api/get-watch-history`,
         {
           withCredentials: true,
         },
@@ -55,7 +55,7 @@ const WatchHistory = () => {
   const deleteMovie = async (movieId) => {
     try {
       const res = await axios.delete(
-        `${process.env.SERVER_URL}/api/delete-movie/${movieId}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/delete-movie/${movieId}`,
         {
           withCredentials: true,
         },
@@ -70,7 +70,7 @@ const WatchHistory = () => {
   const deleteAll = async () => {
     try {
       const res = await axios.delete(
-        `${process.env.SERVER_URL}/api/delete-full-watch-history`,
+        `${import.meta.env.VITE_SERVER_URL}/api/delete-full-watch-history`,
         {
           withCredentials: true,
         },

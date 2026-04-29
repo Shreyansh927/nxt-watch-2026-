@@ -81,12 +81,15 @@ const SearchEngine = () => {
       return;
     }
     try {
-      const res = await axios.get(`${process.env.SERVER_URL}/api/vector-search`, {
-        params: {
-          query: input,
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/vector-search`,
+        {
+          params: {
+            query: input,
+          },
+          withCredentials: true,
         },
-        withCredentials: true,
-      });
+      );
 
       const formattedMovies = res.data.results.map((movie) => ({
         id: movie.id,

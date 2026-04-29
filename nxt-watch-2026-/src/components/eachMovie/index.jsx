@@ -106,7 +106,7 @@ const EachMovie = () => {
     const movieId = id;
     try {
       const res = await axios.get(
-        `${process.env.SERVER_URL}/api/fetch-ai-movie-chats/${movieId}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/fetch-ai-movie-chats/${movieId}`,
         { withCredentials: true },
       );
       console.log(res.data.result);
@@ -124,7 +124,7 @@ const EachMovie = () => {
   const fetchAllComments = async () => {
     try {
       const res = await axios.get(
-        `${process.env.SERVER_URL}/api/get-movie-comments/${id}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/get-movie-comments/${id}`,
         {
           withCredentials: true,
         },
@@ -147,7 +147,7 @@ const EachMovie = () => {
   const fetchLikesCount = async () => {
     const movieId = id;
     const res = await axios.get(
-      `${process.env.SERVER_URL}/api/get-movie-likes-count/${movieId}`,
+      `${import.meta.env.VITE_SERVER_URL}/api/get-movie-likes-count/${movieId}`,
       {
         withCredentials: true,
       },
@@ -164,7 +164,7 @@ const EachMovie = () => {
   const fetchdislikeCount = async () => {
     const movieId = id;
     const res = await axios.get(
-      `${process.env.SERVER_URL}/api/get-movie-dislikes-count/${movieId}`,
+      `${import.meta.env.VITE_SERVER_URL}/api/get-movie-dislikes-count/${movieId}`,
       {
         withCredentials: true,
       },
@@ -180,7 +180,7 @@ const EachMovie = () => {
 
   const getFullMovieInfo = async ({ queryKey }) => {
     const [_key, id] = queryKey;
-    const api = `${process.env.SERVER_URL}/api/get-movie/${id}`;
+    const api = `${import.meta.env.VITE_SERVER_URL}/api/get-movie/${id}`;
     const response = await axios.get(api);
     const formatted = {
       id: response.data.movie.id,

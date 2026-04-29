@@ -34,7 +34,7 @@ const AiAssistant = () => {
 
     try {
       const res = await axios.post(
-        `${process.env.SERVER_URL}/api/command`,
+        `${import.meta.env.VITE_SERVER_URL}/api/command`,
         { command: input },
         { withCredentials: true },
       );

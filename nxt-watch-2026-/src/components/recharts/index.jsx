@@ -39,9 +39,12 @@ const AnalyticsDashboard = () => {
 
   const renderPlaylistAnalytics = async () => {
     try {
-      const res = await axios.get(`${process.env.SERVER_URL}/api/analytics`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/analytics`,
+        {
+          withCredentials: true,
+        },
+      );
 
       setWatchLaterFolderData(res.data.results);
     } catch (err) {

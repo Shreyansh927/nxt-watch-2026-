@@ -29,13 +29,16 @@ const Tv = () => {
   /* ---------------- Fetch Anime ---------------- */
 
   const fetchAnime = async ({ pageParam = 1 }) => {
-    const res = await axios.get(`${process.env.SERVER_URL}/api/discover-tv`, {
-      params: {
-        with_genres: 35,
-        page: pageParam,
+    const res = await axios.get(
+      `${import.meta.env.VITE_SERVER_URL}/api/discover-tv`,
+      {
+        params: {
+          with_genres: 35,
+          page: pageParam,
+        },
+        withCredentials: true,
       },
-      withCredentials: true,
-    });
+    );
 
     const formattedMovies = res.data.movies.map((movie) => ({
       id: movie.id,

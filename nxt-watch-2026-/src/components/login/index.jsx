@@ -12,7 +12,7 @@ const Login = () => {
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const res = await axios.get(`${process.env.SERVER_URL}/api/me`, {
+      const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/me`, {
         withCredentials: true,
       });
       if (res.data.user) {
@@ -25,7 +25,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        `${process.env.SERVER_URL}/api/login`,
+        `${import.meta.env.VITE_SERVER_URL}/api/login`,
         {
           email,
           password,

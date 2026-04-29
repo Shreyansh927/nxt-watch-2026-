@@ -47,7 +47,7 @@ const WatchLater = () => {
 
     try {
       const res = await axios.post(
-        `${process.env.SERVER_URL}/api/add-to-watch-later`,
+        `${import.meta.env.VITE_SERVER_URL}/api/add-to-watch-later`,
         { folderName, folderStatus },
         { withCredentials: true }
       );
@@ -65,13 +65,13 @@ const WatchLater = () => {
 
     try {
       await axios.put(
-        `${process.env.SERVER_URL}/api/update-watch-later-folder`,
+        `${import.meta.env.VITE_SERVER_URL}/api/update-watch-later-folder`,
         {
           folderId: folderToUpdate.folderId,
           folderName: folderToUpdate.folderName,
           folderStatus: folderToUpdate.folderStatus,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       setShowEditModal(false);
       fetchLatestFolders();
