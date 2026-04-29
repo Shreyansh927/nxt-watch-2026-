@@ -28,7 +28,7 @@ const WatchLater = () => {
 
   const fetchLatestFolders = async () => {
     try {
-      const res = await fetchWatchLaterFolders();
+      const res = await fetchWatchLaterFolders(`${import.meta.env.VITE_SERVER_URL}/api/get-watch-later-folders`);
       setWatchLaterFolders(res.r || []);
     } catch (err) {
       console.error("Error fetching folders:", err);
