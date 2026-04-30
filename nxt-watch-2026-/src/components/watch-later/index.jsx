@@ -30,6 +30,7 @@ const WatchLater = () => {
     try {
       const res = await fetchWatchLaterFolders(
         `${import.meta.env.VITE_SERVER_URL}/api/get-watch-later-folders`,
+        { withCredentials: true },
       );
       setWatchLaterFolders(res.results || []);
     } catch (err) {
