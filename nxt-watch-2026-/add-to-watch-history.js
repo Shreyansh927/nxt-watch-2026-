@@ -3,7 +3,7 @@ import axios from "axios";
 const addToWatchHistory = async (movieId, movieEmbedding) => {
   try {
     const response = await axios.post(
-      "http://localhost:5000/api/add-to-watch-history",
+      `${import.meta.env.VITE_SERVER_URL}/api/add-to-watch-history`,
       {
         movieId,
         movieEmbedding,

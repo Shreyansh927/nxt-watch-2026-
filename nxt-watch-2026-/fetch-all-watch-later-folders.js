@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const fetchWatchLaterFolders = async (movieId ,movieName) => {
+const fetchWatchLaterFolders = async (movieId, movieName) => {
   try {
     const res = await axios.get(
-      "http://localhost:5000/api/get-watch-later-folders",
+      `${import.meta.env.VITE_SERVER_URL}/api/get-watch-later-folders`,
       {
         withCredentials: true,
       },
