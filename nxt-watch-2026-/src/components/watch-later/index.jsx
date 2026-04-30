@@ -28,8 +28,10 @@ const WatchLater = () => {
 
   const fetchLatestFolders = async () => {
     try {
-      const res = await fetchWatchLaterFolders(`${import.meta.env.VITE_SERVER_URL}/api/get-watch-later-folders`);
-      setWatchLaterFolders(res.r || []);
+      const res = await fetchWatchLaterFolders(
+        `${import.meta.env.VITE_SERVER_URL}/api/get-watch-later-folders`,
+      );
+      setWatchLaterFolders(res.results || []);
     } catch (err) {
       console.error("Error fetching folders:", err);
     }
@@ -37,7 +39,7 @@ const WatchLater = () => {
 
   const filteredFolders = useMemo(() => {
     return watchLaterFolders.filter((f) =>
-      f.folderName.toLowerCase().includes(searchQuery.toLowerCase())
+      f.folderName.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [watchLaterFolders, searchQuery]);
 
@@ -49,7 +51,7 @@ const WatchLater = () => {
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/add-to-watch-later`,
         { folderName, folderStatus },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       setFolderName("");
       setShowCreateModal(false);
@@ -97,7 +99,10 @@ const WatchLater = () => {
       </div>
 
       {showCreateModal && (
-        <div className="wl-modal-overlay" onClick={() => setShowCreateModal(false)}>
+        <div
+          className="wl-modal-overlay"
+          onClick={() => setShowCreateModal(false)}
+        >
           <div className="wl-modal" onClick={(e) => e.stopPropagation()}>
             <div className="wl-modal__header">
               <h3>New Folder</h3>
@@ -160,7 +165,8 @@ const WatchLater = () => {
         </div>
         <div className="wl-stats">
           <span className="wl-stats__item">
-            {filteredFolders.length} folder{filteredFolders.length !== 1 ? "s" : ""}
+            {filteredFolders.length} folder
+            {filteredFolders.length !== 1 ? "s" : ""}
           </span>
         </div>
       </div>
@@ -219,7 +225,10 @@ const WatchLater = () => {
       )}
 
       {showEditModal && (
-        <div className="wl-modal-overlay" onClick={() => setShowEditModal(false)}>
+        <div
+          className="wl-modal-overlay"
+          onClick={() => setShowEditModal(false)}
+        >
           <div className="wl-modal" onClick={(e) => e.stopPropagation()}>
             <div className="wl-modal__header">
               <h3>Edit Folder</h3>
