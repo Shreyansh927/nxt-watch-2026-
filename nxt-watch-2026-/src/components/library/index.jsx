@@ -204,12 +204,7 @@ const Library = () => {
 
           <div className="divider" />
 
-          <section className="watch-later-section">
-            <h2>Saved For Later</h2>
-            <p>Quick access to the videos you marked to watch later.</p>
-            <WatchLater />
-          </section>
-          <div style={{display: "flex", justifyContent: "space-between"}}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div
               className="analytics-card"
               onClick={() => navigate("/analytics")}
@@ -242,7 +237,7 @@ const Library = () => {
                 <div className="bar" style={{ height: "60%" }}></div>
               </div>
             </div>
-            <section className="analytics-card" style={{width: "50%"}}>
+            <section className="analytics-card" style={{ width: "50%" }}>
               <div
                 className="page-heading"
                 style={{
@@ -284,6 +279,12 @@ const Library = () => {
               </li>
             </section>
           </div>
+
+          <section className="watch-later-section">
+            <h2>Saved For Later</h2>
+            <p>Quick access to the videos you marked to watch later.</p>
+            <WatchLater />
+          </section>
 
           <div className="continue-watching-section"></div>
         </section>

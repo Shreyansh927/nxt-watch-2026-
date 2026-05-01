@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useRef, useEffect } from "react";
 import { TbMessageChatbot } from "react-icons/tb";
 import "./index.css";
+import SpeechToTextInput from "../speech-to-text-converter";
 
 const AiAssistant = () => {
   const [messages, setMessages] = useState([
@@ -106,6 +107,10 @@ const AiAssistant = () => {
             placeholder="Type your command..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            disabled={loading}
+          />
+          <SpeechToTextInput
+            onTranscript={(transcript) => setInput((prev) => prev + transcript)}
             disabled={loading}
           />
           <button type="submit" disabled={loading || !input.trim()}>

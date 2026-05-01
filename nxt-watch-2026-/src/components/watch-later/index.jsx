@@ -20,6 +20,12 @@ const WatchLater = () => {
   const [folderToUpdate, setFolderToUpdate] = useState({});
   const [showEditModal, setShowEditModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [publicId, setPublicId] = useState("");
+  const [publicPlaylists, setPublicPlaylists] = useState([]);
+  const [otherUserPublicPlaylistsMode, setOtherUserPublicPlaylistsMode] =
+    useState(false);
+  const currentUserPublicId =
+    JSON.parse(localStorage.getItem("userInfo"))?.public_id || "";
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,11 +34,8 @@ const WatchLater = () => {
 
   const fetchLatestFolders = async () => {
     try {
-      const res = await fetchWatchLaterFolders(
-        `${import.meta.env.VITE_SERVER_URL}/api/get-watch-later-folders`,
-        { withCredentials: true },
-      );
-      setWatchLaterFolders(res?.data?.results || []);
+      const res = await fetchWatchLaterFolders();
+      setWatchLaterFolders(res?.r || []);
     } catch (err) {
       console.error("Error fetching folders:", err);
     }
@@ -80,6 +83,22 @@ const WatchLater = () => {
       fetchLatestFolders();
     } catch (err) {
       console.error("Error updating folder:", err);
+    }
+  };
+
+  const getPublicPlaylistsByPublicId = async (e) => {
+    e.preventDefault();
+    if (!publicId.trim()) return;
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/get-public-playlists/${publicId}`,
+        { withCredentials: true },
+      );
+      setOtherUserPublicPlaylistsMode(true);
+      console.log(res.data.publicLists);
+      setWatchLaterFolders(res.data.publicLists || []);
+    } catch (err) {
+      console.error("Error fetching public playlists:", err);
     }
   };
 
@@ -155,6 +174,37 @@ const WatchLater = () => {
         </div>
       )}
 
+      <div className="wl-public-search-section">
+        <form
+          onSubmit={getPublicPlaylistsByPublicId}
+          className="wl-public-search-form"
+        >
+          <div className="wl-public-search-wrapper">
+            <input
+              type="text"
+              placeholder="Enter public ID to discover playlists..."
+              onChange={(e) => setPublicId(e.target.value)}
+              value={publicId}
+              className="wl-public-search-input"
+            />
+            <button type="submit" className="wl-public-search-btn">
+              Search
+            </button>
+          </div>
+        </form>
+
+        {/* <div>
+          <ul>
+            {publicPlaylists.map((playlist) => (
+              <li key={playlist.folderId}>
+                <h4>{playlist.folderName}</h4>
+                <p>{playlist.createdAt}</p>
+              </li>
+            ))}
+          </ul>
+        </div> */}
+      </div>
+
       <div className="wl-toolbar">
         <div className="wl-search">
           <input
@@ -192,7 +242,9 @@ const WatchLater = () => {
             <div
               key={folder.folderId}
               className="wl-card"
-              onClick={() => navigate(`/folders/${folder.folderId}`)}
+              onClick={() => {
+                navigate(`/folders/${folder.folderId}?publicId=${publicId}`);
+              }}
             >
               <div className="wl-card__icon">
                 <MdOutlineFolder />
@@ -209,17 +261,19 @@ const WatchLater = () => {
                   </span>
                 </div>
               </div>
-              <button
-                className="wl-card__action"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setFolderToUpdate(folder);
-                  setShowEditModal(true);
-                }}
-                title="Edit folder"
-              >
-                <IoMdSettings />
-              </button>
+              {publicId === currentUserPublicId && (
+                <button
+                  className="wl-card__action"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFolderToUpdate(folder);
+                    setShowEditModal(true);
+                  }}
+                  title="Edit folder"
+                >
+                  <IoMdSettings />
+                </button>
+              )}
             </div>
           ))}
         </div>

@@ -2,12 +2,14 @@ import axios from "axios";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import "./index.css";
 import Recharts from "../recharts/index.jsx";
 
 const WatchLaterFiles = () => {
   const { folderId } = useParams();
+  const [searchParams] = useSearchParams();
+  const publicId = searchParams.get("publicId");
   const [files, setFiles] = useState([]);
   const navigate = useNavigate();
 
@@ -19,7 +21,9 @@ const WatchLaterFiles = () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_SERVER_URL}/api/get-watch-later-folder-files/${folderId}`,
+
         {
+          params: publicId ? { publicId } : {},
           withCredentials: true,
         },
       );

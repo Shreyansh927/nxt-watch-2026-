@@ -4,6 +4,7 @@ import {
   addWatchLaterFolder,
   fetchAllWatchLaterFolders,
   getAllWatchLaterFolderFiles,
+  getWatchLaterPublicPlaylistsWithPublicId,
   updateWatchLaterFolder,
 } from "../controllers/watch-later.js";
 
@@ -20,6 +21,11 @@ watchLaterRouter.post("/add-to-watch-later-folder", addMovieToWatchLaterFile);
 watchLaterRouter.get(
   "/get-watch-later-folder-files/:folderId",
   getAllWatchLaterFolderFiles,
+);
+
+watchLaterRouter.get(
+  "/get-public-playlists/:publicId",
+  getWatchLaterPublicPlaylistsWithPublicId,
 );
 
 export default watchLaterRouter;
