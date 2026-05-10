@@ -11,9 +11,9 @@ import { createAgent } from "langchain";
    MODEL (Gemini Flash) ===== */
 
 const llm = new ChatOllama({
-  model: "qwen3",
+  model: "llama3.2:1b",
   temperature: 0,
-  baseUrl: "http://127.0.0.1:11434",
+  baseUrl: "https://nxt-watch-2026-ollama-server.onrender.com",
 });
 
 /* ==
