@@ -1,3 +1,3 @@
 #!/bin/bash
-
-ollama serve
+export OLLAMA_HOST=0.0.0.0:11434
+exec ollama serve
