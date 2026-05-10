@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: ollama-server
+    env: docker
+    plan: starter
+    build:
+      dockerfile: Dockerfile
+    start: ./start.sh
+    ports:
+      - 11434:11434
+    env_vars:
+      - name: OLLAMA_HOST
+        value: ollama-server
+      - name: OLLAMA_PORT
+        value: "11434"
+      - name: OLLAMA_MODELS_DIR
+        value: /models
+      - name: OLLAMA_LOG_LEVEL
+        value: info
+      - name: OLLAMA_LOG_FILE
+        value: /logs/ollama.log
+      - name: OLLAMA_LOG_MAX_SIZE
+        value: "10m"
+      - name: OLLAMA_LOG_MAX_FILES
+        value: "5"

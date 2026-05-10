@@ -1,244 +1,416 @@
-import { GoogleGenAI } from "@google/genai";
-import { parse } from "dotenv";
 import { movieDb } from "../config/movieDB.js";
 
-const genAI = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
+import { ChatOllama } from "@langchain/ollama";
+import { tool } from "@langchain/core/tools";
+
+import { z } from "zod";
+
+import { createAgent } from "langchain";
+
+/* ===
+   MODEL (Gemini Flash) ===== */
+
+const llm = new ChatOllama({
+  model: "qwen3",
+  temperature: 0,
+  baseUrl: "http://127.0.0.1:11434",
 });
 
-const generateResponse = async (command, context) => {
-  try {
-    const prompt = `
-You are an AI assistant for a movie app.
+/* ==
+   TOOL 1: CREATE PLAYLIST
+======== */
 
-always remember user previous command and context and use that to understand his next command 
-this is the context ${JSON.stringify(context)}
-
-Now user will give you command related to movie playlist management like creating playlist, adding movie to playlist, removing movie from playlist, adding top movies of a genre to playlist etc.
-
-Convert user input into JSON.
-he can write playlist name and movie name in any format but you have to extract them and return in JSON format.
-also he can spell playlist as list or folder or any other word but you have to understand that and extract playlist name and movie name from his command.
-
-he might give list of work like add movie to playlist, create playlist, add top movies, remove movie etc but you have to understand his command and extract playlist name and movie name from his command.
-
-he might also ask you "add xyz movie and abc movies in different list or same list" so you have to understand that and extract playlist name and movie name from his command, then give result in array of json format.
-
-Supported actions:
-1. add_movie_to_playlist
-2. create_playlist
-3. add_top_movies
-4. remove_movie
-
-if only single action is to be performed then return JSON in this format:
-{
-  "action": "",
-  "movie": "",
-  "playlist": "",
-  "count": "",
-  "genre": ""
-}
-
-else if multiple action is to be performed then return JSON in this format:
-[
-  {
-    "action": "",
-    "movie": "",
-    "playlist": "",
-    "count": "",
-    "genre": ""
-  },
-  {
-    
-    "action": "",
-    "movie": "",
-    "playlist": "",
-    "count": "",
-    "genre": ""
-  }
-]
-
-
-If request is unrelated, return:
-{
-  "action": "unknown"
-}
-
-User input: ${command}
-`;
-
-    const result = await genAI.models.generateContent({
-      model: "gemini-2.5-flash-lite",
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: prompt }],
-        },
-      ],
-    });
-
-    return (
-      result.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "No response generated"
+const createPlaylistTool = tool(
+  async ({ playlist, userId }) => {
+    const existingPlaylist = await movieDb.query(
+      `
+        SELECT id
+        FROM watch_later_folders
+        WHERE watch_later_folder_name = $1
+        AND user_id = $2
+        `,
+      [playlist, userId],
     );
-  } catch (err) {
-    console.error("Gemini Error:", err.response?.data || err.message);
-    throw err;
-  }
-};
 
-const tools = {
-  create_playlist: async ({ playlist }, userId) => {
-    try {
-      const folderExists = await movieDb.query(
-        `SELECT id FROM watch_later_folders WHERE watch_later_folder_name = $1 AND user_id = $2`,
-        [playlist, userId],
-      );
-
-      if (folderExists.rows.length > 0) {
-        return `Playlist "${playlist}" already exists`;
-      }
-      await movieDb.query(
-        `INSERT INTO watch_later_folders (user_id, watch_later_folder_name, watch_later_folder_status, created_at) VALUES ($1, $2, 'Private', NOW())`,
-        [userId, playlist],
-      );
-      return `Playlist "${playlist}" created successfully`;
-    } catch (err) {
-      console.error("Error creating playlist:", err);
-      return "Error creating playlist";
+    if (existingPlaylist.rows.length > 0) {
+      return `Playlist "${playlist}" already exists`;
     }
+
+    await movieDb.query(
+      `
+      INSERT INTO watch_later_folders
+      (
+        user_id,
+        watch_later_folder_name,
+        watch_later_folder_status,
+        created_at
+      )
+      VALUES
+      (
+        $1,
+        $2,
+        'Private',
+        NOW()
+      )
+      `,
+      [userId, playlist],
+    );
+
+    return `Playlist "${playlist}" created successfully`;
   },
-  add_movie_to_playlist: async ({ movie, playlist }, userId) => {
-    try {
-      const movieAlreadyAdded = await movieDb.query(
-        `SELECT id FROM watch_later_files 
-WHERE movie_name = $1 AND folder_name = $2 AND user_id = $3`,
-        [movie, playlist, userId],
-      );
+  {
+    name: "create_playlist",
+    description: "Create a new movie playlist or folder",
 
-      if (movieAlreadyAdded.rows.length > 0) {
-        return `Movie "${movie}" is already in playlist "${playlist}"`;
-      }
+    schema: z.object({
+      playlist: z.string(),
+      userId: z.number(),
+    }),
+  },
+);
 
-      const movieId = await movieDb.query(
-        `SELECT id FROM movies 
-WHERE LOWER(title) LIKE '%' || LOWER($1) || '%'`,
-        [movie],
-      );
+const togglePlaylistStatusTool = tool(
+  async ({ userId, playlist, playlistStatus }) => {
+    const doesPlaylistExists = await movieDb.query(
+      `
+      SELECT id, watch_later_folder_status
+      FROM watch_later_folders
+      WHERE LOWER(watch_later_folder_name) = LOWER($1)
+      AND user_id = $2
+      `,
+      [playlist, userId],
+    );
 
-      if (movieId.rows.length === 0) {
-        return `Movie "${movie}" not found in database`;
-      }
-      const folderId = await movieDb.query(
-        `SELECT id FROM watch_later_folders WHERE watch_later_folder_name = $1 AND user_id = $2`,
-        [playlist, userId],
-      );
-
-      if (folderId.rows.length === 0) {
-        return `Playlist "${playlist}" not found`;
-      }
-
-      await movieDb.query(
-        `INSERT INTO watch_later_files (user_id, folder_id, movie_id, added_at, folder_name , movie_name) VALUES ($1, $2, $3, NOW(), $4 ,$5)`,
-        [userId, folderId.rows[0].id, movieId.rows[0].id, playlist, movie],
-      );
-
-      return `Movie "${movie}" added to playlist "${playlist}" successfully`;
-    } catch (err) {
-      console.error("Error adding movie to playlist:", err);
-      return "Error adding movie to playlist";
+    if (!doesPlaylistExists.rows.length) {
+      return `Playlist "${playlist}" not found`;
     }
+
+    await movieDb.query(
+      `
+      UPDATE watch_later_folders
+      SET watch_later_folder_status = $1
+      WHERE LOWER(watch_later_folder_name) = LOWER($2)
+      AND user_id = $3
+      `,
+      [playlistStatus, playlist, userId],
+    );
+
+    return `Playlist "${playlist}" status changed to "${playlistStatus}"`;
   },
-  remove_movie: async ({ movie, playlist }, userId) => {
-    try {
-      const folderId = await movieDb.query(
-        `SELECT id FROM watch_later_folders WHERE watch_later_folder_name = $1 AND user_id = $2`,
-        [playlist, userId],
-      );
+  {
+    name: "toggle_playlist_status",
+    description: "Toggle playlist status between private and public",
+    schema: z.object({
+      userId: z.number(),
+      playlist: z.string(),
+      playlistStatus: z
+        .string()
+        .transform((val) =>
+          val.toLowerCase() === "private" ? "Private" : "Public",
+        ),
+    }),
+  },
+);
 
-      if (folderId.rows.length === 0) {
-        return `Playlist "${playlist}" not found`;
-      }
+/* ===================================================
+   TOOL 2: ADD MOVIE TO PLAYLIST
+=================================================== */
 
-      await movieDb.query(
-        `DELETE FROM watch_later_files WHERE folder_id = $1 AND movie_name = $2 AND user_id = $3`,
-        [folderId.rows[0].id, movie, userId],
-      );
-      return `Movie "${movie}" removed from playlist "${playlist}" successfully`;
-    } catch (err) {
-      console.error("Error removing movie from playlist:", err);
-      return "Error removing movie from playlist";
+const addMovieTool = tool(
+  async ({ movie, playlist, userId }) => {
+    const folder = await movieDb.query(
+      `
+        SELECT id
+        FROM watch_later_folders
+        WHERE watch_later_folder_name = $1
+        AND user_id = $2
+        `,
+      [playlist, userId],
+    );
+
+    if (!folder.rows.length) {
+      return `Playlist "${playlist}" not found`;
     }
+
+    const movieResult = await movieDb.query(
+      `
+        SELECT id
+        FROM movies
+        WHERE LOWER(title)
+        LIKE '%' || LOWER($1) || '%'
+        `,
+      [movie],
+    );
+
+    if (!movieResult.rows.length) {
+      return `Movie "${movie}" not found`;
+    }
+
+    await movieDb.query(
+      `
+      INSERT INTO watch_later_files
+      (
+        user_id,
+        folder_id,
+        movie_id,
+        added_at,
+        folder_name,
+        movie_name
+      )
+      VALUES
+      (
+        $1,
+        $2,
+        $3,
+        NOW(),
+        $4,
+        $5
+      )
+      `,
+      [userId, folder.rows[0].id, movieResult.rows[0].id, playlist, movie],
+    );
+
+    return `Movie "${movie}" added to "${playlist}"`;
   },
-};
+  {
+    name: "add_movie_to_playlist",
+    description: "Add a movie into a playlist",
 
-const executionBrain = async (parsed, userId) => {
-  const { action } = parsed;
+    schema: z.object({
+      movie: z.string(),
+      playlist: z.string(),
+      userId: z.number(),
+    }),
+  },
+);
 
-  if (!action || action === "unknown") {
-    return "Sorry, I couldn't understand your request.";
-  }
+/* ===================================================
+   TOOL 3: REMOVE MOVIE
+=================================================== */
 
-  if (!tools[action]) {
-    return "Sorry, I don't have a tool for that action.";
-  }
+const removeMovieTool = tool(
+  async ({ movie, playlist, userId }) => {
+    const folder = await movieDb.query(
+      `
+        SELECT id
+        FROM watch_later_folders
+        WHERE watch_later_folder_name = $1
+        AND user_id = $2
+        `,
+      [playlist, userId],
+    );
 
-  return await tools[action](parsed, userId);
-};
+    if (!folder.rows.length) {
+      return `Playlist "${playlist}" not found`;
+    }
+
+    await movieDb.query(
+      `
+      DELETE FROM watch_later_files
+      WHERE folder_id = $1
+      AND movie_name = $2
+      AND user_id = $3
+      `,
+      [folder.rows[0].id, movie, userId],
+    );
+
+    return `Movie "${movie}" removed from "${playlist}"`;
+  },
+  {
+    name: "remove_movie",
+    description: "Remove a movie from a playlist",
+
+    schema: z.object({
+      movie: z.string(),
+      playlist: z.string(),
+      userId: z.number(),
+    }),
+  },
+);
+
+/* ===================================================
+   TOOL 4: ADD TOP MOVIES BY GENRE
+=================================================== */
+
+const addTopMoviesTool = tool(
+  async ({ genre, count, playlist, userId }) => {
+    const movies = await movieDb.query(
+      `
+        SELECT id, title
+        FROM movies
+        WHERE LOWER(genre)
+        LIKE '%' || LOWER($1) || '%'
+        LIMIT $2
+        `,
+      [genre, count],
+    );
+
+    if (!movies.rows.length) {
+      return `No movies found`;
+    }
+
+    const folder = await movieDb.query(
+      `
+        SELECT id
+        FROM watch_later_folders
+        WHERE watch_later_folder_name = $1
+        AND user_id = $2
+        `,
+      [playlist, userId],
+    );
+
+    if (!folder.rows.length) {
+      return `Playlist "${playlist}" not found`;
+    }
+
+    for (const movie of movies.rows) {
+      await movieDb.query(
+        `
+        INSERT INTO watch_later_files
+        (
+          user_id,
+          folder_id,
+          movie_id,
+          added_at,
+          folder_name,
+          movie_name
+        )
+        VALUES
+        (
+          $1,
+          $2,
+          $3,
+          NOW(),
+          $4,
+          $5
+        )
+        `,
+        [userId, folder.rows[0].id, movie.id, playlist, movie.title],
+      );
+    }
+
+    return `Added top ${count} ${genre} movies to "${playlist}"`;
+  },
+  {
+    name: "add_top_movies",
+    description: "Add top movies by genre into playlist",
+
+    schema: z.object({
+      genre: z.string(),
+      count: z.number(),
+      playlist: z.string(),
+      userId: z.number(),
+    }),
+  },
+);
+
+/* ===================================================
+   TOOLS ARRAY
+=================================================== */
+
+const tools = [
+  createPlaylistTool,
+  addMovieTool,
+  removeMovieTool,
+  addTopMoviesTool,
+  togglePlaylistStatusTool,
+];
+
+/* ===================================================
+   AGENT
+=================================================== */
+
+const agent = createAgent({
+  model: llm,
+
+  tools,
+
+  systemPrompt: `
+You are an AI movie playlist assistant.
+
+Rules:
+
+1. Always use tools for playlist operations.
+2. Understand natural language.
+3. Understand synonyms:
+   - playlist
+   - folder
+   - collection
+   - list
+   - folder status and its synonyms:
+   - private
+   - public
+4. Extract movie names.
+5. Extract genres.
+6. Handle multiple actions.
+7. Extract playlist status change intent.
+`,
+});
+
+/* 
+   CONTROLLER
+=================================================== */
 
 export const getAiHelp = async (req, res) => {
   try {
     const { command } = req.body;
+    const userId = req.user.id;
 
-    if (!command) {
-      return res.status(400).json({ error: "Command is required" });
+    if (!command?.trim()) {
+      return res.status(400).json({
+        error: "Command required",
+      });
     }
 
-    let context = [];
+    const result = await agent.invoke({
+      messages: [
+        {
+          role: "user",
+          content: `
+User ID: ${userId}
 
-    const memoryResult = await movieDb.query(
-      `SELECT query, response FROM user_ai_assistant_memory WHERE user_id = $1 ORDER BY created_at DESC LIMIT 5`,
-      [req.user.id],
-    );
-
-    memoryResult.rows.map((row) => {
-      context = [...context, { query: row.query, response: row.response }];
+Command:
+${command}
+          `,
+        },
+      ],
     });
 
-    const aiResponse = await generateResponse(command, context);
+    /* Extract final AI response */
 
-    const cleanResponse = aiResponse
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
+    const finalResponse =
+      result.messages[result.messages.length - 1]?.content || "";
 
-    const parsed = JSON.parse(cleanResponse);
-
-    console.log("Parsed:", parsed);
-    console.log(parsed["action"]);
-    console.log(parsed["movie"]);
-    console.log(parsed["playlist"]);
-    console.log(parsed["count"]);
-    console.log(parsed["genre"]);
-
-    const messages = Array.isArray(parsed)
-      ? await Promise.all(
-          parsed.map((item) => executionBrain(item, req.user.id)),
-        )
-      : [await executionBrain(parsed, req.user.id)];
+    /* Save memory */
 
     await movieDb.query(
-      `INSERT INTO user_ai_assistant_memory (user_id, query, response, created_at) VALUES ($1, $2, $3, NOW())`,
-      [req.user.id, command, messages.join("\n")],
+      `
+      INSERT INTO user_ai_assistant_memory
+      (
+        user_id,
+        query,
+        response,
+        created_at
+      )
+      VALUES
+      (
+        $1,
+        $2,
+        $3,
+        NOW()
+      )
+      `,
+      [userId, command, finalResponse],
     );
 
     return res.status(200).json({
-      response: messages,
+      response: finalResponse,
     });
   } catch (err) {
-    console.error("AI Assistant Error:", err);
+    console.error("AI Assistant Error:", err.message);
+
     return res.status(500).json({
-      error: "Error processing AI assistant request",
+      error: "Error processing AI request",
     });
   }
 };
