@@ -23,7 +23,7 @@ export const fetchAllWatchLaterFolders = async (req, res) => {
   try {
     const userId = req.user.id;
     const { rows } = await movieDb.query(
-      `SELECT * FROM watch_later_folders WHERE user_id = $1 ORDER BY created_at`,
+      `SELECT * FROM watch_later_folders WHERE user_id = $1 AND is_deleted = 'false' ORDER BY created_at`,
       [userId],
     );
     // console.log(rows);
@@ -89,15 +89,23 @@ export const getAllWatchLaterFolderFiles = async (req, res) => {
   try {
     const userId = req.user.id;
     const { folderId } = req.params;
-    const {publicId} = req.query
+    const { publicId } = req.query;
 
-    if (publicId){
-      const user = await movieDb.query(`SELECT * FROM users WHERE public_id = $1`, [publicId])
-      const userIdFromPublicId = user.rows[0].id
-      const folder = await movieDb.query(`SELECT * FROM watch_later_folders WHERE id = $1 AND user_id = $2 AND watch_later_folder_status = 'PUBLIC'`, [folderId, userIdFromPublicId])
+    if (publicId) {
+      const user = await movieDb.query(
+        `SELECT * FROM users WHERE public_id = $1`,
+        [publicId],
+      );
+      const userIdFromPublicId = user.rows[0].id;
+      const folder = await movieDb.query(
+        `SELECT * FROM watch_later_folders WHERE id = $1 AND user_id = $2 AND watch_later_folder_status = 'PUBLIC'`,
+        [folderId, userIdFromPublicId],
+      );
 
-      if (folder.rows.length === 0){
-        return res.status(404).json({ message: "Folder not found or is not public" });
+      if (folder.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "Folder not found or is not public" });
       }
       const { rows } = await movieDb.query(
         `SELECT movies.title as "title" ,movies.id as id, movies.release_year as "releaseYear", movies.backdroppath as "backdropPath", watch_later_files.added_at as "addedAt"  FROM watch_later_files INNER JOIN movies ON watch_later_files.movie_id = movies.id WHERE watch_later_files.user_id = $1 AND watch_later_files.folder_id = $2`,
@@ -107,7 +115,6 @@ export const getAllWatchLaterFolderFiles = async (req, res) => {
       console.log(rows);
 
       return res.status(200).json({ result: rows });
-
     }
     const { rows } = await movieDb.query(
       `SELECT movies.title as "title" ,movies.id as id, movies.release_year as "releaseYear", movies.backdroppath as "backdropPath", watch_later_files.added_at as "addedAt"  FROM watch_later_files INNER JOIN movies ON watch_later_files.movie_id = movies.id WHERE watch_later_files.user_id = $1 AND watch_later_files.folder_id = $2`,

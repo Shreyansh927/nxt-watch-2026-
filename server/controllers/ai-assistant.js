@@ -1,20 +1,11 @@
 import { movieDb } from "../config/movieDB.js";
 
-import { ChatOllama } from "@langchain/ollama";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { tool } from "@langchain/core/tools";
 
 import { z } from "zod";
 
-import { createAgent } from "langchain";
-
-/* ===
-   MODEL (Gemini Flash) ===== */
-
-const llm = new ChatOllama({
-  model: "llama3.2:1b",
-  temperature: 0,
-  baseUrl: "https://nxt-watch-2026-ollama-server.onrender.com",
-});
+import { createFallbackAgent } from "./agentFactory.js";
 
 /* ==
    TOOL 1: CREATE PLAYLIST
@@ -228,6 +219,60 @@ const removeMovieTool = tool(
   },
 );
 
+const deletePlaylistTool = tool(
+  async ({ playList, userId }) => {
+    const folder = await movieDb.query(
+      `SELECT id FROM watch_later_folders WHERE watch_later_folder_name = $1 AND user_id = $2`,
+      [playList, userId],
+    );
+
+    if (!folder.rows.length) {
+      return `Playlist "${playList}" not found`;
+    }
+
+    await movieDb.query(
+      `UPDATE watch_later_folders SET is_deleted = 'true' WHERE id = $1 AND user_id = $2`,
+      [folder.rows[0].id, userId],
+    );
+
+    return `Playlist "${playList}" deleted successfully`;
+  },
+  {
+    name: "delete_playlist",
+    description: "Delete an existing playlist",
+    schema: z.object({
+      playList: z.string(),
+      userId: z.number(),
+    }),
+  },
+);
+
+const restorePlaylistTool = tool(
+  async ({ playList, userId }) => {
+    const folder = await movieDb.query(
+      `SELECT id FROM watch_later_folders WHERE watch_later_folder_name = $1 AND user_id = $2`,
+      [playList, userId],
+    );
+    if (!folder.rows.length) {
+      return `Playlist "${playList}" not found`;
+    }
+
+    await movieDb.query(
+      `UPDATE watch_later_folders SET is_deleted = 'false' WHERE id = $1 AND user_id = $2`,
+      [folder.rows[0].id, userId],
+    );
+    return `Playlist "${playList}" restored successfully`;
+  },
+  {
+    name: "restore_playlist",
+    description: "Restore a deleted playlist",
+    schema: z.object({
+      playList: z.string(),
+      userId: z.number(),
+    }),
+  },
+);
+
 /* ===================================================
    TOOL 4: ADD TOP MOVIES BY GENRE
 =================================================== */
@@ -314,39 +359,18 @@ const tools = [
   removeMovieTool,
   addTopMoviesTool,
   togglePlaylistStatusTool,
+  deletePlaylistTool,
+  restorePlaylistTool,
 ];
 
 /* ===================================================
    AGENT
 =================================================== */
 
-const agent = createAgent({
-  model: llm,
-
+const agent = createFallbackAgent(
   tools,
-
-  systemPrompt: `
-You are an AI movie playlist assistant.
-
-Rules:
-
-1. Always use tools for playlist operations.
-2. Understand natural language.
-3. Understand synonyms:
-   - playlist
-   - folder
-   - collection
-   - list
-   - folder status and its synonyms:
-   - private
-   - public
-4. Extract movie names.
-5. Extract genres.
-6. Handle multiple actions.
-7. Extract playlist status change intent.
-`,
-});
-
+  `You are an AI assistant for a movie streaming platform. You help users manage their watch later playlists based on their commands. Use the provided tools to perform actions on the user's playlists. Always try to use the tools when applicable, and provide clear responses to the user.`,
+);
 /* 
    CONTROLLER
 =================================================== */

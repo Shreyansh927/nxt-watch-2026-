@@ -1,0 +1,25 @@
+services:
+  frontend:
+    build:
+      context: ./nxt-watch-2026-
+      dockerfile: Dockerfile
+
+    ports:
+      - "5173:5173"
+
+    depends_on:
+      - backend
+
+    env_file:
+      - ./nxt-watch-2026-/.env
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+
+    ports:
+      - "5000:5000"
+
+    env_file:
+      - ./server/.env

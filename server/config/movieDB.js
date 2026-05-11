@@ -59,7 +59,8 @@ export const initMovieDB = async () => {
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     watch_later_folder_name TEXT,
     watch_later_folder_status TEXT,
-    created_at TIMESTAMP DEFAULT NOW() 
+    created_at TIMESTAMP DEFAULT NOW(),
+    is_deleted BOOLEAN DEFAULT FALSE
     )`);
 
   await movieDb.query(`CREATE TABLE IF NOT EXISTS watch_later_files(
