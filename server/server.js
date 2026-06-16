@@ -22,6 +22,10 @@ import { errorHandler } from "./middlewares/errorMiddleware.js";
 import profileRouter from "./routes/profile-router.js";
 import aiAssistantRouter from "./routes/ai-assistant-route.js";
 import graphRouter from "./routes/graph-routes.js";
+import { adminMiddleware } from "./middlewares/admin-middleware.js";
+import adminPanelRouter from "./routes/admin-panel-routes.js";
+import currentSessionsRouter from "./routes/current-sessions-routes.js";
+// import { deviceLimitMiddleware } from "./middlewares/device-limit.js";
 
 const app = express();
 app.use(helmet());
@@ -38,6 +42,14 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use((req, res, next) => {
+  console.log("==== REQUEST ====");
+  console.log(req.method, req.url);
+  console.log("Cookies:", req.cookies);
+
+  next();
+});
 app.get("/api/access-token-generation", accessTokenGeneration);
 
 app.use("/api", authRouter);
@@ -56,9 +68,19 @@ app.use("/api", authMiddleware, aiMovieRouter);
 
 app.use("/api", authMiddleware, profileRouter);
 
+app.use("/api", authMiddleware, currentSessionsRouter);
+
 app.use("/api", aiAssistantRouter);
 
-app.use("/api",authMiddleware, graphRouter);
+app.use("/api", authMiddleware, graphRouter);
+
+app.use(
+  "/api",
+  authMiddleware,
+  // deviceLimitMiddleware,
+  adminMiddleware,
+  adminPanelRouter,
+);
 
 app.use(errorHandler);
 

@@ -8,7 +8,11 @@ import {
   searchMovies,
 } from "../controllers/fetchMovies.js";
 import { syncTmdbWithMyMovieDB } from "../controllers/syncTmdbWithMyMovieDB.js";
-import { recommendMovies, vectorSearch } from "../controllers/vector-search.js";
+import {
+  recommendMovies,
+  suggestSimilarMovies,
+  vectorSearch,
+} from "../controllers/vector-search.js";
 import { getCurrentUser } from "../controllers/authController.js";
 import { authMiddleware } from "../middlewares/authMiddleWare.js";
 import { aiLimiter } from "../middlewares/rate-limiter.js";
@@ -34,12 +38,17 @@ movieRouter.get("/sync-tmdb", async (req, res) => {
 });
 
 movieRouter.get("/get-movie/:movieId", fetchMovieById);
-movieRouter.get("/discover-movies", fetchMovies);
+movieRouter.get("/discover-movies",  fetchMovies);
 movieRouter.get("/discover-documetries", fetchDocumentries);
 movieRouter.get("/discover-animes", fetchAnimes);
 movieRouter.get("/discover-tv", fetchTvShows);
 movieRouter.get("/search-movies", searchMovies);
 movieRouter.get("/vector-search", authMiddleware, aiLimiter, vectorSearch);
+movieRouter.get(
+  "/similar-movies/:movieId",
+  authMiddleware,
+  suggestSimilarMovies,
+);
 movieRouter.get("/recommendations", authMiddleware, recommendMovies);
 
 export default movieRouter;

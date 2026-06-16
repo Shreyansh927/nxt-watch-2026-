@@ -64,9 +64,33 @@ export const recommendMovies = async (req, res) => {
   }
 };
 
-/* ---------------------------------------------------
-   Hybrid Vector Search (Semantic + Personalized)
---------------------------------------------------- */
+export const suggestSimilarMovies = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { movieId } = req.params;
+    const movieResult = await movieDb.query(
+      `SELECT vector_embedding FROM movies WHERE id = $1`,
+      [movieId],
+    );
+    const movieVec = movieResult.rows[0]?.vector_embedding;
+    if (!movieVec) {
+      return res
+        .status(404)
+        .json({ error: "Movie not found or no embedding available" });
+    }
+    const similarMoviesResult = await movieDb.query(
+      `SELECT id, title, posterpath, backdroppath, release_year, (1 - (vector_embedding <-> $1)) * 100 AS match_percent FROM movies WHERE vector_embedding IS NOT NULL AND id != $2 ORDER BY vector_embedding <-> $1 LIMIT 10`,
+      [movieVec, movieId],
+    );
+    console.log("Similar movies result:", similarMoviesResult.rows);
+    return res.status(200).json({ results: similarMoviesResult.rows });
+  } catch (err) {
+    console.error("Error suggesting similar movies:", err);
+    return res.status(500).json({ error: "Error suggesting similar movies" });
+  }
+};
+
+// Hybrid search with user preference vector and liked movies vector
 export const vectorSearch = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -106,7 +130,7 @@ export const vectorSearch = async (req, res) => {
 
       const userPrefVec = prefResult.rows[0]?.pref_vector;
 
-      // 3️⃣ Hybrid Ranking (Weighted Distance)
+      // 3 Hybrid Ranking (Weighted Distance)
       if (userPrefVec) {
         const result = await movieDb.query(
           `

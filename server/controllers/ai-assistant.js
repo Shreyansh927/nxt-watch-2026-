@@ -103,6 +103,12 @@ const togglePlaylistStatusTool = tool(
   },
 );
 
+
+const chatWithPlalistTool = tool(
+  async({userQuery, userId})=> {
+
+  }
+)
 /* ===================================================
    TOOL 2: ADD MOVIE TO PLAYLIST
 =================================================== */
@@ -349,9 +355,7 @@ const addTopMoviesTool = tool(
   },
 );
 
-/* ===================================================
-   TOOLS ARRAY
-=================================================== */
+
 
 const tools = [
   createPlaylistTool,
@@ -363,18 +367,14 @@ const tools = [
   restorePlaylistTool,
 ];
 
-/* ===================================================
-   AGENT
-=================================================== */
+// Agent Creation with Tools
 
 const agent = createFallbackAgent(
   tools,
-  `You are an AI assistant for a movie streaming platform. You help users manage their watch later playlists based on their commands. Use the provided tools to perform actions on the user's playlists. Always try to use the tools when applicable, and provide clear responses to the user.`,
+  `You are an AI assistant for a movie streaming platform. You help users manage their watch later playlists based on their commands. Use the provided tools to perform actions on the user's playlists. Always try to use the tools when applicable, and provide clear responses to the user.if user gives a movie link like https://vsembed.ru/embed/movie/tt31050594, and asks to summarize it you have to summarize it, if query is related to the movie you have to answer that in brief and also provide the link of the movie from where you get the information. If user ask any question regarding any topic related to the ans him in breif about that. Always respond in a concise manner.`,
 );
-/* 
-   CONTROLLER
-=================================================== */
 
+// Controller to handle AI assistant requests
 export const getAiHelp = async (req, res) => {
   try {
     const { command } = req.body;
@@ -386,26 +386,34 @@ export const getAiHelp = async (req, res) => {
       });
     }
 
-    const result = await agent.invoke({
-      messages: [
-        {
-          role: "user",
-          content: `
+    const result = await agent.invoke(
+      {
+        messages: [
+          {
+            role: "user",
+            content: `
 User ID: ${userId}
 
 Command:
 ${command}
           `,
-        },
-      ],
-    });
+          },
+        ],
+      },
 
-    /* Extract final AI response */
+      {
+        configurable: {
+          thread_id: userId.toString(),
+        },
+      },
+    );
+
+    // Extract final response text
 
     const finalResponse =
       result.messages[result.messages.length - 1]?.content || "";
 
-    /* Save memory */
+    //Memory Stored in DB
 
     await movieDb.query(
       `

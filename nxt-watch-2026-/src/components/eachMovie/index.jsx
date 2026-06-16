@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import Loader from "react-loader-spinner";
 import { MdRestore, MdCancel } from "react-icons/md";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { FaPlay, FaPause } from "react-icons/fa";
 // import { useSpeechSynthesis } from "react-speech-kit";
 import SavedVideosContext from "../../createContext";
@@ -46,6 +46,7 @@ const languageArray = [
 
 const EachMovie = () => {
   const { title, id } = useParams();
+  const navigate = useNavigate();
   const { addVideo, removeVideo } = useContext(SavedVideosContext);
   // const { speak, cancel } = useSpeechSynthesis();
   const [currentLanguage, setCurrentLanguage] = useState(languageArray[2].id);
@@ -61,7 +62,7 @@ const EachMovie = () => {
   const [likes, setLikes] = useState("");
   const [dislikes, setDislikes] = useState("");
   const [fetchSummary, setFetchSummary] = useState(false);
-  const [similarMovies, setSimilarMovies] = useState([]);
+
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [currentUser, setCurrentUser] = useState(
@@ -74,13 +75,19 @@ const EachMovie = () => {
   const [question, setQuestion] = useState("");
   const [aiChats, setAiChats] = useState([]);
   const [aiLoading, setAiLoading] = useState(false);
+  const [similarMovies, setSimilarMovies] = useState([]);
 
-  useEffect(() => {
-    fetchLikesCount();
-    fetchdislikeCount();
-    fetchAllComments();
-    fetchPreviousAiChats();
-  }, []);
+ useEffect(() => {
+  getMovieTrailer();
+  getTmdbMovieInfo();
+  getSuggestedMovies();
+  geminiResponse();
+  fetchSimilarMovies();
+  fetchLikesCount();
+  fetchdislikeCount();
+  fetchAllComments();
+  fetchPreviousAiChats();
+}, [id, title]);
 
   const timeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -208,6 +215,21 @@ const EachMovie = () => {
     keepPreviousData: true,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  const fetchSimilarMovies = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/similar-movies/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
+      setSimilarMovies(res.data.results);
+      console.log("Similar movies:", res.data.results);
+    } catch (err) {
+      console.error("Error fetching similar movies:", err);
+    }
+  };
 
   // Fetch trailer
   const getMovieTrailer = async () => {
@@ -736,6 +758,46 @@ const EachMovie = () => {
               )}
             </aside>
           </main>
+
+          {/* Similar Movies Section */}
+          {similarMovies.length > 0 && (
+            <section className="similar-movies-section">
+              <div className="similar-movies-header">
+                <h2>You Might Also Like</h2>
+                <p>Discover movies with similar themes and styles</p>
+              </div>
+              <div className="similar-movies-grid">
+                {similarMovies.map((movie) => (
+                  <>
+                    <div
+                      className="similar-movie-poster"
+                      onClick={() =>
+                        navigate(`/trending/${movie.title}/${movie.id}`)
+                      }
+                    >
+                      <img
+                        src={movie.posterpath || "/placeholder-movie.jpg"}
+                        alt={movie.title}
+                        onError={(e) => {
+                          e.target.src = "/placeholder-movie.jpg";
+                        }}
+                      />
+                      <div className="similar-movie-overlay">
+                        <div className="match-badge">
+                          {Math.round(movie.match_percent)}% Match
+                        </div>
+                      </div>
+                    </div>
+                    <div className="similar-movie-info">
+                      <h3 className="similar-movie-title">{movie.title}</h3>
+                      <p className="similar-movie-year">{movie.release_year}</p>
+                    </div>
+                  </>
+                ))}
+              </div>
+            </section>
+          )}
+
           <section className="comments-section">
             <div className="comments-header">
               <h2>Recent Comments</h2>

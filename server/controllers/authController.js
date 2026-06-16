@@ -1,4 +1,3 @@
-
 import { movieDb } from "../config/movieDB.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -90,40 +89,72 @@ export const login = async (req, res) => {
 
     const randomAccessToken = Math.random().toString(36).substring(2);
     console.log(randomAccessToken);
-
-    const payload = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      public_id: user.public_id,
-    };
-
-    const jwtToken = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "5h",
-    });
-
-    res.cookie("access-token", jwtToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 60 * 15 * 1000,
-      path: "/",
-    });
-
-    res.cookie("refresh-token", randomRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 360000000,
-      path: "/",
-    });
-
-    await movieDb.query(
-      `INSERT INTO nxtwatch_refresh_tokens (user_id, token) VALUES ($1, $2)`,
-      [user.id, randomRefreshToken],
+    const totalCurrentSessions = await movieDb.query(
+      `SELECT count(user_id) as current_sessions_count FROM nxtwatch_refresh_tokens WHERE user_id = $1`,
+      [user.id],
+    );
+    const sessionsResult = await movieDb.query(
+      `SELECT
+        created_at AS "createdAt",
+        device_info AS "deviceInfo",
+        ip_location_info AS "ipLocationInfo",
+        country,
+        city
+       FROM nxtwatch_refresh_tokens
+       WHERE user_id = $1`,
+      [user.id],
     );
 
-    return res.status(200).json({ message: "Login successful", user: payload });
+    if (totalCurrentSessions.rows[0].current_sessions_count >= 1) {
+      return res.status(403).json({
+        error:
+          "Device limit reached. Please log out from another device to continue.",
+
+        currentSessions: sessionsResult.rows,
+      });
+    } else {
+      const payload = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        public_id: user.public_id,
+        role: user.role,
+      };
+
+      const jwtToken = jwt.sign(payload, process.env.JWT_SECRET, {
+        expiresIn: "5h",
+      });
+
+      res.cookie("access-token", jwtToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 1000,
+        path: "/",
+      });
+
+      res.cookie("refresh-token", randomRefreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 360000000,
+        path: "/",
+      });
+
+      const userAgent = req.headers["user-agent"] || "Unknown device";
+      const ipAddress =
+        req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+      const country = req.headers["x-country"] || "Unknown";
+      const city = req.headers["x-city"] || "Unknown";
+
+      await movieDb.query(
+        `INSERT INTO nxtwatch_refresh_tokens (user_id, token, device_info, ip_location_info, country, city) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [user.id, randomRefreshToken, userAgent, ipAddress, country, city],
+      );
+      return res
+        .status(200)
+        .json({ message: "Login successful", user: payload });
+    }
   } catch (err) {
     console.log(err);
   }
@@ -133,14 +164,14 @@ export const logout = async (req, res) => {
   try {
     res.clearCookie("access-token", {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      sameSite: "lax",
     });
 
     res.clearCookie("refresh-token", {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      sameSite: "lax",
     });
 
     await movieDb.query(
@@ -167,5 +198,33 @@ export const getCurrentUser = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Error fetching user" });
+  }
+};
+
+export const allCurrentSessions = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const sessionsResult = await movieDb.query(
+      `SELECT
+        created_at AS "createdAt",
+        device_info AS "deviceInfo",
+        ip_location_info AS "ipLocationInfo",
+        country,
+        city
+       FROM nxtwatch_refresh_tokens
+       WHERE user_id = $1`,
+      [userId],
+    );
+
+    return res.status(200).json({
+      sessions: sessionsResult.rows,
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.status(500).json({
+      error: "Error fetching sessions",
+    });
   }
 };

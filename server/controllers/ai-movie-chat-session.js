@@ -130,7 +130,7 @@ export const aiResponse = async (req, res) => {
 
     console.log("Vector results:", similarMessages.rows);
 
-    /* ---------- IF SIMILAR QUESTION FOUND ---------- */
+    // IF SIMILAR QUESTION FOUND //
 
     if (similarMessages.rows.length > 0) {
       const bestMatch = similarMessages.rows[0];
@@ -147,7 +147,7 @@ export const aiResponse = async (req, res) => {
       }
     }
 
-    /* ---------- CREATE / GET SESSION ---------- */
+    // ---- CREATE / GET SESSION ---------- //
 
     const result = await movieDb.query(
       `SELECT * FROM chat_sessions WHERE user_id = $1 AND movie_id = $2`,
@@ -169,7 +169,7 @@ export const aiResponse = async (req, res) => {
       sessionId = result.rows[0].id;
     }
 
-    /* ---------- BUILD CONTEXT FROM SIMILAR QUESTIONS ---------- */
+    //  BUILD CONTEXT FROM SIMILAR QUESTIONS --/
 
     let context = "";
 
@@ -179,7 +179,7 @@ export const aiResponse = async (req, res) => {
         .join("\n\n");
     }
 
-    /* ---------- GENERATE LLM RESPONSE ---------- */
+    // ---- GENERATE LLM RESPONSE ---------- //
 
     const queryResponse = await generateResponse(question, context);
 

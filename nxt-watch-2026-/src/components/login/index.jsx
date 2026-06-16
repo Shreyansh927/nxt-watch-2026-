@@ -4,44 +4,55 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./index.css";
 import { toast } from "react-toastify";
+import api from "../../api-request-interceptor.jsx";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [currentSessions, setCurrentSessions] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/me`, {
-        withCredentials: true,
-      });
-      if (res.data.user) {
-        navigate("/home", { replace: true });
+      try {
+        const res = await api.get("/me");
+
+        if (res.data.user) {
+          navigate("/home", { replace: true });
+        }
+      } catch (err) {
+        console.log("Not authenticated");
       }
     };
+
     fetchCurrentUser();
   }, []);
   const login = async (e) => {
     e.preventDefault();
+
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/login`,
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        },
-      );
-      console.log(res.data.message);
-      console.log(res.data.user);
+      const res = await api.post("/login", {
+        email,
+        password,
+      });
+
       toast.success(res.data.message || "Login successful!");
+
       localStorage.setItem("user", JSON.stringify(res.data.user));
-    } catch (err) {
-      toast.error(err.response?.data?.error || err.message);
-    } finally {
+
       navigate("/home");
+    } catch (err) {
+      const errorMessage = err.response?.data?.error || err.message;
+
+      toast.error(errorMessage);
+
+      if (
+        errorMessage ===
+        "Device limit reached. Please log out from another device to continue."
+      ) {
+        setCurrentSessions(err.response.data.currentSessions || []);
+        
+      }
     }
   };
   return (
@@ -61,39 +72,62 @@ const Login = () => {
           <img
             src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
             alt=""
-            style={{width: "50%", height:"40px", marginBottom: "20px"}}
+            style={{ width: "50%", height: "40px", marginBottom: "20px" }}
           />
           <p>Access your powerful dashboard</p>
 
-          <form onSubmit={login}>
-            <div className="input-group">
-              <input
-                type="email"
-                placeholder=" "
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <label>Email</label>
+          {currentSessions.length > 0 ? (
+            <div className="current-sessions">
+              <h3>Current Sessions</h3>
+              <ul>
+                {currentSessions.map((session, index) => (
+                  <li key={index}>
+                    <p>{session.deviceInfo}</p>
+                    <p>{session.ipLocationInfo}</p>
+                    <p>{session.country}</p>
+                    <p>{session.city}</p>
+                    <p>{new Date(session.createdAt).toLocaleString()}</p>
+
+                    <button>Logout This Device</button>
+                  </li>
+                ))}
+              </ul>
             </div>
+          ) : (
+            <>
+              <form onSubmit={login}>
+                <div className="input-group">
+                  <input
+                    type="email"
+                    placeholder=" "
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <label>Email</label>
+                </div>
 
-            <div className="input-group">
-              <input
-                type="password"
-                placeholder=" "
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <label>Password</label>
-            </div>
+                <div className="input-group">
+                  <input
+                    type="password"
+                    placeholder=" "
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <label>Password</label>
+                </div>
 
-            <button type="submit" className="login-button">Login</button>
-          </form>
+                <button type="submit" className="login-button">
+                  Login
+                </button>
+              </form>
 
-          <span className="footer-text">
-            Don’t have an account? <a href="/signup">Sign up</a>
-          </span>
+              <span className="footer-text">
+                Don’t have an account? <a href="/signup">Sign up</a>
+              </span>
+            </>
+          )}
         </div>
       </div>
     </div>

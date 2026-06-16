@@ -23,6 +23,8 @@ import WatchLaterFiles from "./components/watch-later-file";
 import Recharts from "./components/recharts/index.jsx";
 import AnalyticsDashboard from "./components/recharts/index.jsx";
 import Header from "./components/header/index.jsx";
+import Admin from "./components/admin/index.jsx";
+import Sessions from "./components/all-sessions/index.jsx";
 
 class App extends Component {
   render() {
@@ -33,6 +35,23 @@ class App extends Component {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
 
+          <Route
+            path="/admin-control"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/sessions"
+            element={
+              // <ProtectedRoute>
+                <Sessions />
+              // </ProtectedRoute>
+            }
+          />
           <Route
             path="/home"
             element={

@@ -8,6 +8,7 @@ import { FaUser } from "react-icons/fa";
 import { MdOutlineVideoLibrary } from "react-icons/md";
 import "./index.css";
 import api from "../../api-request-interceptor.jsx";
+import { RiAdminFill } from "react-icons/ri";
 
 const navigationList = [
   { link: "/home", navText: "Home" },
@@ -25,6 +26,8 @@ const Header = () => {
   const navigate = useNavigate();
 
   const isLoggedIn = localStorage.getItem("user") !== null;
+
+  const isAdmin = JSON.parse(localStorage.getItem("user"))?.role === "admin";
 
   const logout = async () => {
     try {
@@ -77,27 +80,25 @@ const Header = () => {
 
       {/* Right Side */}
       <div className="nav-right">
-        <FaMoon className="icon-btn" onClick={toggleDarkMode} />
-        <FaUser className="icon-btn"  onClick={toggleLogout} />
-        {api && (
-          <>
-            {isLoggedIn ? (
-              <button className="btn-primary" onClick={logout}>
-                Logout
-              </button>
-            ) : (
-              <Link to="/login">
-                <button className="btn-primary">Login</button>
-              </Link>
-            )}
-            {isLoggedIn && (
-              <MdOutlineVideoLibrary
-                onClick={() => navigate("/library")}
-                className="icon-btn"
-              />
-            )}
-          </>
+        {/* <FaMoon className="icon-btn" onClick={toggleDarkMode} /> */}
+        {isAdmin && (
+          <RiAdminFill
+            className="icon-btn"
+            onClick={() => navigate("/admin-control")}
+          />
         )}
+        <FaUser className="icon-btn" onClick={() => navigate("/library")} />
+
+        {isLoggedIn ? (
+          <button className="btn-primary" onClick={logout}>
+            Logout
+          </button>
+        ) : (
+          <Link to="/login">
+            <button className="btn-primary">Login</button>
+          </Link>
+        )}
+        {isLoggedIn && <MdOutlineVideoLibrary className="icon-btn" />}
 
         <IoMenu className="menu-icon" onClick={() => setMenuOpen(!menuOpen)} />
       </div>

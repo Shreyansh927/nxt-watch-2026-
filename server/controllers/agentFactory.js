@@ -1,6 +1,9 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatGroq } from "@langchain/groq";
 import { createAgent } from "langchain";
+import { MemorySaver } from "@langchain/langgraph";
+
+const memory = new MemorySaver();
 
 export const createFallbackAgent = (tools, systemPrompt) => {
   const geminiAgent = createAgent({
@@ -11,6 +14,7 @@ export const createFallbackAgent = (tools, systemPrompt) => {
     }),
     tools,
     systemPrompt,
+    checkpointer: memory,
   });
 
   const groqAgent = createAgent({
@@ -21,16 +25,17 @@ export const createFallbackAgent = (tools, systemPrompt) => {
     }),
     tools,
     systemPrompt,
+    checkpointer: memory,
   });
 
   return {
-    invoke: async (payload) => {
+    invoke: async (payload, config) => {
       try {
-        return await geminiAgent.invoke(payload);
+        return await geminiAgent.invoke(payload, config);
       } catch (error) {
         console.error("Gemini agent failed:", error.message);
 
-        return await groqAgent.invoke(payload);
+        return await groqAgent.invoke(payload, config);
       }
     },
   };

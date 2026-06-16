@@ -1,93 +1,127 @@
 import { movieDb } from "../config/movieDB.js";
 import jwt from "jsonwebtoken";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: false,
+  sameSite: "lax",
+  path: "/",
+};
+
 export const authMiddleware = async (req, res, next) => {
   try {
     const token = req.cookies["access-token"];
 
     if (!token) {
-      return res.status(401).json({ error: "Unauthorized - No token" });
+      return res.status(401).json({
+        error: "Unauthorized - No token",
+      });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const userResult = await movieDb.query(
-      `SELECT id, name, email, public_id FROM users WHERE id = $1`,
+      `SELECT id, name, email, public_id, role
+   FROM users
+   WHERE id = $1`,
       [decoded.id],
     );
 
     if (userResult.rows.length === 0) {
-      return res.status(401).json({ error: "Unauthorized - User not found" });
-    }
-
-    if (!decoded || !decoded.id) {
-      return res.status(401).json({ error: "Unauthorized - Invalid token" });
+      return res.status(401).json({
+        error: "Unauthorized - User not found",
+      });
     }
 
     req.user = userResult.rows[0];
 
     next();
   } catch (err) {
-    console.log("AUTH ERROR:", err.message); // 👈 ADD THIS
-    return res.status(401).json({ error: "Unauthorized - Invalid token" });
+    console.log("AUTH ERROR:", err.message);
+
+    return res.status(401).json({
+      error: "Unauthorized - Invalid token",
+    });
   }
 };
 
 export const accessTokenGeneration = async (req, res) => {
-  console.log("Cookies received:", req.cookies);
-  console.log("Refresh Token:", req.cookies["refresh-token"]);
   try {
-    console.log("ACCESS TOKEN ROUTE HIT");
-
     const accessToken = req.cookies["access-token"];
     const refreshToken = req.cookies["refresh-token"];
 
-    // If access token exists → verify it
+    // Access token still valid
     if (accessToken) {
       try {
         jwt.verify(accessToken, process.env.JWT_SECRET);
-        return res.status(200).json({ message: "Access token valid" });
+
+        return res.status(200).json({
+          message: "Access token valid",
+        });
       } catch (err) {
-        console.log("Access token expired → generating new one");
+        console.log("Access token expired");
       }
     }
 
-    // If no refresh token → unauthorized
+    // No refresh token
     if (!refreshToken) {
-      return res.status(401).json({ error: "No refresh token" });
+      return res.status(401).json({
+        error: "No refresh token",
+      });
     }
-    console.log("Cookies:", req.cookies);
-    console.log("Refresh Token:", req.cookies["refresh-token"]);
 
-    // Validate refresh token in DB
+    // Validate refresh token
     const storedToken = await movieDb.query(
-      `SELECT * FROM nxtwatch_refresh_tokens 
-       WHERE token = $1 AND revoked = false AND expires_at > NOW()`,
+      `SELECT *
+   FROM nxtwatch_refresh_tokens
+   WHERE token = $1`,
       [refreshToken],
     );
 
     if (storedToken.rows.length === 0) {
-      return res.status(403).json({ error: "Invalid refresh token" });
+      return res.status(403).json({
+        error: "Invalid refresh token",
+      });
     }
 
     const userId = storedToken.rows[0].user_id;
 
-    
-    const newAccessToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-      expiresIn: "15m",
-    });
+    const userResult = await movieDb.query(
+      `SELECT id, name, email, public_id, role
+   FROM users
+   WHERE id = $1`,
+      [userId],
+    );
+
+    const user = userResult.rows[0];
+
+    const newAccessToken = jwt.sign(
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        public_id: user.public_id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      },
+    );
 
     res.cookie("access-token", newAccessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 45 * 60 * 1000,
-      path: "/",
+      ...cookieOptions,
+      maxAge: 60 * 60 * 1000,
     });
 
-    return res.status(200).json({ message: "New access token generated" });
+    return res.status(200).json({
+      message: "New access token generated",
+    });
   } catch (err) {
     console.log("ACCESS TOKEN ERROR:", err.message);
-    return res.status(500).json({ error: "Server error" });
+
+    return res.status(500).json({
+      error: "Server error",
+    });
   }
 };

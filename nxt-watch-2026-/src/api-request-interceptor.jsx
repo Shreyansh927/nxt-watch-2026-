@@ -5,7 +5,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// NEW INSTANCE (NO INTERCEPTOR)
+// Separate axios instance for refresh token
 const refreshApi = axios.create({
   baseURL: `${import.meta.env.VITE_SERVER_URL}/api`,
   withCredentials: true,
@@ -13,24 +13,35 @@ const refreshApi = axios.create({
 
 api.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
 
     console.log("Interceptor hit:", error.response?.status);
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      (error.response?.status === 401) &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
 
       try {
-        console.log("Calling refresh token API...");
+        console.log("Refreshing access token...");
 
-        await refreshApi.get("/access-token-generation"); 
+        await refreshApi.get("/access-token-generation");
 
-        console.log("Retrying original request...");
+        console.log("Retrying original request");
 
         return api(originalRequest);
       } catch (refreshError) {
-        console.log("Refresh failed → logout user");
+        console.log("Refresh failed");
+
+        localStorage.removeItem("user");
+
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+
         return Promise.reject(refreshError);
       }
     }

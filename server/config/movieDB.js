@@ -30,7 +30,8 @@ export const initMovieDB = async () => {
   writers TEXT,
   box_office TEXT,
   country TEXT,
-  vector_embedding vector(3072) --pgvector column for AI search
+  vector_embedding vector(3072) --pgvector column for AI search,
+  embedding vector(3072) --new embedding column for Gemini-001
 );`);
 
   await movieDb.query(`
@@ -41,6 +42,7 @@ export const initMovieDB = async () => {
   email TEXT,
   password_hash TEXT,
   profile_image TEXT,
+  role TEXT DEFAULT 'user',
   created_at TIMESTAMP DEFAULT NOW() );`);
 
   await movieDb.query(`CREATE TABLE IF NOT EXISTS watch_history(
@@ -136,6 +138,11 @@ export const initMovieDB = async () => {
       token TEXT UNIQUE NOT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       expires_at TIMESTAMP DEFAULT NOW() + INTERVAL '7 days',
+      device_info TEXT,
+      ip_location_info TEXT,
+      fingerprnits_info TEXT,
+      country TEXT,
+      city TEXT,
       revoked BOOLEAN DEFAULT FALSE
     );
   `);

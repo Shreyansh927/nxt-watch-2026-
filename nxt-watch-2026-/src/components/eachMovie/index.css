@@ -45,7 +45,7 @@
   font-size: clamp(2rem, 3vw, 3rem);
   margin-top: 40px;
   line-height: 1.05;
-  
+
   max-width: 720px;
 }
 
@@ -817,4 +817,320 @@
   margin-top: 4px;
   font-size: 15px;
   color: #0f0f0f;
+}
+
+/* ===== Similar Movies Section ===== */
+.similar-movies-section {
+  margin-top: 72px;
+  padding: 64px 0;
+  border-top: 2px solid rgba(100, 116, 139, 0.1);
+}
+
+.similar-movies-header {
+  margin-bottom: 48px;
+  padding: 0 24px;
+}
+
+.similar-movies-header h2 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.similar-movies-header p {
+  font-size: 1.1rem;
+  color: #64748b;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.similar-movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 32px;
+  padding: 0 24px;
+  perspective: 1000px;
+}
+
+.similar-movie-poster {
+  position: relative;
+  cursor: pointer;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 2/3;
+  group: "poster";
+  transform-style: preserve-3d;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.similar-movie-poster:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow:
+    0 28px 64px rgba(30, 58, 138, 0.24),
+    0 8px 24px rgba(59, 130, 246, 0.12);
+}
+
+.similar-movie-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.similar-movie-poster:hover img {
+  transform: scale(1.08);
+}
+
+.similar-movie-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.2) 40%,
+    rgba(0, 0, 0, 0.6) 80%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.similar-movie-poster:hover .similar-movie-overlay {
+  opacity: 1;
+}
+
+.match-badge {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+  transform: scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.similar-movie-poster:hover .match-badge {
+  transform: scale(1);
+}
+
+.similar-movie-info {
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.similar-movie-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+.similar-movie-poster:hover + .similar-movie-info .similar-movie-title {
+  color: #2563eb;
+}
+
+.similar-movie-year {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* ===== Responsive Design ===== */
+
+/* Tablet (768px and above) */
+@media (min-width: 768px) {
+  .similar-movies-section {
+    padding: 56px 0;
+    margin-top: 64px;
+  }
+
+  .similar-movies-header {
+    padding: 0 32px;
+    margin-bottom: 40px;
+  }
+
+  .similar-movies-header h2 {
+    font-size: 2.2rem;
+  }
+
+  .similar-movies-header p {
+    font-size: 1.05rem;
+  }
+
+  .similar-movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 28px;
+    padding: 0 32px;
+  }
+}
+
+/* Desktop Large (1024px and above) */
+@media (min-width: 1024px) {
+  .similar-movies-section {
+    padding: 72px 0;
+    margin-top: 72px;
+  }
+
+  .similar-movies-header {
+    padding: 0 48px;
+    margin-bottom: 52px;
+  }
+
+  .similar-movies-header h2 {
+    font-size: 2.8rem;
+    margin-bottom: 16px;
+  }
+
+  .similar-movies-header p {
+    font-size: 1.15rem;
+  }
+
+  .similar-movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 36px;
+    padding: 0 48px;
+  }
+
+  .similar-movie-poster {
+    border-radius: 28px;
+  }
+
+  .match-badge {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Desktop XL (1280px and above) */
+@media (min-width: 1280px) {
+  .similar-movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 40px;
+  }
+
+  .similar-movie-overlay {
+    padding: 24px;
+  }
+}
+
+/* Mobile Small (480px and below) */
+@media (max-width: 480px) {
+  .similar-movies-section {
+    margin-top: 48px;
+    padding: 40px 0;
+  }
+
+  .similar-movies-header {
+    padding: 0 16px;
+    margin-bottom: 32px;
+  }
+
+  .similar-movies-header h2 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+  }
+
+  .similar-movies-header p {
+    font-size: 0.95rem;
+  }
+
+  .similar-movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  .similar-movie-info {
+    padding: 12px 0;
+    min-height: 60px;
+  }
+
+  .similar-movie-title {
+    font-size: 0.9rem;
+  }
+
+  .similar-movie-year {
+    font-size: 0.8rem;
+  }
+
+  .match-badge {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .similar-movie-poster:hover {
+    transform: translateY(-8px) scale(1.01);
+  }
+}
+
+/* Tablet Medium (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .similar-movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 24px;
+  }
+
+  .similar-movie-info {
+    padding: 14px 0;
+  }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+  .similar-movies-header h2 {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1e40af 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .similar-movies-header p {
+    color: #cbd5e1;
+  }
+
+  .similar-movie-title {
+    color: #f1f5f9;
+  }
+
+  .similar-movie-year {
+    color: #64748b;
+  }
+}
+
+/* High Performance Animations (reduced motion) */
+@media (prefers-reduced-motion: reduce) {
+  .similar-movie-poster,
+  .similar-movie-poster img,
+  .similar-movie-overlay,
+  .match-badge {
+    transition: none;
+  }
+
+  .similar-movie-poster:hover {
+    transform: none;
+  }
 }
