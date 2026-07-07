@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import { FaMoon } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import axios from "axios";
-import SavedVideosContext from "../../createContext";
+
 import { FaUser } from "react-icons/fa";
 import { MdOutlineVideoLibrary } from "react-icons/md";
 import "./index.css";
@@ -19,7 +19,7 @@ const navigationList = [
 ];
 
 const Header = () => {
-  const { darkMode, toggleDarkMode } = useContext(SavedVideosContext);
+  
   const [t, setT] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
@@ -48,7 +48,7 @@ const Header = () => {
   };
 
   return (
-    <header className={`navbar ${darkMode ? "dark" : ""}`}>
+    <header className={`navbar dark`}>
       {/* Logo */}
       <Link to="/home" className="logo">
         NxtWatch

@@ -9,7 +9,7 @@ import EachMovie from "./components/eachMovie";
 import Anime from "./components/Anime";
 import Documentry from "./components/documentary";
 import Tv from "./components/tv";
-import SavedVideosContext from "./createContext";
+
 import Signup from "./components/signup";
 import api from "./api-request-interceptor.jsx";
 
@@ -34,6 +34,7 @@ class App extends Component {
         <Routes>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Login />} />
 
           <Route
             path="/admin-control"

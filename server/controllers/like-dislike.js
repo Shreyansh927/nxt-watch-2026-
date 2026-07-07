@@ -30,10 +30,10 @@ export const likeMovie = async (req, res) => {
       return res.status(200).json({ message: "liked the movie" });
     }
 
-    await movieDb.query(
-      `DELETE FROM likes WHERE user_id = $1 AND movie_id=$2`,
-      [userId, movieId],
-    );
+    // await movieDb.query(
+    //   `DELETE FROM likes WHERE user_id = $1 AND movie_id=$2`,
+    //   [userId, movieId],
+    // );
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: err });
@@ -70,10 +70,10 @@ export const dislikeMovie = async (req, res) => {
       return res.status(200).json({ message: "disliked the movie" });
     }
 
-    await movieDb.query(
-      `DELETE FROM dislikes WHERE user_id = $1 AND movie_id=$2`,
-      [userId, movieId],
-    );
+    // await movieDb.query(
+    //   `DELETE FROM dislikes WHERE user_id = $1 AND movie_id=$2`,
+    //   [userId, movieId],
+    // );
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: err });
@@ -92,6 +92,8 @@ export const fetchAllMovieLikeCount = async (req, res) => {
       `select user_id from likes where user_id = $1 and movie_id = $2`,
       [userID, movieId],
     );
+    console.log("userId", userId.rows[0]);
+    console.log("counts", counts.rows[0].count);
     return res
       .status(200)
       .json({ result: counts.rows[0].count, isPresent: userId.rows[0] });

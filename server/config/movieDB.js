@@ -30,8 +30,8 @@ export const initMovieDB = async () => {
   writers TEXT,
   box_office TEXT,
   country TEXT,
-  vector_embedding vector(3072) --pgvector column for AI search,
-  embedding vector(3072) --new embedding column for Gemini-001
+  vector_embedding vector(3072),
+  embedding vector(3072)
 );`);
 
   await movieDb.query(`

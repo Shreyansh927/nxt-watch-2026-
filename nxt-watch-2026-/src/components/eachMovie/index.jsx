@@ -4,8 +4,7 @@ import { MdRestore, MdCancel } from "react-icons/md";
 import axios from "axios";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { FaPlay, FaPause } from "react-icons/fa";
-// import { useSpeechSynthesis } from "react-speech-kit";
-import SavedVideosContext from "../../createContext";
+
 import { BiDislike } from "react-icons/bi";
 import Header from "../header";
 import { useQuery } from "@tanstack/react-query";
@@ -47,8 +46,7 @@ const languageArray = [
 const EachMovie = () => {
   const { title, id } = useParams();
   const navigate = useNavigate();
-  const { addVideo, removeVideo } = useContext(SavedVideosContext);
-  // const { speak, cancel } = useSpeechSynthesis();
+
   const [currentLanguage, setCurrentLanguage] = useState(languageArray[2].id);
   const [movieTrailer, setMovieTrailer] = useState({});
   const [tmdbMovieInfo, setTmdbMovieInfo] = useState({});
@@ -77,17 +75,17 @@ const EachMovie = () => {
   const [aiLoading, setAiLoading] = useState(false);
   const [similarMovies, setSimilarMovies] = useState([]);
 
- useEffect(() => {
-  getMovieTrailer();
-  getTmdbMovieInfo();
-  getSuggestedMovies();
-  geminiResponse();
-  fetchSimilarMovies();
-  fetchLikesCount();
-  fetchdislikeCount();
-  fetchAllComments();
-  fetchPreviousAiChats();
-}, [id, title]);
+  useEffect(() => {
+    getMovieTrailer();
+    getTmdbMovieInfo();
+    getSuggestedMovies();
+    geminiResponse();
+    fetchSimilarMovies();
+    fetchLikesCount();
+    fetchdislikeCount();
+    fetchAllComments();
+    fetchPreviousAiChats();
+  }, [id, title, likes, dislikes]);
 
   const timeAgo = (date) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -147,6 +145,7 @@ const EachMovie = () => {
 
       setComments(f);
     } catch (err) {
+      alert(err);
       console.log(err);
     }
   };
@@ -431,15 +430,16 @@ const EachMovie = () => {
   const likeMovie = async (movieId) => {
     try {
       const res = await axios.post(
-        `${process.env.SERVER_URL}/api/like/${movieId}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/like/${movieId}`,
         {},
         {
           withCredentials: true,
         },
       );
-
+      alert(res.data.message);
       fetchLikesCount();
     } catch (err) {
+      alert(err);
       console.log(err);
       // alert(err);
     }
@@ -448,7 +448,7 @@ const EachMovie = () => {
   const dislikeMovie = async (movieId) => {
     try {
       const res = await axios.post(
-        `${process.env.SERVER_URL}/api/dislike/${movieId}`,
+        `${import.meta.env.VITE_SERVER_URL}/api/dislike/${movieId}`,
         {},
         {
           withCredentials: true,
@@ -465,7 +465,7 @@ const EachMovie = () => {
   const postComment = async (movieId) => {
     try {
       const res = await axios.post(
-        `${process.env.SERVER_URL}/api/comment`,
+        `${import.meta.env.VITE_SERVER_URL}/api/comment`,
         {
           movieId,
           content: comment,
@@ -484,7 +484,7 @@ const EachMovie = () => {
     setAiLoading(true);
     try {
       const res = await axios.post(
-        `${process.env.SERVER_URL}/api/ai-movie-query`,
+        `${import.meta.env.VITE_SERVER_URL}/api/ai-movie-query`,
         {
           question,
           movieId: movieInfo.id,

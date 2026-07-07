@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
     const controller = new AbortController();
 
     api
-      .get("/protected", { signal: controller.signal })
+      .get("/protected", { signal: controller.signal }) 
       .then(() => setIsAuth(true))
       .catch(() => setIsAuth(false));
 

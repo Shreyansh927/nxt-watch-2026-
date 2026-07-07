@@ -104,11 +104,11 @@ const togglePlaylistStatusTool = tool(
 );
 
 
-const chatWithPlalistTool = tool(
-  async({userQuery, userId})=> {
+// const chatWithPlalistTool = tool(
+//   async({userQuery, userId})=> {
 
-  }
-)
+//   }
+// )
 /* ===================================================
    TOOL 2: ADD MOVIE TO PLAYLIST
 =================================================== */
