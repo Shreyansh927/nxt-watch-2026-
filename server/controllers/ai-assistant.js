@@ -7,9 +7,7 @@ import { z } from "zod";
 
 import { createFallbackAgent } from "./agentFactory.js";
 
-/* ==
-   TOOL 1: CREATE PLAYLIST
-======== */
+// create playlist
 
 const createPlaylistTool = tool(
   async ({ playlist, userId }) => {

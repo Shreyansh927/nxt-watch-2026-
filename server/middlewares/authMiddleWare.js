@@ -9,10 +9,16 @@ const cookieOptions = {
 };
 
 export const authMiddleware = async (req, res, next) => {
+  console.log("=AUTH =");
+  console.log("Cookies:", req.cookies);
+
   try {
     const token = req.cookies["access-token"];
 
+    console.log("Access Token:", token);
+
     if (!token) {
+      console.log("NO TOKEN");
       return res.status(401).json({
         error: "Unauthorized - No token",
       });
@@ -20,14 +26,19 @@ export const authMiddleware = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    console.log("Decoded:", decoded);
+
     const userResult = await movieDb.query(
       `SELECT id, name, email, public_id, role
-   FROM users
-   WHERE id = $1`,
+       FROM users
+       WHERE id = $1`,
       [decoded.id],
     );
 
+    console.log("User Result:", userResult.rows);
+
     if (userResult.rows.length === 0) {
+      console.log("USER NOT FOUND");
       return res.status(401).json({
         error: "Unauthorized - User not found",
       });
@@ -35,9 +46,11 @@ export const authMiddleware = async (req, res, next) => {
 
     req.user = userResult.rows[0];
 
+    console.log("AUTH SUCCESS");
+
     next();
   } catch (err) {
-    console.log("AUTH ERROR:", err.message);
+    console.log("JWT ERROR:", err.message);
 
     return res.status(401).json({
       error: "Unauthorized - Invalid token",

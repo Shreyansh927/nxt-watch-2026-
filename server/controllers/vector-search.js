@@ -117,7 +117,7 @@ export const vectorSearch = async (req, res) => {
 
     let rows;
 
-    // If user logged in → fetch preference vector
+    
     if (userId) {
       const prefResult = await movieDb.query(
         `

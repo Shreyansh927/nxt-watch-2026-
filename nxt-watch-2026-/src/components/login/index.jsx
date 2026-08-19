@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./index.css";
 import { toast } from "react-toastify";
@@ -10,23 +10,23 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [currentSessions, setCurrentSessions] = useState([]);
+  const [isAuth, setIsAuth] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const res = await api.get("/me");
+    const controller = new AbortController();
+    api
+      .get("/me", { signal: controller.signal })
+      .then((res) => setIsAuth(true))
+      .catch(() => setIsAuth(false));
 
-        if (res.data.user) {
-          navigate("/home", { replace: true });
-        }
-      } catch (err) {
-        console.log("Not authenticated");
-      }
-    };
-
-    fetchCurrentUser();
+    return () => controller.abort();
   }, []);
+
+  if (isAuth) {
+    return <Navigate to="/home" replace />;
+  }
+
   const login = async (e) => {
     e.preventDefault();
 
@@ -39,20 +39,18 @@ const Login = () => {
       toast.success(res.data.message || "Login successful!");
 
       localStorage.setItem("user", JSON.stringify(res.data.user));
-
       navigate("/home");
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.message;
 
       toast.error(errorMessage);
 
-      if (
-        errorMessage ===
-        "Device limit reached. Please log out from another device to continue."
-      ) {
-        setCurrentSessions(err.response.data.currentSessions || []);
-        
-      }
+      // if (
+      //   errorMessage ===
+      //   "Device limit reached. Please log out from another device to continue."
+      // ) {
+      //   setCurrentSessions(err.response.data.currentSessions || []);
+      // }
     }
   };
   return (
