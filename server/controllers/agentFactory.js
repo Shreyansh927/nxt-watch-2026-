@@ -17,16 +17,16 @@ export const createFallbackAgent = (tools, systemPrompt) => {
     checkpointer: memory,
   });
 
-  const groqAgent = createAgent({
-    model: new ChatGroq({
-      model: "llama-3.1-8b-instant",
-      temperature: 0,
-      apiKey: process.env.GROQ_API_KEY,
-    }),
-    tools,
-    systemPrompt,
-    checkpointer: memory,
-  });
+  // const groqAgent = createAgent({
+  //   model: new ChatGroq({
+  //     model: "llama-3.1-8b-instant",
+  //     temperature: 0,
+  //     apiKey: process.env.GROQ_API_KEY,
+  //   }),
+  //   tools,
+  //   systemPrompt,
+  //   checkpointer: memory,
+  // });
 
   return {
     invoke: async (payload, config) => {
@@ -35,7 +35,7 @@ export const createFallbackAgent = (tools, systemPrompt) => {
       } catch (error) {
         console.error("Gemini agent failed:", error.message);
 
-        return await groqAgent.invoke(payload, config);
+        
       }
     },
   };
