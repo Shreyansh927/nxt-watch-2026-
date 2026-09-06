@@ -2,9 +2,9 @@ import { movieDb } from "../config/movieDB.js";
 import jwt from "jsonwebtoken";
 
 const cookieOptions = {
-  httpOnly: true,
-  secure: false,
-  sameSite: "lax",
+  httpOnly: false,
+  secure: true,
+  sameSite: "none",
   path: "/",
 };
 
