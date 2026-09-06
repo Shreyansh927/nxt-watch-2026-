@@ -8,6 +8,8 @@ import rateLimit from "express-rate-limit";
 import { initMovieDB } from "./config/movieDB.js";
 import movieRouter from "./routes/movieRoutes.js";
 import authRouter from "./routes/authRoutes.js";
+import aiServiceTestRouter from "./routes/ai-service-test-route.js";
+import vectorSearchTestRouter from "./routes/vector-search-test-route.js";
 import {
   accessTokenGeneration,
   authMiddleware,
@@ -51,6 +53,10 @@ app.use((req, res, next) => {
   next();
 });
 app.get("/api/access-token-generation", accessTokenGeneration);
+
+app.use("/api", aiServiceTestRouter);
+
+app.use("/api", vectorSearchTestRouter);
 
 app.use("/api", authRouter);
 

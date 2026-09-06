@@ -567,6 +567,7 @@ const EachMovie = () => {
                       frameBorder="0"
                       title="Movie Video"
                       allow="autoplay; encrypted-media"
+                      
                     />
                   ) : (
                     <iframe
@@ -575,6 +576,7 @@ const EachMovie = () => {
                       frameBorder="0"
                       title="Trailer"
                       allow="autoplay; encrypted-media"
+                      
                     />
                   )}
                 </div>

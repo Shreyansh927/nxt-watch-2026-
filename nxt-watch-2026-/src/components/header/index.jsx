@@ -98,7 +98,7 @@ const Header = () => {
             <button className="btn-primary">Login</button>
           </Link>
         )}
-        {isLoggedIn && <MdOutlineVideoLibrary className="icon-btn" />}
+        
 
         <IoMenu className="menu-icon" onClick={() => setMenuOpen(!menuOpen)} />
       </div>

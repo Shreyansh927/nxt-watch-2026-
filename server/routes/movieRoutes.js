@@ -38,7 +38,7 @@ movieRouter.get("/sync-tmdb", async (req, res) => {
 });
 
 movieRouter.get("/get-movie/:movieId", fetchMovieById);
-movieRouter.get("/discover-movies",  fetchMovies);
+movieRouter.get("/discover-movies", fetchMovies);
 movieRouter.get("/discover-documetries", fetchDocumentries);
 movieRouter.get("/discover-animes", fetchAnimes);
 movieRouter.get("/discover-tv", fetchTvShows);

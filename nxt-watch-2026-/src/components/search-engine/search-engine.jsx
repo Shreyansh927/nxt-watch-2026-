@@ -91,7 +91,8 @@ const SearchEngine = () => {
         },
       );
 
-      const formattedMovies = res.data.results.map((movie) => ({
+      
+      const formattedMovies = (res.data.results || []).map((movie) => ({
         id: movie.id,
         title: movie.title,
         releaseYear: movie.release_year,
@@ -103,25 +104,11 @@ const SearchEngine = () => {
         movieEmbedding: movie.vector_embedding,
         match_percent: Math.max(
           0,
-          Math.min(100, Math.round(movie.match_percent)),
+          Math.min(100, Math.round(movie.match_percent || 0)),
         ),
       }));
-      const formattedSimilarMovies = res.data.similar_results.map((movie) => ({
-        id: movie.id,
-        title: movie.title,
-        releaseYear: movie.release_year,
-        description: movie.description,
-        genre: movie.genre,
-        posterPath: movie.posterpath,
-        backdropPath: movie.backdroppath,
-        originalTitle: movie.title,
-        movieEmbedding: movie.vector_embedding,
-        match_percent: Math.max(
-          0,
-          Math.min(100, Math.round(movie.match_percent)),
-        ),
-      }));
-      const formattedTrendingMovies = res.data.trending_results.map(
+
+      const formattedSimilarMovies = (res.data.similar_results || []).map(
         (movie) => ({
           id: movie.id,
           title: movie.title,
@@ -134,7 +121,25 @@ const SearchEngine = () => {
           movieEmbedding: movie.vector_embedding,
           match_percent: Math.max(
             0,
-            Math.min(100, Math.round(movie.match_percent)),
+            Math.min(100, Math.round(movie.match_percent || 0)),
+          ),
+        }),
+      );
+
+      const formattedTrendingMovies = (res.data.trending_results || []).map(
+        (movie) => ({
+          id: movie.id,
+          title: movie.title,
+          releaseYear: movie.release_year,
+          description: movie.description,
+          genre: movie.genre,
+          posterPath: movie.posterpath,
+          backdropPath: movie.backdroppath,
+          originalTitle: movie.title,
+          movieEmbedding: movie.vector_embedding,
+          match_percent: Math.max(
+            0,
+            Math.min(100, Math.round(movie.match_percent || 0)),
           ),
         }),
       );

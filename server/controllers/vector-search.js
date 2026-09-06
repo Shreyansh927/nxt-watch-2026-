@@ -117,7 +117,6 @@ export const vectorSearch = async (req, res) => {
 
     let rows;
 
-    
     if (userId) {
       const prefResult = await movieDb.query(
         `

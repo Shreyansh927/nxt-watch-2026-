@@ -83,7 +83,10 @@ const Home = () => {
   const fetchData = async (apiUrl, setStateFunction) => {
     try {
       const response = await axios.get(apiUrl);
-      const formattedMovies = response.data.movies.map((movie) => ({
+
+      const movies = response.data?.movies ?? [];
+
+      const formattedMovies = movies.map((movie) => ({
         id: movie.id,
         title: movie.title,
         releaseYear: movie.release_year,
@@ -93,10 +96,13 @@ const Home = () => {
         backdroppath: movie.backdroppath,
         originalTitle: movie.title,
       }));
+
       setStateFunction(formattedMovies);
-      console.log(response.data.movies);
+
+      console.log("Movies response:", response.data);
     } catch (err) {
       console.error("Error fetching data:", err);
+      setStateFunction([]);
     }
   };
 
@@ -141,11 +147,18 @@ const Home = () => {
 
   const getRecommendedMovies = async () => {
     setLoading(true);
+
     try {
-      const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/recommendations`, {
-        withCredentials: true,
-      });
-      const formatted = res.data.results.map((movie) => ({
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/recommendations`,
+        {
+          withCredentials: true,
+        },
+      );
+
+      const results = res.data?.results ?? [];
+
+      const formatted = results.map((movie) => ({
         id: movie.id,
         title: movie.title,
         releaseYear: movie.release_year,
@@ -154,13 +167,16 @@ const Home = () => {
         posterpath: movie.poster_path
           ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
           : movie.posterpath,
-        backdroppath: movie.backdrop_path,
+        backdroppath: movie.backdrop_path || movie.backdroppath,
         originalTitle: movie.title,
       }));
+
       setRecommendedMovies(formatted);
-      setLoading(false);
     } catch (err) {
       console.error("Error fetching recommended movies:", err);
+      setRecommendedMovies([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -363,7 +379,6 @@ const Home = () => {
                       className="editor-choice-play-button"
                     >
                       <FaPlayCircle className="play-icon" />
-                      
                     </Link>
                   </div>
                   <p>
