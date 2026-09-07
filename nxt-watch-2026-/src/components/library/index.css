@@ -1,3 +1,5 @@
+@import "../theme.css";
+
 .main {
   min-height: 100vh;
   background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.12), transparent 28%),
@@ -320,9 +322,6 @@ body {
     justify-content: center;
   }
 }
-x, 1fr));
-  }
-}
 
 /* Mobile */
 @media (max-width: 480px) {
@@ -342,7 +341,93 @@ x, 1fr));
 
 .add-icon{
     font-size: 20px;
-}x, 1fr));
+}
+
+/* Library dark SaaS surface. */
+.main {
+  min-height: calc(100vh - 68px) !important;
+  padding: clamp(24px, 4vw, 52px) clamp(14px, 4vw, 48px) 72px !important;
+  color: var(--saas-ink) !important;
+  background: var(--saas-bg) !important;
+}
+
+.profile-container {
+  max-width: 1320px;
+  gap: 18px;
+}
+
+.main .page-heading h1,
+.main .profile-header h2,
+.main .watch-header h2,
+.main .watch-later-section h2 {
+  color: var(--saas-ink) !important;
+  letter-spacing: -0.05em;
+}
+
+.main .page-heading p,
+.main .profile-header p,
+.main .watch-header p,
+.main .watch-later-section p {
+  color: var(--saas-muted) !important;
+}
+
+.main .profile-card,
+.main .watch-summary,
+.main .watch-later-section,
+.main .analytics-card {
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 9px !important;
+  background: linear-gradient(145deg, #111614, #090c0b) !important;
+  box-shadow: 0 20px 52px rgba(0, 0, 0, 0.28) !important;
+}
+
+.main .profile-row,
+.main .analytics-stats > div {
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 7px !important;
+  background: var(--saas-raised) !important;
+}
+
+.main .profile-row span,
+.main .profile-row p,
+.main .analytics-card h3,
+.main .analytics-card .stat-value {
+  color: var(--saas-ink) !important;
+}
+
+.main .profile-row input {
+  color: var(--saas-ink) !important;
+  background: #0b0e0d !important;
+  border-color: var(--saas-line-strong) !important;
+  border-radius: 6px !important;
+}
+
+.main .profile-actions button,
+.main .history-btn {
+  color: #111709 !important;
+  background: var(--saas-green) !important;
+  border: 1px solid var(--saas-green) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 0 22px rgba(186, 255, 88, 0.14) !important;
+}
+
+.main .action-group button:nth-child(2) {
+  color: var(--saas-ink) !important;
+  background: var(--saas-raised) !important;
+  border: 1px solid var(--saas-line-strong) !important;
+}
+
+.main .search-movie-card {
+  width: 100% !important;
+  min-height: 220px;
+  background-color: #0b0e0d !important;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 8px !important;
+}
+
+@media (max-width: 760px) {
+  .main {
+    padding-inline: 14px !important;
   }
 }
 

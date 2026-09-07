@@ -1,3 +1,9 @@
+  const getMovieImage = (path) => {
+    if (!path) return "";
+    return path.startsWith("http")
+      ? path
+      : `https://image.tmdb.org/t/p/original/${path.replace(/^\/+/, "")}`;
+  };
 import axios from "axios";
 import React, { useState } from "react";
 import Header from "../header";
@@ -212,9 +218,15 @@ const SearchEngine = () => {
               key={movie.id}
               className="search-movie-card"
               style={{
-                backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.backdropPath})`,
+                backgroundImage: `url(${getMovieImage(movie.posterPath || movie.backdropPath)})`,
               }}
             >
+              <img
+                className="search-movie-thumbnail"
+                src={getMovieImage(movie.posterPath || movie.backdropPath)}
+                alt=""
+                aria-hidden="true"
+              />
               <Link
                 to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
                 className="search-movie-link"
@@ -258,9 +270,15 @@ const SearchEngine = () => {
               key={movie.id}
               className="search-movie-card"
               style={{
-                backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.backdropPath})`,
+                backgroundImage: `url(${getMovieImage(movie.posterPath || movie.backdropPath)})`,
               }}
             >
+              <img
+                className="search-movie-thumbnail"
+                src={getMovieImage(movie.posterPath || movie.backdropPath)}
+                alt=""
+                aria-hidden="true"
+              />
               <Link
                 to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
                 className="search-movie-link"
@@ -305,9 +323,15 @@ const SearchEngine = () => {
               key={movie.id}
               className="search-movie-card"
               style={{
-                backgroundImage: `url(https://image.tmdb.org/t/p/w500${movie.backdropPath})`,
+                backgroundImage: `url(${getMovieImage(movie.posterPath || movie.backdropPath)})`,
               }}
             >
+              <img
+                className="search-movie-thumbnail"
+                src={getMovieImage(movie.posterPath || movie.backdropPath)}
+                alt=""
+                aria-hidden="true"
+              />
               <Link
                 to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
                 className="search-movie-link"

@@ -1,3 +1,5 @@
+@import "../theme.css";
+
 .each-movie-page {
   min-height: 100vh;
   padding: 36px 24px 48px;
@@ -766,6 +768,263 @@
     );
     height: 20vh;
     padding: 10px 20px;
+  }
+}
+
+/* Cinematic detail route theme. */
+.each-movie-page {
+  min-height: calc(100vh - 68px) !important;
+  padding: clamp(20px, 4vw, 48px) clamp(14px, 4vw, 52px) 64px !important;
+  color: var(--saas-ink) !important;
+  background:
+    radial-gradient(circle at 86% 0%, rgba(186, 255, 88, 0.08), transparent 26rem),
+    var(--saas-bg) !important;
+}
+
+.each-movie-page .movie-hero-panel {
+  position: relative;
+  overflow: hidden;
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 42px) !important;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 10px !important;
+  background:
+    linear-gradient(120deg, rgba(186, 255, 88, 0.08), transparent 38%),
+    linear-gradient(145deg, #121715, #090c0b) !important;
+  box-shadow: 0 22px 62px rgba(0, 0, 0, 0.32) !important;
+}
+
+.each-movie-page .movie-hero-panel::after {
+  content: "";
+  position: absolute;
+  right: -8rem;
+  top: -10rem;
+  width: 22rem;
+  height: 22rem;
+  border-radius: 50%;
+  background: rgba(186, 255, 88, 0.08);
+  filter: blur(48px);
+  pointer-events: none;
+}
+
+.each-movie-page .hero-chip {
+  color: var(--saas-green) !important;
+  background: rgba(186, 255, 88, 0.1) !important;
+  border: 1px solid rgba(186, 255, 88, 0.3) !important;
+  border-radius: 5px !important;
+}
+
+.each-movie-page .hero-title {
+  margin-top: 22px;
+  color: var(--saas-ink) !important;
+  background: linear-gradient(110deg, var(--saas-ink), var(--saas-green-bright));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: clamp(2.2rem, 5vw, 4.5rem);
+  letter-spacing: -0.06em;
+}
+
+.each-movie-page .hero-copy {
+  color: var(--saas-muted) !important;
+  font-size: 1rem;
+}
+
+.each-movie-page .hero-meta {
+  position: relative;
+  z-index: 1;
+}
+
+.each-movie-page .hero-meta span {
+  padding: 7px 10px;
+  color: var(--saas-green-bright) !important;
+  background: rgba(186, 255, 88, 0.08) !important;
+  border: 1px solid rgba(186, 255, 88, 0.22);
+  border-radius: 5px;
+}
+
+.each-movie-page > button {
+  display: flex;
+  width: min(100%, 1480px);
+  margin: 14px auto 0;
+  padding: 9px 13px;
+  align-items: center;
+  justify-content: center;
+  color: var(--saas-green-bright) !important;
+  background: rgba(186, 255, 88, 0.08) !important;
+  border: 1px solid rgba(186, 255, 88, 0.22) !important;
+  border-radius: 6px !important;
+  font-size: 0.85rem;
+}
+
+.each-movie-page .movie-layout {
+  width: min(100%, 1480px);
+  margin: 18px auto 0;
+  grid-template-columns: minmax(0, 1.48fr) minmax(320px, 0.82fr);
+  gap: 18px;
+}
+
+.each-movie-page .movie-player-card,
+.each-movie-page .movie-summary-card,
+.each-movie-page .info-panel,
+.each-movie-page .ai-panel,
+.each-movie-page .comment-box-panel,
+.each-movie-page .comment-card,
+.each-movie-page .tab-row,
+.each-movie-page .comments-section {
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 9px !important;
+  background: var(--saas-surface) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28) !important;
+}
+
+.each-movie-page .movie-frame {
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px !important;
+  background: #000 !important;
+}
+
+.each-movie-page .movie-frame iframe {
+  display: block;
+  min-height: 0;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.each-movie-page .player-actions {
+  padding: 14px;
+  gap: 8px;
+}
+
+.each-movie-page .action-pill,
+.each-movie-page .tab-pill,
+.each-movie-page .reaction-pill,
+.each-movie-page .comment-submit,
+.each-movie-page .ai-submit {
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 6px !important;
+  color: var(--saas-ink) !important;
+  background: var(--saas-raised) !important;
+}
+
+.each-movie-page .action-pill:hover,
+.each-movie-page .tab-pill:hover,
+.each-movie-page .reaction-pill:hover,
+.each-movie-page .comment-submit:hover,
+.each-movie-page .ai-submit:hover {
+  border-color: var(--saas-green) !important;
+  box-shadow: 0 0 22px rgba(186, 255, 88, 0.14) !important;
+}
+
+.each-movie-page .tab-row {
+  display: flex;
+  padding: 7px;
+  gap: 6px;
+}
+
+.each-movie-page .tab-pill.active,
+.each-movie-page .reaction-pill.liked {
+  color: #111709 !important;
+  background: var(--saas-green) !important;
+  border-color: var(--saas-green) !important;
+}
+
+.each-movie-page .reaction-pill.disliked {
+  color: var(--saas-red) !important;
+  background: rgba(230, 107, 114, 0.1) !important;
+  border-color: rgba(230, 107, 114, 0.34) !important;
+}
+
+.each-movie-page .movie-summary-card,
+.each-movie-page .info-panel,
+.each-movie-page .ai-panel,
+.each-movie-page .comments-section {
+  padding: clamp(18px, 3vw, 28px) !important;
+}
+
+.each-movie-page .movie-summary-card h2,
+.each-movie-page .comments-header h2,
+.each-movie-page .comment-title {
+  color: var(--saas-ink) !important;
+}
+
+.each-movie-page .movie-summary-card p,
+.each-movie-page .comment-text,
+.each-movie-page .comment-time,
+.each-movie-page .comments-header span,
+.each-movie-page .ai-empty {
+  color: var(--saas-muted) !important;
+}
+
+.each-movie-page .stat-card,
+.each-movie-page .detail-row,
+.each-movie-page .ai-chat-item,
+.each-movie-page .ai-empty {
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 7px !important;
+  background: var(--saas-raised) !important;
+}
+
+.each-movie-page .stat-value,
+.each-movie-page .detail-row strong,
+.each-movie-page .comment-user,
+.each-movie-page .ai-query {
+  color: var(--saas-ink) !important;
+}
+
+.each-movie-page .stat-label,
+.each-movie-page .detail-row span {
+  color: var(--saas-muted) !important;
+}
+
+.each-movie-page .comment-textarea,
+.each-movie-page .ai-input {
+  color: var(--saas-ink) !important;
+  background: var(--saas-raised) !important;
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 6px !important;
+}
+
+.each-movie-page .comment-avatar-pill,
+.each-movie-page .comment-avatar {
+  color: #111709 !important;
+  background: var(--saas-green) !important;
+}
+
+.each-movie-page .error-panel {
+  color: var(--saas-red) !important;
+  background: rgba(230, 107, 114, 0.08) !important;
+  border: 1px solid rgba(230, 107, 114, 0.3) !important;
+}
+
+@media (max-width: 1080px) {
+  .each-movie-page .movie-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .each-movie-page .hero-title {
+    font-size: 2.25rem;
+  }
+
+  .each-movie-page .hero-meta {
+    width: 100%;
+  }
+
+  .each-movie-page .hero-meta span {
+    flex: 1;
+    text-align: center;
+  }
+
+  .each-movie-page .movie-frame {
+    aspect-ratio: 16 / 10;
+  }
+
+  .each-movie-page .movie-frame iframe {
+    aspect-ratio: 16 / 10;
   }
 }
 .comments-container {

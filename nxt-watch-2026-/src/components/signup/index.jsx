@@ -82,11 +82,7 @@ const Signup = () => {
       <div className="auth-left">
         <div className="auth-left-content">
           <div className="auth-left-glow"></div>
-          <img
-            src="https://i.gifer.com/AuEx.gif"
-            alt="animation"
-            className="auth-gif"
-          />
+          
           <div className="auth-left-text">
             <h2>Join Our Community</h2>
             <p>Start exploring amazing content today</p>
@@ -98,11 +94,7 @@ const Signup = () => {
       <div className="auth-right">
         <div className="login-card">
           <div className="card-header">
-            <img
-              src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
-              alt="Logo"
-              className="logo"
-            />
+            
             <div className="header-text">
               <h1>Create Account</h1>
               <p>Join and start your journey</p>

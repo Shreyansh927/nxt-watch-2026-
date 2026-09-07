@@ -22,6 +22,13 @@ const Trending = () => {
   const [movieId, setMovieId] = useState("");
   const [MovieName, setMovieName] = useState("");
 
+  const getMovieImage = (path) => {
+    if (!path) return "";
+    return path.startsWith("http")
+      ? path
+      : `https://image.tmdb.org/t/p/original/${path.replace(/^\/+/, "")}`;
+  };
+
   const renderWatchLaters = async (moviId, movieName) => {
     setWatchLaterMode(true);
     const res = await fetchWatchLaterFolders(moviId, movieName);
@@ -304,7 +311,7 @@ const Trending = () => {
                 key={movie.id}
                 className="movie-card"
                 style={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdropPath})`,
+                  backgroundImage: `url(${getMovieImage(movie.posterPath || movie.backdropPath)})`,
                 }}
                 onClick={() => {
                   setWatchLaterMode(false);

@@ -67,11 +67,7 @@ const Login = () => {
       {/* RIGHT SIDE - LOGIN */}
       <div className="auth-right">
         <div className="login-card">
-          <img
-            src="https://assets.ccbp.in/frontend/react-js/nxt-watch-logo-light-theme-img.png"
-            alt=""
-            style={{ width: "50%", height: "40px", marginBottom: "20px" }}
-          />
+          
           <p>Access your powerful dashboard</p>
 
           {currentSessions.length > 0 ? (

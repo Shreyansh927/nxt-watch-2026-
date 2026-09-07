@@ -13,6 +13,12 @@ import { MdPlaylistAddCircle } from "react-icons/md";
 import AiAssistant from "../natural-language-command-system-ai";
 
 const Anime = () => {
+  const getMovieImage = (path) => {
+    if (!path) return "";
+    return path.startsWith("http")
+      ? path
+      : `https://image.tmdb.org/t/p/original/${path.replace(/^\/+/, "")}`;
+  };
   const loaderRef = useRef(null);
   const [activeMenu, setActiveMenu] = useState(null);
   const [latestWatchLaters, setLatestWatchLaters] = useState([]);
@@ -281,7 +287,7 @@ const Anime = () => {
                 key={movie.id}
                 className="movie-card"
                 style={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdropPath})`,
+                  backgroundImage: `url(${getMovieImage(movie.posterPath || movie.backdropPath)})`,
                 }}
                 onClick={() => {
                   setWatchLaterMode(false);

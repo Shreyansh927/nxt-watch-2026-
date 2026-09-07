@@ -1,3 +1,5 @@
+@import "../theme.css";
+
 .home-page {
   min-height: 100vh;
   padding: 42px 32px;
@@ -653,4 +655,257 @@
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 
   font-size: 22px;
+}
+
+/* Premium dark carousel treatment. */
+.slider-wrapper,
+.slider-wrapper .slick-list,
+.slider-wrapper .slick-track {
+  background: transparent !important;
+}
+
+.slider-wrapper {
+  padding: 10px 6px 24px;
+}
+
+.slider-wrapper .slick-slide {
+  padding: 0 7px;
+}
+
+.slider-wrapper .poster-card {
+  min-height: 390px;
+  background: linear-gradient(145deg, #171c19 0%, #0b0e0d 72%) !important;
+  border: 1px solid rgba(186, 255, 88, 0.18) !important;
+  border-radius: 12px !important;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(226, 255, 154, 0.08) !important;
+}
+
+/* Home route reimagined for the graphite SaaS canvas. */
+.home-page {
+  min-height: calc(100vh - 68px) !important;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 52px) clamp(14px, 4vw, 48px) !important;
+  color: var(--saas-ink) !important;
+  background: transparent !important;
+}
+
+.home-hero-section {
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.home-page .hero-copy,
+.home-page .hero-feature-panel {
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(145deg, #111614, #090c0b) !important;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.3) !important;
+}
+
+.home-page .hero-copy {
+  padding: clamp(24px, 4vw, 42px) !important;
+}
+
+.home-page .hero-copy h1 {
+  max-width: 720px;
+  color: var(--saas-ink) !important;
+  font-size: clamp(2.3rem, 5vw, 4.5rem);
+  letter-spacing: -0.06em;
+}
+
+.home-page .hero-copy p,
+.home-page .hero-stat p,
+.home-page .info-card p {
+  color: var(--saas-muted) !important;
+}
+
+.home-page .eyebrow-badge,
+.home-page .section-label {
+  color: var(--saas-green) !important;
+  background: rgba(186, 255, 88, 0.1) !important;
+  border: 1px solid rgba(186, 255, 88, 0.24) !important;
+  border-radius: 5px !important;
+}
+
+.home-page .hero-feature-panel {
+  min-height: 470px;
+}
+
+.home-page .hero-feature-image {
+  min-height: 470px;
+  background-color: #0b0e0d;
+}
+
+.home-page .hero-feature-image::before {
+  background:
+    linear-gradient(180deg, rgba(5, 7, 6, 0.08), rgba(5, 7, 6, 0.92)),
+    radial-gradient(circle at 85% 10%, rgba(186, 255, 88, 0.16), transparent 30%);
+}
+
+.home-page .hero-feature-copy {
+  padding: clamp(22px, 4vw, 36px);
+  background: linear-gradient(180deg, transparent, rgba(5, 7, 6, 0.94)) !important;
+}
+
+.home-page .hero-feature-copy span {
+  color: var(--saas-green-bright) !important;
+}
+
+.home-page .hero-feature-copy p {
+  color: rgba(242, 245, 241, 0.72) !important;
+}
+
+.home-page .hero-feature-meta span {
+  padding: 7px 10px;
+  color: var(--saas-green-bright) !important;
+  background: rgba(186, 255, 88, 0.1) !important;
+  border: 1px solid rgba(186, 255, 88, 0.24) !important;
+  border-radius: 5px;
+}
+
+.home-page .hero-stat-grid {
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.home-page .hero-stat {
+  padding: 16px;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 7px !important;
+  background: rgba(20, 23, 22, 0.76) !important;
+  box-shadow: none !important;
+}
+
+.home-page .hero-stat span {
+  color: var(--saas-green-bright) !important;
+  font-size: 1.65rem;
+}
+
+.home-page .home-intro-cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.home-page .info-card,
+.home-page .home-section {
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 9px !important;
+  background: var(--saas-surface) !important;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.24) !important;
+}
+
+.home-page .info-card {
+  padding: 22px;
+}
+
+.home-page .info-card.accent,
+.home-page .recommended-section {
+  background: linear-gradient(145deg, rgba(186, 255, 88, 0.08), var(--saas-surface)) !important;
+}
+
+.home-page .info-card h3,
+.home-page .home-section h2 {
+  color: var(--saas-ink) !important;
+}
+
+.home-page .home-section {
+  margin-bottom: 14px;
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.home-page .section-heading {
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.home-page .section-heading h2 {
+  margin-top: 8px;
+  font-size: clamp(1.3rem, 2.3vw, 2rem);
+  letter-spacing: -0.045em;
+}
+
+.home-page .view-more-link {
+  color: var(--saas-green-bright) !important;
+}
+
+.home-page .slider-wrapper {
+  padding: 6px 2px 20px;
+}
+
+.home-page .slider-wrapper .slick-slide {
+  padding: 0 5px;
+}
+
+.home-page .slider-wrapper .poster-card {
+  min-height: 330px;
+  background: linear-gradient(145deg, #171c19, #0b0e0d) !important;
+  border: 1px solid rgba(186, 255, 88, 0.16) !important;
+  border-radius: 9px !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32) !important;
+}
+
+.home-page .slider-wrapper .poster-img {
+  height: 330px;
+  width: 100% !important;
+  opacity: 1 !important;
+  object-fit: cover;
+  border-radius: 8px !important;
+}
+
+.home-page .slider-wrapper .poster-card-content {
+  background: linear-gradient(180deg, transparent 26%, rgba(5, 7, 6, 0.94)) !important;
+}
+
+.home-page .slider-wrapper .slick-prev,
+.home-page .slider-wrapper .slick-next {
+  width: 34px;
+  height: 34px;
+  background: rgba(13, 15, 15, 0.94) !important;
+  border: 1px solid rgba(186, 255, 88, 0.28) !important;
+  border-radius: 6px !important;
+}
+
+.home-page .slider-wrapper .slick-prev::before,
+.home-page .slider-wrapper .slick-next::before {
+  color: var(--saas-green) !important;
+}
+
+@media (max-width: 860px) {
+  .home-page .home-hero-section {
+    grid-template-columns: 1fr;
+  }
+
+  .home-page .home-intro-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .home-page .hero-copy h1 {
+    font-size: 2.35rem;
+  }
+
+  .home-page .hero-feature-panel,
+  .home-page .hero-feature-image {
+    min-height: 390px;
+  }
+
+  .home-page .hero-actions {
+    flex-direction: row;
+  }
+
+  .home-page .hero-button {
+    flex: 1 1 100%;
+  }
+
+  .home-page .slider-wrapper .poster-card,
+  .home-page .slider-wrapper .poster-img {
+    min-height: 300px;
+    height: 300px;
+  }
 }

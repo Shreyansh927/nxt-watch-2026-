@@ -1,3 +1,5 @@
+@import "../theme.css";
+
 /* Main Page Container */
 .watch-later-files-page {
   min-height: 100vh;
@@ -431,5 +433,95 @@
   .hero-icon {
     width: 80px;
     height: 80px;
+  }
+}
+
+/* Saved movie folder dark theme. */
+.watch-later-files-page {
+  min-height: calc(100vh - 68px) !important;
+  color: var(--saas-ink) !important;
+  background: var(--saas-bg) !important;
+}
+
+.watch-later-files-page .wl-hero {
+  background: linear-gradient(120deg, rgba(186, 255, 88, 0.08), #0d110f) !important;
+  border-bottom: 1px solid var(--saas-line) !important;
+}
+
+.watch-later-files-page .folder-title,
+.watch-later-files-page .section-title,
+.watch-later-files-page .empty-title {
+  color: var(--saas-ink) !important;
+  background: linear-gradient(110deg, var(--saas-ink), var(--saas-green-bright));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.watch-later-files-page .folder-subtitle,
+.watch-later-files-page .section-description,
+.watch-later-files-page .stat-item,
+.watch-later-files-page .date {
+  color: var(--saas-muted) !important;
+}
+
+.watch-later-files-page .hero-icon {
+  color: var(--saas-green) !important;
+  background: rgba(186, 255, 88, 0.08) !important;
+  border-color: rgba(186, 255, 88, 0.25) !important;
+}
+
+.watch-later-files-page .grid-container {
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.watch-later-files-page .indivisual-movie-container {
+  min-height: 330px;
+  aspect-ratio: 0.76;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 10px !important;
+  background-color: #0b0e0d !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34) !important;
+}
+
+.watch-later-files-page .indivisual-movie-container:hover {
+  transform: translateY(-6px);
+  border-color: var(--saas-green) !important;
+  box-shadow: 0 26px 56px rgba(0, 0, 0, 0.46) !important;
+}
+
+.watch-later-files-page .sm-p {
+  height: auto;
+  min-height: 92px;
+  padding: 14px !important;
+  border: 1px solid rgba(186, 255, 88, 0.14) !important;
+  border-radius: 7px !important;
+  background: rgba(8, 12, 10, 0.82) !important;
+  color: var(--saas-muted) !important;
+  backdrop-filter: blur(10px);
+}
+
+.watch-later-files-page .movie-title {
+  color: var(--saas-ink) !important;
+  font-size: 1rem !important;
+}
+
+.watch-later-files-page .release-year {
+  color: var(--saas-green-bright) !important;
+  background: rgba(186, 255, 88, 0.1) !important;
+  border: 1px solid rgba(186, 255, 88, 0.26);
+  border-radius: 4px;
+}
+
+@media (max-width: 760px) {
+  .watch-later-files-page .grid-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .watch-later-files-page .grid-container {
+    grid-template-columns: 1fr !important;
   }
 }

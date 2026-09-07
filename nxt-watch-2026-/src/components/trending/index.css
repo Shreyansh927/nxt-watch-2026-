@@ -1,3 +1,5 @@
+@import "../theme.css";
+
 /* Main Container */
 .trending-container {
   min-height: 100vh;
@@ -1257,4 +1259,218 @@
     rgb(241, 77, 102)
   );
   cursor: pointer;
+}
+
+/* Refined movie cards */
+.trending-page .movies-section {
+  max-width: 1480px;
+  padding: clamp(2rem, 4vw, 4rem) clamp(1rem, 3vw, 3rem);
+}
+
+.trending-page .grid-container {
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.trending-page .movie-card {
+  isolation: isolate;
+  min-height: 330px;
+  aspect-ratio: 0.76;
+  border: 1px solid rgba(218, 255, 224, 0.14) !important;
+  border-radius: 12px !important;
+  background-color: #0b0e0d !important;
+  background-size: cover !important;
+  background-position: center !important;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(226, 255, 154, 0.08) !important;
+}
+
+.trending-page .movie-card::before {
+  background: linear-gradient(
+    180deg,
+    rgba(5, 7, 6, 0.05) 0%,
+    rgba(5, 7, 6, 0.12) 35%,
+    rgba(5, 7, 6, 0.78) 76%,
+    rgba(5, 7, 6, 0.98) 100%
+  ) !important;
+}
+
+.trending-page .movie-card::after {
+  width: 150px;
+  height: 150px;
+  background: rgba(186, 255, 88, 0.13) !important;
+  filter: blur(42px);
+}
+
+.trending-page .movie-card:hover {
+  transform: translateY(-6px) !important;
+  border-color: rgba(186, 255, 88, 0.58) !important;
+  box-shadow:
+    0 26px 58px rgba(0, 0, 0, 0.48),
+    0 0 24px rgba(186, 255, 88, 0.1) !important;
+}
+
+.trending-page .movie-overlay {
+  top: 12px;
+  right: 12px;
+}
+
+.trending-page .menu-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 7px;
+  background: rgba(13, 15, 15, 0.84) !important;
+  color: var(--saas-ink) !important;
+  border: 1px solid rgba(226, 255, 154, 0.2) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.trending-page .menu-btn:hover {
+  background: var(--saas-green) !important;
+  color: #111709 !important;
+  border-color: var(--saas-green) !important;
+}
+
+.trending-page .menu-dropdown {
+  right: 0;
+  min-width: 172px;
+  margin-top: 8px;
+  overflow: hidden;
+  background: #111513 !important;
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.48) !important;
+}
+
+.trending-page .menu-item {
+  color: var(--saas-ink) !important;
+  background: transparent !important;
+}
+
+.trending-page .menu-item:hover {
+  color: #111709 !important;
+  background: var(--saas-green) !important;
+}
+
+.trending-page .movie-info {
+  padding: 1rem;
+}
+
+.trending-page .movie-details {
+  padding: 1rem;
+  border: 1px solid rgba(226, 255, 154, 0.12);
+  border-radius: 8px;
+  background: rgba(8, 11, 10, 0.72) !important;
+  backdrop-filter: blur(12px);
+}
+
+.trending-page .movie-title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-bottom: 0.55rem;
+  color: var(--saas-ink) !important;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.trending-page .release-year {
+  display: inline-flex;
+  padding: 3px 7px;
+  border: 1px solid rgba(186, 255, 88, 0.35);
+  border-radius: 4px;
+  color: var(--saas-green-bright) !important;
+  background: rgba(186, 255, 88, 0.1);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 760px) {
+  .trending-page .grid-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .trending-page .movie-card {
+    min-height: 270px;
+  }
+}
+
+@media (max-width: 420px) {
+  .trending-page .grid-container {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Keep the Trending route entirely on the dark product canvas. */
+.trending-page,
+.trending-page .trending-hero,
+.trending-page .movies-section,
+.trending-page .section-header,
+.trending-page .grid-container,
+.trending-page .error-section {
+  color: var(--saas-ink) !important;
+  background: transparent !important;
+}
+
+.trending-page .trending-hero {
+  background:
+    radial-gradient(circle at 78% 0%, rgba(186, 255, 88, 0.09), transparent 22rem),
+    linear-gradient(180deg, rgba(16, 20, 17, 0.95), rgba(5, 6, 6, 0.2)) !important;
+  border-bottom: 1px solid var(--saas-line) !important;
+}
+
+.trending-page .section-title,
+.trending-page .hero-title {
+  color: var(--saas-ink) !important;
+  background: linear-gradient(110deg, var(--saas-ink), var(--saas-green-bright)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.trending-page .section-description,
+.trending-page .hero-subtitle,
+.trending-page .stat-item {
+  color: var(--saas-muted) !important;
+}
+
+.trending-page .hero-icon {
+  color: var(--saas-green) !important;
+  background: rgba(186, 255, 88, 0.08) !important;
+  border: 1px solid rgba(186, 255, 88, 0.24) !important;
+  box-shadow: 0 0 40px rgba(186, 255, 88, 0.12) !important;
+}
+
+.trending-page .movie-card {
+  background-color: #0b0e0d !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.trending-page .watch-later-overlay {
+  background: rgba(3, 5, 4, 0.82) !important;
+}
+
+.trending-page .overlay-content,
+.trending-page .folder-item,
+.trending-page .search-container .search-input,
+.trending-page .close-overlay-btn,
+.trending-page .watch-later-folders > div {
+  color: var(--saas-ink) !important;
+  background: var(--saas-surface) !important;
+  border: 1px solid var(--saas-line) !important;
+}
+
+.trending-page .search-container .search-input {
+  background: var(--saas-raised) !important;
+}
+
+.trending-page .close-overlay-btn:hover,
+.trending-page .folder-item:hover {
+  border-color: var(--saas-green) !important;
+  background: var(--saas-hover) !important;
 }

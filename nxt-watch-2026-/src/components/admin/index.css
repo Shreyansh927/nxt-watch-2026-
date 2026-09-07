@@ -1,3 +1,5 @@
+@import "../theme.css";
+
 .admin-page {
   min-height: 100vh;
   padding: 36px 24px 60px;
@@ -539,5 +541,220 @@
   .admin-submit,
   .admin-secondary {
     width: 100%;
+  }
+}
+
+/* Admin operations console theme. */
+.admin-page {
+  min-height: calc(100vh - 68px) !important;
+  padding: clamp(22px, 4vw, 52px) clamp(14px, 4vw, 48px) 64px !important;
+  color: var(--saas-ink) !important;
+  background:
+    radial-gradient(circle at 88% 0%, rgba(186, 255, 88, 0.08), transparent 26rem),
+    var(--saas-bg) !important;
+}
+
+.admin-page::before {
+  opacity: 0.45;
+  background:
+    linear-gradient(rgba(218, 255, 224, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(218, 255, 224, 0.025) 1px, transparent 1px) !important;
+  background-size: 44px 44px !important;
+}
+
+.admin-shell {
+  max-width: 1480px !important;
+}
+
+.admin-page .admin-hero {
+  grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.admin-page .admin-hero-copy,
+.admin-page .admin-hero-panel,
+.admin-page .admin-form-card,
+.admin-page .admin-preview-card {
+  padding: clamp(20px, 3vw, 34px) !important;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(145deg, #111614, #090c0b) !important;
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.3) !important;
+}
+
+.admin-page .admin-hero-copy h1 {
+  color: var(--saas-ink) !important;
+  background: linear-gradient(110deg, var(--saas-ink), var(--saas-green-bright));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: clamp(2.2rem, 5vw, 4.7rem);
+  letter-spacing: -0.07em;
+}
+
+.admin-page .admin-hero-copy p,
+.admin-page .admin-hero-panel > p,
+.admin-page .preview-copy p {
+  color: var(--saas-muted) !important;
+}
+
+.admin-page .panel-badge,
+.admin-page .preview-pill {
+  color: var(--saas-green) !important;
+  background: rgba(186, 255, 88, 0.1) !important;
+  border: 1px solid rgba(186, 255, 88, 0.26) !important;
+  border-radius: 5px !important;
+}
+
+.admin-page .hero-stats-grid {
+  gap: 10px;
+}
+
+.admin-page .hero-stat-card,
+.admin-page .preview-detail {
+  padding: 15px !important;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 7px !important;
+  background: var(--saas-raised) !important;
+  box-shadow: none !important;
+}
+
+.admin-page .hero-stat-label,
+.admin-page .preview-detail {
+  color: var(--saas-muted) !important;
+}
+
+.admin-page .hero-stat-card strong,
+.admin-page .preview-detail strong,
+.admin-page .admin-hero-panel .panel-heading h2,
+.admin-page .admin-preview-card h3,
+.admin-page .admin-form-card .panel-heading h2 {
+  color: var(--saas-ink) !important;
+}
+
+.admin-page .admin-grid {
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: 14px;
+}
+
+.admin-page .admin-form-card,
+.admin-page .admin-preview-card {
+  gap: 18px;
+}
+
+.admin-page .admin-form-card label {
+  color: var(--saas-muted) !important;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.admin-page .admin-form-card input,
+.admin-page .admin-form-card textarea,
+.admin-page .admin-form-card select {
+  padding: 13px 14px;
+  color: var(--saas-ink) !important;
+  background: var(--saas-raised) !important;
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 6px !important;
+}
+
+.admin-page .admin-form-card input:focus,
+.admin-page .admin-form-card textarea:focus,
+.admin-page .admin-form-card select:focus {
+  border-color: var(--saas-green) !important;
+  box-shadow: 0 0 0 3px rgba(186, 255, 88, 0.1) !important;
+}
+
+.admin-page .admin-form-card input::placeholder,
+.admin-page .admin-form-card textarea::placeholder {
+  color: var(--saas-muted) !important;
+}
+
+.admin-page .admin-form-card .upload-field {
+  padding: 14px;
+  border-radius: 7px;
+  background: rgba(186, 255, 88, 0.06) !important;
+  border-color: rgba(186, 255, 88, 0.3) !important;
+}
+
+.admin-page .admin-form-card .upload-field span {
+  color: var(--saas-green-bright) !important;
+}
+
+.admin-page .admin-submit,
+.admin-page .admin-secondary,
+.admin-page .admin-form-card button {
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 6px !important;
+  color: var(--saas-ink) !important;
+  background: var(--saas-raised) !important;
+}
+
+.admin-page .admin-submit {
+  color: #111709 !important;
+  background: var(--saas-green) !important;
+  border-color: var(--saas-green) !important;
+  box-shadow: 0 0 24px rgba(186, 255, 88, 0.15) !important;
+}
+
+.admin-page .admin-submit:hover,
+.admin-page .admin-secondary:hover,
+.admin-page .admin-form-card button:hover {
+  border-color: var(--saas-green) !important;
+  transform: translateY(-1px);
+}
+
+.admin-page .preview-card {
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 8px !important;
+  background: var(--saas-raised) !important;
+  box-shadow: none !important;
+}
+
+.admin-page .preview-image {
+  min-height: 240px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(186, 255, 88, 0.12), transparent 46%),
+    #090c0b !important;
+}
+
+.admin-page .preview-placeholder {
+  color: var(--saas-muted) !important;
+}
+
+.admin-page .admin-status {
+  padding: 12px 14px;
+  color: var(--saas-green-bright) !important;
+  background: rgba(186, 255, 88, 0.08) !important;
+  border: 1px solid rgba(186, 255, 88, 0.22) !important;
+  border-radius: 6px !important;
+}
+
+.admin-page .admin-status.admin-status--error {
+  color: var(--saas-red) !important;
+  background: rgba(230, 107, 114, 0.08) !important;
+  border-color: rgba(230, 107, 114, 0.3) !important;
+}
+
+@media (max-width: 1080px) {
+  .admin-page .admin-hero,
+  .admin-page .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .admin-page .hero-stats-grid,
+  .admin-page .admin-form-card .form-grid,
+  .admin-page .preview-details {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-page .admin-hero-copy,
+  .admin-page .admin-hero-panel,
+  .admin-page .admin-form-card,
+  .admin-page .admin-preview-card {
+    padding: 20px !important;
   }
 }

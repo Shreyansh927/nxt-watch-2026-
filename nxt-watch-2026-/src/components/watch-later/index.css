@@ -1,3 +1,5 @@
+@import "../theme.css";
+
 /* ============================================
    WATCH LATER COMPONENT - PREMIUM REDESIGN
    ============================================ */
@@ -607,4 +609,120 @@
   .wl-empty {
     padding: 50px 20px;
   }
+}
+
+/* Watch Later collections dark product theme. */
+.wl-container {
+  max-width: 1320px;
+  gap: 16px;
+  padding: 24px clamp(14px, 4vw, 42px) 64px;
+  color: var(--saas-ink) !important;
+}
+
+.wl-hero,
+.wl-toolbar,
+.wl-public-search-wrapper,
+.wl-empty,
+.wl-card,
+.wl-modal {
+  color: var(--saas-ink) !important;
+  background: linear-gradient(145deg, #111614, #090c0b) !important;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 9px !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28) !important;
+}
+
+.wl-hero {
+  padding: clamp(22px, 4vw, 34px) !important;
+  background: linear-gradient(120deg, rgba(186, 255, 88, 0.08), #0d110f) !important;
+}
+
+.wl-hero__content h2,
+.wl-card h4,
+.wl-modal__header h3,
+.wl-empty h3 {
+  color: var(--saas-ink) !important;
+}
+
+.wl-hero__content p,
+.wl-stats__item,
+.wl-date,
+.wl-empty p {
+  color: var(--saas-muted) !important;
+}
+
+.wl-btn--primary,
+.wl-public-search-btn {
+  color: #111709 !important;
+  background: var(--saas-green) !important;
+  border: 1px solid var(--saas-green) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 0 22px rgba(186, 255, 88, 0.14) !important;
+}
+
+.wl-btn--secondary,
+.wl-card__action,
+.wl-modal__close {
+  color: var(--saas-ink) !important;
+  background: var(--saas-raised) !important;
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 6px !important;
+}
+
+.wl-toolbar,
+.wl-public-search-wrapper {
+  padding: 12px;
+}
+
+.wl-search input,
+.wl-public-search-input,
+.wl-form__group input,
+.wl-form__group select {
+  color: var(--saas-ink) !important;
+  background: var(--saas-raised) !important;
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 6px !important;
+}
+
+.wl-search input:focus,
+.wl-public-search-input:focus,
+.wl-form__group input:focus,
+.wl-form__group select:focus {
+  border-color: var(--saas-green) !important;
+  box-shadow: 0 0 0 3px rgba(186, 255, 88, 0.1) !important;
+}
+
+.wl-grid {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.wl-card {
+  min-height: 170px;
+  padding: 22px;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.wl-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(186, 255, 88, 0.52) !important;
+  box-shadow: 0 24px 52px rgba(0, 0, 0, 0.42) !important;
+}
+
+.wl-card__icon,
+.wl-empty__icon {
+  color: var(--saas-green) !important;
+}
+
+.wl-badge {
+  color: var(--saas-green-bright) !important;
+  background: rgba(186, 255, 88, 0.1) !important;
+  border: 1px solid rgba(186, 255, 88, 0.24);
+  border-radius: 4px !important;
+}
+
+.wl-modal__header,
+.wl-form__group label {
+  color: var(--saas-ink) !important;
+  border-bottom-color: var(--saas-line) !important;
 }

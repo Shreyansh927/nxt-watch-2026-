@@ -1,3 +1,5 @@
+@import "../theme.css";
+
 .search-engine-page {
   width: 100%;
   min-height: 100vh;
@@ -501,6 +503,155 @@
   }
 }
 
+/* Search Engine dark theme and visible thumbnails. */
+.search-engine-page {
+  min-height: 100vh;
+  color: var(--saas-ink) !important;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(186, 255, 88, 0.08), transparent 24rem),
+    var(--saas-bg) !important;
+}
+
+.search-engine-page .search-hero {
+  padding: clamp(30px, 5vw, 64px) 16px !important;
+  background:
+    radial-gradient(circle at 78% 0%, rgba(186, 255, 88, 0.1), transparent 24rem),
+    linear-gradient(180deg, rgba(16, 20, 17, 0.96), rgba(5, 6, 6, 0.15)) !important;
+  border-bottom: 1px solid var(--saas-line) !important;
+}
+
+.search-engine-page .hero-title,
+.search-engine-page .results-title {
+  color: var(--saas-ink) !important;
+  background: linear-gradient(110deg, var(--saas-ink), var(--saas-green-bright)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.search-engine-page .hero-subtitle,
+.search-engine-page .results-count,
+.search-engine-page .empty-description,
+.search-engine-page .suggestion-meta {
+  color: var(--saas-muted) !important;
+}
+
+.search-engine-page .search-container {
+  margin-bottom: 80px;
+  padding: 5px;
+  background: rgba(13, 15, 15, 0.96) !important;
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 9px !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35) !important;
+}
+
+.search-engine-page .search-container:focus-within {
+  border-color: var(--saas-green) !important;
+  box-shadow: 0 0 0 3px rgba(186, 255, 88, 0.1), 0 20px 50px rgba(0, 0, 0, 0.4) !important;
+}
+
+.search-engine-page .search-icon-wrapper,
+.search-engine-page .search-icon {
+  color: var(--saas-green) !important;
+}
+
+.search-engine-page .search-input {
+  color: var(--saas-ink) !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.search-engine-page .search-input::placeholder {
+  color: var(--saas-muted) !important;
+}
+
+.search-engine-page .search-btn {
+  color: #111709 !important;
+  background: var(--saas-green) !important;
+  border: 1px solid var(--saas-green) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 0 22px rgba(186, 255, 88, 0.16) !important;
+}
+
+.search-engine-page .suggestions-container {
+  background: #101412 !important;
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.5) !important;
+}
+
+.search-engine-page .each-suggestion {
+  color: var(--saas-ink) !important;
+  border-bottom-color: var(--saas-line) !important;
+}
+
+.search-engine-page .each-suggestion:hover {
+  background: rgba(186, 255, 88, 0.08) !important;
+}
+
+.search-engine-page .search-grid-container {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.search-engine-page .search-movie-card {
+  height: 340px;
+  background-color: #0b0e0d !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  border: 1px solid rgba(218, 255, 224, 0.14) !important;
+  border-radius: 11px !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34) !important;
+}
+
+.search-engine-page .search-movie-thumbnail {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 1 !important;
+  object-fit: cover;
+  object-position: center;
+  background: #0b0e0d;
+}
+
+.search-engine-page .search-movie-card:hover {
+  border-color: rgba(186, 255, 88, 0.58) !important;
+  box-shadow: 0 26px 58px rgba(0, 0, 0, 0.48), 0 0 24px rgba(186, 255, 88, 0.1) !important;
+}
+
+.search-engine-page .search-movie-title {
+  color: var(--saas-ink) !important;
+}
+
+.search-engine-page .search-release-year,
+.search-engine-page .search-match-percent {
+  border-color: rgba(186, 255, 88, 0.34) !important;
+  background: rgba(186, 255, 88, 0.1) !important;
+  color: var(--saas-green-bright) !important;
+}
+
+@media (max-width: 600px) {
+  .search-engine-page .search-grid-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .search-engine-page .search-movie-card {
+    height: 290px;
+  }
+}
+
+@media (max-width: 420px) {
+  .search-engine-page .search-grid-container {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 /* Main Content */
 .main-movie-content {
   width: 100%;
@@ -592,7 +743,7 @@
   }
 
   .search-container {
-    flexdirection: column;
+    flex-direction: column;
     gap: 12px;
   }
 
@@ -641,4 +792,71 @@
     font-size: 0.95rem;
     padding: 10px 6px;
   }
+}
+
+/* Final card and recommendation polish. */
+.search-engine-page .search-container {
+  background: rgba(13, 17, 15, 0.98) !important;
+  border: 1px solid rgba(186, 255, 88, 0.24) !important;
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.32),
+    0 0 22px rgba(186, 255, 88, 0.06) !important;
+}
+
+.search-engine-page .search-input {
+  color: var(--saas-ink) !important;
+  background: transparent !important;
+}
+
+.search-engine-page .suggestions-container {
+  background: #101512 !important;
+  border: 1px solid rgba(186, 255, 88, 0.2) !important;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.5) !important;
+}
+
+.search-engine-page .each-suggestion {
+  color: var(--saas-ink) !important;
+  background: transparent !important;
+  border-bottom: 1px solid rgba(218, 255, 224, 0.08) !important;
+}
+
+.search-engine-page .suggestion-text {
+  color: var(--saas-ink) !important;
+}
+
+.search-engine-page .suggestion-icon,
+.search-engine-page .suggestion-arrow {
+  color: var(--saas-green) !important;
+}
+
+.search-engine-page .each-suggestion:hover {
+  background: rgba(186, 255, 88, 0.1) !important;
+}
+
+.search-engine-page .search-movie-card {
+  box-shadow:
+    0 12px 26px -16px rgba(186, 255, 88, 0.34),
+    0 14px 28px rgba(0, 0, 0, 0.32) !important;
+}
+
+.search-engine-page .search-movie-card:hover {
+  box-shadow:
+    0 14px 30px -14px rgba(186, 255, 88, 0.56),
+    0 24px 46px rgba(0, 0, 0, 0.48) !important;
+}
+
+.search-engine-page .search-movie-info {
+  padding: 12px !important;
+  border: 1px solid rgba(186, 255, 88, 0.16);
+  border-radius: 8px;
+  background: rgba(8, 13, 10, 0.78) !important;
+  box-shadow: inset 0 1px 0 rgba(226, 255, 154, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.search-engine-page .search-match-percent {
+  background: rgba(186, 255, 88, 0.16) !important;
+  border: 1px solid rgba(186, 255, 88, 0.42) !important;
+  color: var(--saas-green-bright) !important;
+  box-shadow: 0 0 12px rgba(186, 255, 88, 0.08);
 }

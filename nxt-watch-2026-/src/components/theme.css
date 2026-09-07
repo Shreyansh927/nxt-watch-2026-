@@ -1,0 +1,606 @@
+:root {
+  --saas-bg: #050606;
+  --saas-surface: #0d0f0f;
+  --saas-raised: #141716;
+  --saas-hover: #1a1d1b;
+  --saas-ink: #f2f5f1;
+  --saas-muted: #8d9790;
+  --saas-line: rgba(218, 255, 224, 0.12);
+  --saas-line-strong: rgba(218, 255, 224, 0.22);
+  --saas-green: #baff58;
+  --saas-green-bright: #e2ff9a;
+  --saas-mint: #5ee6ad;
+  --saas-red: #e66b72;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at 86% 0%, rgba(186, 255, 88, 0.08), transparent 28rem),
+    var(--saas-bg) !important;
+  color: var(--saas-ink) !important;
+  font-family: "Avenir Next", "Segoe UI", sans-serif !important;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--saas-green) !important;
+  outline-offset: 3px;
+}
+
+.navbar,
+.auth-wrapper,
+.home-page,
+.trending-container,
+.trending-page,
+.anime-page,
+.documentary-page,
+.tv-page,
+.each-movie-page,
+.wl-container,
+.watch-later-files-page,
+.analytics-dashboard,
+.admin-page,
+.main,
+.search-engine-page,
+.library-page,
+.watch-history-page {
+  color: var(--saas-ink) !important;
+  background: var(--saas-bg) !important;
+}
+
+.movies-section,
+.grid-container,
+.search-grid-container,
+.section-header,
+.hero-content,
+.tv-hero,
+.documentary-hero,
+.anime-hero,
+.search-hero,
+.search-results-section,
+.results-header,
+.search-page,
+.search-engine-container {
+  color: var(--saas-ink) !important;
+  background: transparent !important;
+}
+
+.tv-hero,
+.documentary-hero,
+.anime-hero,
+.search-hero {
+  background:
+    radial-gradient(circle at 78% 0%, rgba(186, 255, 88, 0.08), transparent 22rem),
+    linear-gradient(180deg, rgba(16, 20, 17, 0.96), rgba(5, 6, 6, 0.2)) !important;
+  border-bottom: 1px solid var(--saas-line) !important;
+}
+
+.movies-section,
+.search-results-section,
+.search-grid-container {
+  background: transparent !important;
+}
+
+.anime-container,
+.anime-page,
+.documentary-page,
+.tv-page,
+.anime-page .hero-content,
+.documentary-page .hero-content,
+.tv-page .hero-content,
+.anime-page .movies-section,
+.documentary-page .movies-section,
+.tv-page .movies-section {
+  color: var(--saas-ink) !important;
+  font-family: "Avenir Next", "Segoe UI", sans-serif !important;
+}
+
+.anime-page .hero-title,
+.documentary-page .hero-title,
+.tv-page .hero-title,
+.anime-page .section-title,
+.documentary-page .section-title,
+.tv-page .section-title {
+  color: var(--saas-ink) !important;
+  background: linear-gradient(110deg, var(--saas-ink), var(--saas-green-bright)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-family: "Avenir Next", "Segoe UI", sans-serif !important;
+}
+
+.anime-page .hero-subtitle,
+.documentary-page .hero-subtitle,
+.tv-page .hero-subtitle,
+.anime-page .section-description,
+.documentary-page .section-description,
+.tv-page .section-description,
+.anime-page .stat-item,
+.documentary-page .stat-item,
+.tv-page .stat-item {
+  color: var(--saas-muted) !important;
+  font-family: "Avenir Next", "Segoe UI", sans-serif !important;
+}
+
+.anime-page .grid-container,
+.documentary-page .grid-container,
+.tv-page .grid-container {
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important;
+  gap: 18px !important;
+  padding: 0 !important;
+}
+
+.anime-page .movie-card,
+.documentary-page .movie-card,
+.tv-page .movie-card {
+  min-height: 330px !important;
+  aspect-ratio: 0.76;
+  border: 1px solid rgba(218, 255, 224, 0.14) !important;
+  border-radius: 12px !important;
+  background-color: #0b0e0d !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(226, 255, 154, 0.08) !important;
+}
+
+.anime-page .movie-card:hover,
+.documentary-page .movie-card:hover,
+.tv-page .movie-card:hover {
+  transform: translateY(-6px) !important;
+  border-color: rgba(186, 255, 88, 0.58) !important;
+  box-shadow:
+    0 26px 58px rgba(0, 0, 0, 0.48),
+    0 0 24px rgba(186, 255, 88, 0.1) !important;
+}
+
+.anime-page .movie-card::before,
+.documentary-page .movie-card::before,
+.tv-page .movie-card::before {
+  background: linear-gradient(
+    180deg,
+    rgba(5, 7, 6, 0.05),
+    rgba(5, 7, 6, 0.18) 36%,
+    rgba(5, 7, 6, 0.96) 100%
+  ) !important;
+}
+
+.anime-page .movie-info,
+.documentary-page .movie-info,
+.tv-page .movie-info {
+  padding: 1rem !important;
+}
+
+.anime-page .movie-details,
+.documentary-page .movie-details,
+.tv-page .movie-details {
+  padding: 1rem !important;
+  border: 1px solid rgba(226, 255, 154, 0.12) !important;
+  border-radius: 8px !important;
+  background: rgba(8, 11, 10, 0.78) !important;
+  backdrop-filter: blur(12px);
+}
+
+.anime-page .movie-title,
+.documentary-page .movie-title,
+.tv-page .movie-title {
+  color: var(--saas-ink) !important;
+  font-family: "Avenir Next", "Segoe UI", sans-serif !important;
+  font-size: 1.05rem !important;
+  line-height: 1.25 !important;
+}
+
+.anime-page .release-year,
+.documentary-page .release-year,
+.tv-page .release-year {
+  display: inline-flex;
+  padding: 3px 7px !important;
+  border: 1px solid rgba(186, 255, 88, 0.35) !important;
+  border-radius: 4px !important;
+  color: var(--saas-green-bright) !important;
+  background: rgba(186, 255, 88, 0.1) !important;
+  font-size: 0.72rem !important;
+}
+
+@media (max-width: 760px) {
+  .anime-page .grid-container,
+  .documentary-page .grid-container,
+  .tv-page .grid-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .anime-page .movie-card,
+  .documentary-page .movie-card,
+  .tv-page .movie-card {
+    min-height: 270px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .anime-page .grid-container,
+  .documentary-page .grid-container,
+  .tv-page .grid-container {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.navbar {
+  min-height: 68px !important;
+  padding: 12px clamp(16px, 4vw, 54px) !important;
+  background: rgba(5, 6, 6, 0.9) !important;
+  border-bottom: 1px solid var(--saas-line) !important;
+}
+
+.logo,
+.navbar .logo,
+.nav-item,
+.icon-btn,
+.mobile-item {
+  color: var(--saas-muted) !important;
+}
+
+.logo,
+.navbar .logo {
+  color: var(--saas-ink) !important;
+  letter-spacing: -0.04em;
+}
+
+.nav-item:hover,
+.nav-item.active,
+.icon-btn:hover,
+.mobile-item:hover {
+  color: var(--saas-green) !important;
+  text-shadow: 0 0 18px rgba(186, 255, 88, 0.3);
+}
+
+.nav-item.active::after {
+  background: var(--saas-green) !important;
+  height: 2px !important;
+}
+
+.nav-search,
+.search-input,
+.form-input,
+.comment-textarea,
+.wl-form input,
+.wl-form textarea,
+.wl-form select {
+  color: var(--saas-ink) !important;
+  background: var(--saas-raised) !important;
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 6px !important;
+}
+
+.search-input::placeholder,
+.form-input::placeholder,
+.comment-textarea::placeholder {
+  color: var(--saas-muted) !important;
+}
+
+.form-input:focus,
+.comment-textarea:focus,
+.search-input:focus,
+.wl-form input:focus,
+.wl-form textarea:focus,
+.wl-form select:focus {
+  border-color: var(--saas-green) !important;
+  box-shadow: 0 0 0 3px rgba(186, 255, 88, 0.12) !important;
+}
+
+.btn-primary,
+.hero-button.primary,
+.wl-btn--primary,
+.add-to-folder-btn,
+.time-btn.active,
+.tab-btn.active {
+  background: var(--saas-green) !important;
+  border: 1px solid var(--saas-green) !important;
+  color: #111709 !important;
+  box-shadow: 0 0 24px rgba(186, 255, 88, 0.16) !important;
+}
+
+.hero-button,
+.action-pill,
+.tab-pill,
+.reaction-pill,
+.wl-btn,
+.time-btn,
+.tab-btn,
+.colorful-reddish-button {
+  background: var(--saas-raised) !important;
+  border: 1px solid var(--saas-line-strong) !important;
+  border-radius: 6px !important;
+  color: var(--saas-ink) !important;
+}
+
+.hero-button:hover,
+.action-pill:hover,
+.tab-pill:hover,
+.reaction-pill:hover,
+.wl-btn:hover,
+.time-btn:hover,
+.tab-btn:hover {
+  border-color: var(--saas-green) !important;
+  box-shadow: 0 0 24px rgba(186, 255, 88, 0.18) !important;
+  transform: translateY(-1px);
+}
+
+.hero-copy,
+.hero-feature-panel,
+.movie-hero-panel,
+.movie-player-card,
+.movie-summary-card,
+.info-panel,
+.ai-panel,
+.comment-box-panel,
+.comment-card,
+.profile-card,
+.login-card,
+.kpi-card,
+.dashboard-header,
+.admin-shell,
+.admin-hero,
+.overlay-content,
+.wl-modal,
+.movie-item,
+.poster-card,
+.search-movie-card,
+.folder-card,
+.history-card,
+.session-card,
+.hero-stat,
+.stat-card,
+.detail-row,
+.folder-item,
+.loading-card {
+  color: var(--saas-ink) !important;
+  background: var(--saas-surface) !important;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.25) !important;
+}
+
+.movie-card {
+  color: var(--saas-ink) !important;
+  background-color: var(--saas-surface) !important;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.25) !important;
+}
+.search-movie-card {
+  color: var(--saas-ink) !important;
+  background-color: var(--saas-surface) !important;
+  border: 1px solid var(--saas-line) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.25) !important;
+}
+
+.hero-copy,
+.hero-feature-panel,
+.movie-hero-panel,
+.movie-player-card,
+.movie-summary-card,
+.info-panel,
+.ai-panel,
+.comment-box-panel,
+.comment-card,
+.profile-card,
+.login-card,
+.kpi-card,
+.dashboard-header,
+.admin-shell,
+.admin-hero,
+.overlay-content,
+.wl-modal,
+.movie-card,
+.movie-item,
+.poster-card,
+.search-movie-card,
+.folder-card,
+.history-card,
+.session-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-copy::before,
+.hero-feature-panel::before,
+.movie-hero-panel::before,
+.movie-player-card::before,
+.movie-summary-card::before,
+.info-panel::before,
+.ai-panel::before,
+.comment-box-panel::before,
+.comment-card::before,
+.profile-card::before,
+.login-card::before,
+.kpi-card::before,
+.dashboard-header::before,
+.admin-shell::before,
+.admin-hero::before,
+.overlay-content::before,
+.wl-modal::before,
+.movie-card::before,
+.movie-item::before,
+.poster-card::before,
+.search-movie-card::before,
+.folder-card::before,
+.history-card::before,
+.session-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -55%;
+  width: 42%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--saas-green-bright), transparent);
+  box-shadow: 0 0 20px rgba(186, 255, 88, 0.38);
+  transform: skewX(-25deg);
+  pointer-events: none;
+  opacity: 0.72;
+  transition: left 700ms ease;
+}
+
+.hero-copy:hover::before,
+.hero-feature-panel:hover::before,
+.movie-hero-panel:hover::before,
+.movie-player-card:hover::before,
+.movie-summary-card:hover::before,
+.info-panel:hover::before,
+.ai-panel:hover::before,
+.comment-box-panel:hover::before,
+.comment-card:hover::before,
+.profile-card:hover::before,
+.login-card:hover::before,
+.kpi-card:hover::before,
+.dashboard-header:hover::before,
+.admin-shell:hover::before,
+.admin-hero:hover::before,
+.overlay-content:hover::before,
+.wl-modal:hover::before,
+.movie-card:hover::before,
+.movie-item:hover::before,
+.poster-card:hover::before,
+.search-movie-card:hover::before,
+.folder-card:hover::before,
+.history-card:hover::before,
+.session-card:hover::before {
+  left: 120%;
+}
+
+.hero-title,
+.folder-title,
+.results-title,
+.page-heading,
+.section-title,
+.dashboard-title,
+.movie-title,
+.card-title,
+.poster-title,
+.search-movie-title,
+.folder-card-title,
+.history-card-title,
+.overlay-title,
+.header-text h1,
+.movie-summary-card h2 {
+  color: var(--saas-ink) !important;
+  letter-spacing: -0.04em;
+}
+
+.hero-subtitle,
+.hero-copy p,
+.hero-feature-copy p,
+.movie-summary-card p,
+.header-text p,
+.empty-description,
+.stat-label,
+.kpi-footer,
+.poster-meta,
+.movie-meta,
+.card-meta,
+.search-movie-meta,
+.folder-card-meta,
+.history-card-meta,
+.folder-status,
+.detail-row span {
+  color: var(--saas-muted) !important;
+}
+
+.eyebrow-badge,
+.hero-chip,
+.panel-badge {
+  color: var(--saas-green) !important;
+  background: rgba(186, 255, 88, 0.1) !important;
+  border: 1px solid rgba(186, 255, 88, 0.28) !important;
+  border-radius: 5px !important;
+}
+
+.delete-btn,
+.remove-btn,
+.danger-btn,
+.logout-btn,
+.clear-history-btn {
+  color: var(--saas-red) !important;
+  border-color: rgba(230, 107, 114, 0.45) !important;
+  background: rgba(230, 107, 114, 0.08) !important;
+}
+
+.delete-btn:hover,
+.remove-btn:hover,
+.danger-btn:hover,
+.logout-btn:hover,
+.clear-history-btn:hover {
+  color: #fff !important;
+  background: var(--saas-red) !important;
+}
+
+.grid-container,
+.search-grid-container,
+.poster-grid,
+.movie-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 208px), 1fr)) !important;
+  gap: 16px !important;
+}
+
+@media (max-width: 900px) {
+  .home-hero-section,
+  .movie-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .auth-left {
+    display: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero-content {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-visual {
+    display: none !important;
+  }
+
+  .grid-container,
+  .search-grid-container,
+  .poster-grid,
+  .movie-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .grid-container,
+  .search-grid-container,
+  .poster-grid,
+  .movie-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
