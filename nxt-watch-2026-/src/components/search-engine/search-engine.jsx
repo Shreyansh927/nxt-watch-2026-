@@ -1,9 +1,9 @@
-  const getMovieImage = (path) => {
-    if (!path) return "";
-    return path.startsWith("http")
-      ? path
-      : `https://image.tmdb.org/t/p/original/${path.replace(/^\/+/, "")}`;
-  };
+const getMovieImage = (path) => {
+  if (!path) return "";
+  return path.startsWith("http")
+    ? path
+    : `https://image.tmdb.org/t/p/original/${path.replace(/^\/+/, "")}`;
+};
 import axios from "axios";
 import React, { useState } from "react";
 import Header from "../header";
@@ -16,6 +16,7 @@ import { MdArrowOutward } from "react-icons/md";
 import { MdOutlineSearch } from "react-icons/md";
 import Loader from "react-loader-spinner";
 import AiAssistant from "../natural-language-command-system-ai";
+import { toast } from "react-toastify";
 
 const SearchEngine = () => {
   const [input, setInput] = useState("");
@@ -23,6 +24,7 @@ const SearchEngine = () => {
   const [vectorSearchResults, setVectorSearchResults] = useState(
     JSON.parse(localStorage.getItem("search-results")) || [],
   );
+  const [tmdbResults, setTmdbResults] = useState([]);
   const [similarResults, setSimilarResults] = useState(
     JSON.parse(localStorage.getItem("similar-search-results")) || [],
   );
@@ -78,7 +80,30 @@ const SearchEngine = () => {
     }
   };
 
+  const getTmdbSuggestionsLatestMovies = async () => {
+    try {
+      const res = await axios.get(`https://api.themoviedb.org/3/search/movie`, {
+        params: {
+          query: input,
+          api_key: import.meta.env.VITE_TMDB_API_KEY,
+        },
+      });
+      const formattedResponse = res.data.results.map((movie) => ({
+        movieId: movie.id,
+        movieTitle: movie.title,
+        releaseYear: movie.release_date,
+        posterPath: movie.poster_path,
+      }));
+
+      setTmdbResults(formattedResponse);
+    } catch (e) {
+      console.log(e);
+      toast.error(e);
+    }
+  };
+
   const vectorSearch = async () => {
+    setTmdbResults([]);
     setVectorSearchResults([]);
     setSearching(true);
     setLoading(true);
@@ -97,7 +122,6 @@ const SearchEngine = () => {
         },
       );
 
-      
       const formattedMovies = (res.data.results || []).map((movie) => ({
         id: movie.id,
         title: movie.title,
@@ -205,12 +229,58 @@ const SearchEngine = () => {
     return (
       <>
         <AiAssistant />
-        <div className="results-header">
-          <h2 className="results-title">Search Results</h2>
-          <p className="results-count">
-            {vectorSearchResults.length} results found
-          </p>
+
+        <div className="results-header" style={{ marginTop: "60px" }}>
+          <h2 className="results-title">Trending Search Results TMDB</h2>
+          <p className="results-count">{tmdbResults.length} results found</p>
         </div>
+
+        <ul className="search-grid-container">
+          {tmdbResults.map((movie) => (
+            <li
+              key={movie.id}
+              className="search-movie-card"
+              style={{
+                backgroundImage: `url(${getMovieImage(movie.posterPath || movie.backdropPath)})`,
+              }}
+            >
+              <img
+                className="search-movie-thumbnail"
+                src={`https://image.tmdb.org/t/p/w500/${movie.posterPath}`}
+                alt=""
+                aria-hidden="true"
+              />
+              <Link
+                to={`/trending/${encodeURIComponent(movie.title)}/${movie.id}`}
+                className="search-movie-link"
+                onClick={() =>
+                  addToWatchHistory(movie.id, movie.movieEmbedding)
+                }
+              >
+                <div className="search-movie-overlay">
+                  <div className="search-movie-info">
+                    <h3 className="search-movie-title">
+                      {movie.originalTitle}
+                    </h3>
+                    <div className="search-movie-meta">
+                      <span className="search-release-year">
+                        {movie.releaseYear}
+                      </span>
+                      {/* <span
+                        className={`search-match-percent ${movie.match_percent > 40 ? "match-high" : "match-low"}`}
+                      >
+                        {movie.match_percent}% match
+                      </span> */}
+                    </div>
+                    {/* {movie.genre && (
+                      <p className="search-movie-genre">{movie.genre}</p>
+                    )} */}
+                  </div>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
 
         <ul className="search-grid-container">
           {vectorSearchResults.map((movie) => (
@@ -409,7 +479,13 @@ const SearchEngine = () => {
                 </button>
               ) : (
                 input && (
-                  <button onClick={vectorSearch} className="search-btn">
+                  <button
+                    onClick={() => {
+                      vectorSearch();
+                      getTmdbSuggestionsLatestMovies();
+                    }}
+                    className="search-btn"
+                  >
                     Search
                   </button>
                 )
